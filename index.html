@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!--
+╔══════════════════════════════════════════════════════════════════════╗
+║  FORMULARIO DIGITAL DE REGISTRO TERRITORIAL v2.2                     ║
+║  Alcaldía Local San Cristóbal · PISCCJ 2025-2026                     ║
+║  CORRECCIONES v2.1:                                                  ║
+║  ✓ Gerencias/Áreas corregidas según PDL oficial                      ║
+║  ✓ Descripción mínimo 600 caracteres                                 ║
+║  NOVEDADES v2.2:                                                     ║
+║  ✓ Sección OKR condicional (solo aparece si tipo = OKR)              ║
+║    · Selector de Resultado Clave (31 OKRs del consolidado Q4-2025)   ║
+║    · Autocomplete: Objetivo Táctico, Área, Gerente/Líder, Carpeta    ║
+║    · % Avance Cuantitativo (número 0-100)                            ║
+║    · Avance Cualitativo (texto descriptivo)                          ║
+║  ✓ Sección Proyecto/Metas se oculta cuando tipo = OKR               ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  CONFIGURACIÓN — ANTES DE PUBLICAR:                                  ║
+║  1. Crear Google Sheet "REGISTRO_ACTIVIDADES_SC_2025"                ║
+║  2. Crear Apps Script con código al final → publicar Web App         ║
+║  3. Reemplazar GOOGLE_APPS_SCRIPT_URL con la URL generada            ║
+║  4. Reemplazar correos de gerentes/líderes en CORREOS_POR_AREA       ║
+╚══════════════════════════════════════════════════════════════════════╝
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro Territorial v2.2 · Alcaldía Local San Cristóbal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rojo: #C8102E; --rojo-dark: #9B0C22; --rojo-light: #FDEEF1;
+  --amarillo: #F5C400; --amarillo-bg: #FFFBEA;
+  --negro: #0F0F0F;
+  --gris-1: #F7F7F8; --gris-2: #EFEFEF; --gris-3: #D0D0D5;
+  --gris-4: #8A8A95; --gris-5: #3A3A42;
+  --azul: #1565C0; --azul-light: #E8F0FE;
+  --verde: #1B7E45; --verde-light: #E6F4EC;
+  --naranja: #E65C00;
+  --blanco: #FFFFFF;
+  --radio: 12px; --radio-sm: 8px; --radio-xs: 6px;
+  --trans: .18s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--gris-1); color: var(--gris-5); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+/* HEADER */
+.header { background: var(--negro); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(0,0,0,.35); }
+.header-inner { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 1rem; height: 64px; }
+.header-flag { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+.flag-s { width: 30px; height: 5px; border-radius: 1px; }
+.flag-s.a { background: var(--amarillo); }
+.flag-s.r { background: var(--rojo); }
+.header-logo { font-size: 1.6rem; flex-shrink: 0; }
+.header-text { flex: 1; min-width: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 1rem; color: #fff; letter-spacing: .3px; line-height: 1.2; }
+.header-sub { font-size: .68rem; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 1px; }
+.header-badge { background: var(--rojo); color: #fff; font-size: .65rem; font-weight: 700; padding: .25rem .7rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0; }
+
+/* PROGRESS */
+.progress-wrap { background: var(--blanco); border-bottom: 1px solid var(--gris-2); position: sticky; top: 64px; z-index: 99; }
+.progress-inner { max-width: 960px; margin: 0 auto; padding: .75rem 1.5rem; }
+.progress-steps { display: flex; gap: .3rem; align-items: center; }
+.p-step { flex: 1; height: 4px; border-radius: 2px; background: var(--gris-2); transition: background .3s ease; }
+.p-step.done { background: var(--verde); }
+.p-step.active { background: var(--rojo); }
+.progress-label { font-size: .72rem; color: var(--gris-4); margin-top: .4rem; text-align: center; font-weight: 500; }
+
+/* MAIN */
+.main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* CARDS */
+.card { background: var(--blanco); border-radius: var(--radio); box-shadow: 0 1px 4px rgba(0,0,0,.08); border: 1px solid var(--gris-2); overflow: hidden; animation: slideUp .4s ease both; }
+.card:nth-child(n){ animation-delay: calc(.05s * var(--n, 1)); }
+@keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.card-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--gris-2); display: flex; align-items: center; gap: .8rem; background: linear-gradient(135deg, var(--gris-1) 0%, #fff 100%); }
+.card-icon { width: 36px; height: 36px; background: var(--rojo); border-radius: var(--radio-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; box-shadow: 0 2px 8px rgba(200,16,46,.3); }
+.card-title { font-weight: 700; font-size: .95rem; color: var(--negro); }
+.card-num { margin-left: auto; font-size: .7rem; font-weight: 700; color: var(--gris-4); background: var(--gris-2); padding: .15rem .55rem; border-radius: 12px; letter-spacing: .5px; }
+.card-body { padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1.4rem; }
+@media(max-width:600px){ .card-body { grid-template-columns: 1fr; } }
+.span-2 { grid-column: span 2; }
+@media(max-width:600px){ .span-2 { grid-column: span 1; } }
+.span-3 { grid-column: span 3; }
+
+/* FORM ELEMENTS */
+.field { display: flex; flex-direction: column; gap: .35rem; }
+.field label { font-size: .78rem; font-weight: 600; color: var(--gris-5); letter-spacing: .2px; display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; }
+.req { color: var(--rojo); font-size: .85rem; }
+.lbl-badge { font-size: .65rem; font-weight: 700; padding: .1rem .45rem; border-radius: 10px; text-transform: uppercase; letter-spacing: .5px; }
+.lbl-badge.base { background: rgba(21,101,192,.12); color: var(--azul); }
+.lbl-badge.poai { background: rgba(27,126,69,.12); color: var(--verde); }
+input, select, textarea {
+  width: 100%; border: 1.5px solid var(--gris-3); border-radius: var(--radio-sm);
+  padding: .65rem .9rem; font-family: 'DM Sans', sans-serif; font-size: .88rem;
+  color: var(--gris-5); background: var(--blanco); outline: none;
+  transition: border-color var(--trans), box-shadow var(--trans); -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(200,16,46,.1); }
+input.error, select.error, textarea.error { border-color: var(--rojo); background: var(--rojo-light); }
+input[readonly] { background: var(--gris-1); color: var(--gris-4); cursor: default; }
+input[readonly]:focus { box-shadow: none; border-color: var(--gris-3); }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A8A95' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .9rem center; padding-right: 2.2rem; cursor: pointer;
+}
+textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+.char-count { font-size: .7rem; color: var(--gris-4); text-align: right; margin-top: -.2rem; }
+.char-count.warn { color: var(--naranja); }
+.char-count.ok { color: var(--verde); }
+.hint { font-size: .72rem; color: var(--gris-4); display: flex; align-items: center; gap: .3rem; line-height: 1.4; }
+
+/* CONDITIONAL FIELDS */
+.cond-field { display: none; }
+.cond-field.show { display: flex; }
+.cond-section { display: none; }
+.cond-section.show { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1.4rem; }
+@media(max-width:600px){ .cond-section.show { grid-template-columns: 1fr; } }
+
+/* RADIO GROUP */
+.radio-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+.radio-opt { display: flex; align-items: center; gap: .45rem; cursor: pointer; padding: .5rem .9rem; border: 1.5px solid var(--gris-3); border-radius: var(--radio-sm); transition: all var(--trans); font-size: .85rem; font-weight: 500; }
+.radio-opt:hover { border-color: var(--rojo); }
+.radio-opt input[type=radio] { width: 16px; height: 16px; accent-color: var(--rojo); cursor: pointer; }
+.radio-opt.selected { border-color: var(--rojo); background: var(--rojo-light); color: var(--rojo); }
+
+/* GPS */
+.gps-box { border: 1.5px dashed var(--azul); background: var(--azul-light); border-radius: var(--radio); padding: 1.2rem; display: flex; flex-direction: column; gap: .8rem; }
+.gps-title { font-size: .82rem; font-weight: 700; color: var(--azul); display: flex; align-items: center; gap: .4rem; }
+.btn-gps { display: inline-flex; align-items: center; gap: .5rem; background: var(--azul); color: #fff; border: none; cursor: pointer; padding: .75rem 1.4rem; border-radius: var(--radio-sm); font-family: 'DM Sans', sans-serif; font-size: .88rem; font-weight: 600; transition: background var(--trans), transform var(--trans); box-shadow: 0 3px 12px rgba(21,101,192,.3); width: fit-content; }
+.btn-gps:hover { background: #0D47A1; transform: translateY(-1px); }
+.btn-gps:disabled { background: var(--gris-3); color: var(--gris-4); cursor: not-allowed; transform: none; box-shadow: none; }
+.gps-status { font-size: .78rem; display: flex; align-items: center; gap: .4rem; min-height: 1.4rem; }
+.gps-status.loading { color: var(--azul); }
+.gps-status.success { color: var(--verde); }
+.gps-status.error { color: var(--naranja); }
+.gps-link a { color: var(--azul); font-size: .8rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: .3rem; }
+.gps-link a:hover { text-decoration: underline; }
+.spinner { width: 14px; height: 14px; border: 2px solid rgba(21,101,192,.2); border-top-color: var(--azul); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; flex-shrink: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* FILE UPLOAD */
+.file-zone { border: 1.5px dashed var(--gris-3); border-radius: var(--radio-sm); background: var(--gris-1); padding: 1rem; cursor: pointer; transition: border-color var(--trans), background var(--trans); text-align: center; position: relative; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem; }
+.file-zone:hover { border-color: var(--rojo); background: var(--rojo-light); }
+.file-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.file-zone-icon { font-size: 1.5rem; }
+.file-zone-text { font-size: .78rem; color: var(--gris-4); line-height: 1.3; }
+.file-zone-text strong { color: var(--rojo); }
+.file-previews { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+.file-thumb { position: relative; width: 60px; height: 60px; border-radius: var(--radio-xs); overflow: hidden; border: 1.5px solid var(--gris-2); background: var(--gris-1); }
+.file-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.file-selected-name { font-size: .75rem; color: var(--verde); font-weight: 600; display: flex; align-items: center; gap: .3rem; flex-wrap: wrap; }
+
+/* INFO BOXES */
+.info-box { background: var(--amarillo-bg); border: 1px solid var(--amarillo); border-radius: var(--radio-sm); padding: .8rem 1rem; font-size: .8rem; color: #7A5F00; display: flex; align-items: flex-start; gap: .5rem; }
+
+/* BUTTONS */
+.actions { display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: .5rem; border: none; cursor: pointer; padding: .85rem 2rem; border-radius: var(--radio-sm); font-family: 'DM Sans', sans-serif; font-size: .92rem; font-weight: 700; transition: all var(--trans); min-height: 48px; }
+.btn-outline { background: transparent; border: 1.5px solid var(--gris-3); color: var(--gris-4); }
+.btn-outline:hover { border-color: var(--gris-5); color: var(--gris-5); }
+.btn-submit { background: var(--rojo); color: #fff; box-shadow: 0 4px 16px rgba(200,16,46,.35); font-size: 1rem; padding: .9rem 2.4rem; }
+.btn-submit:hover { background: var(--rojo-dark); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(200,16,46,.4); }
+.btn-submit:disabled { background: var(--gris-3); color: var(--gris-4); cursor: not-allowed; transform: none; box-shadow: none; }
+@media(max-width:480px){ .actions { flex-direction: column-reverse; } .btn { width: 100%; justify-content: center; } }
+
+/* MODAL */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 500; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(3px); }
+.overlay.show { display: flex; }
+.modal { background: var(--blanco); border-radius: var(--radio); max-width: 440px; width: 100%; box-shadow: 0 12px 40px rgba(0,0,0,.14); animation: modalIn .25s ease; overflow: hidden; }
+@keyframes modalIn { from { opacity: 0; transform: scale(.93) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-head { padding: 1.3rem 1.5rem; border-bottom: 1px solid var(--gris-2); display: flex; align-items: center; gap: .7rem; }
+.modal-head .mh-title { font-weight: 700; font-size: 1rem; }
+.modal-body { padding: 1.2rem 1.5rem; font-size: .88rem; color: var(--gris-4); line-height: 1.6; }
+.modal-foot { padding: 1rem 1.5rem; border-top: 1px solid var(--gris-2); display: flex; gap: .8rem; justify-content: flex-end; }
+
+/* SUCCESS */
+.success-screen { display: none; flex-direction: column; align-items: center; text-align: center; gap: 1.2rem; padding: 3rem 2rem; background: var(--blanco); border-radius: var(--radio); border: 1px solid var(--gris-2); box-shadow: 0 4px 20px rgba(0,0,0,.10); animation: slideUp .4s ease; }
+.success-screen.show { display: flex; }
+.success-icon { width: 80px; height: 80px; background: var(--verde-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 0 0 0 12px rgba(27,126,69,.08); animation: popIn .5s .2s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes popIn { 0%{transform:scale(0)} 60%{transform:scale(1.15)} 100%{transform:scale(1)} }
+.success-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--verde); }
+.success-text { font-size: .9rem; color: var(--gris-4); max-width: 400px; line-height: 1.6; }
+.success-id { background: var(--gris-1); border: 1px solid var(--gris-2); border-radius: var(--radio-sm); padding: .7rem 1.5rem; font-size: .8rem; color: var(--gris-5); }
+.success-id strong { color: var(--rojo); font-size: 1.1rem; display: block; margin-top: .2rem; }
+
+/* ERROR & TOAST & LOADING */
+.error-box { background: var(--rojo-light); border: 1.5px solid rgba(200,16,46,.25); border-radius: var(--radio-sm); padding: .8rem 1rem; font-size: .82rem; color: var(--rojo); display: none; align-items: flex-start; gap: .6rem; }
+.error-box.show { display: flex; }
+.toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--negro); color: #fff; padding: .85rem 1.3rem; border-radius: var(--radio-sm); font-size: .84rem; font-weight: 500; box-shadow: 0 12px 40px rgba(0,0,0,.14); z-index: 1000; transform: translateY(20px); opacity: 0; transition: all .3s ease; display: flex; align-items: center; gap: .5rem; max-width: 320px; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: var(--verde); }
+.toast.error-t { background: var(--rojo); }
+.loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,.8); z-index: 300; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; backdrop-filter: blur(2px); }
+.loading-overlay.show { display: flex; }
+.loading-spinner { width: 48px; height: 48px; border: 4px solid var(--gris-2); border-top-color: var(--rojo); border-radius: 50%; animation: spin .8s linear infinite; }
+.loading-text { font-size: .9rem; color: var(--gris-5); font-weight: 500; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--gris-1); }
+::-webkit-scrollbar-thumb { background: var(--gris-3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--rojo); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-flag">
+      <div class="flag-s a"></div><div class="flag-s a"></div>
+      <div class="flag-s r"></div><div class="flag-s r"></div>
+    </div>
+    <div class="header-logo">🏛️</div>
+    <div class="header-text">
+      <div class="header-title">Alcaldía Local San Cristóbal</div>
+      <div class="header-sub">Registro de Actividades Territoriales · PISCCJ 2025-2026</div>
+    </div>
+    <div class="header-badge">v2.2</div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="progress-steps">
+      <div class="p-step active" id="ps1"></div>
+      <div class="p-step" id="ps2"></div>
+      <div class="p-step" id="ps3"></div>
+      <div class="p-step" id="ps4"></div>
+      <div class="p-step" id="ps5"></div>
+    </div>
+    <div class="progress-label" id="progress-label">Sección 1 de 5 — Identificación General</div>
+  </div>
+</div>
+
+<main class="main" id="form-container">
+
+  <!-- ══ SECCIÓN 1: IDENTIFICACIÓN GENERAL ══ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📋</div>
+      <div><div class="card-title">Identificación General</div></div>
+      <div class="card-num">1 / 5</div>
+    </div>
+    <div class="card-body">
+
+      <div class="field">
+        <label for="fecha">Fecha <span class="req">*</span></label>
+        <input type="date" id="fecha" name="fecha" required>
+      </div>
+
+      <div class="field">
+        <label for="jornada">Jornada <span class="req">*</span></label>
+        <select id="jornada" name="jornada" required>
+          <option value="">Seleccionar...</option>
+          <option>MAÑANA (6-12)</option>
+          <option>TARDE (1-6)</option>
+          <option>NOCHE (6-12)</option>
+          <option>JORNADA COMPLETA (6-6)</option>
+        </select>
+      </div>
+
+      <!-- Gerencia → Área (corregido) -->
+      <div class="field">
+        <label for="gerencia">Gerencia <span class="req">*</span></label>
+        <select id="gerencia" name="gerencia" required onchange="actualizarAreas()">
+          <option value="">Seleccionar gerencia...</option>
+          <option value="CAMINA SEGURA">CAMINA SEGURA</option>
+          <option value="MAS OPORTUNIDADES">MAS OPORTUNIDADES</option>
+          <option value="MAS TERRITORIO">MAS TERRITORIO</option>
+          <option value="TERRITORIO SOCIAL">TERRITORIO SOCIAL</option>
+          <option value="IVC">IVC</option>
+          <option value="INFRAESTRUCTURA">INFRAESTRUCTURA</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="area">Área <span class="req">*</span></label>
+        <select id="area" name="area" required onchange="actualizarCorreos()">
+          <option value="">— Seleccione gerencia primero —</option>
+        </select>
+      </div>
+
+      <!-- Tipo de Actividad (corregido con OKR, codificación construyendo territorio) -->
+      <div class="field span-2">
+        <label for="tipo_actividad">Tipo de Actividad <span class="req">*</span></label>
+        <select id="tipo_actividad" name="tipo_actividad" required onchange="mostrarCamposTipoActividad()">
+          <option value="">Seleccionar tipo...</option>
+          <option value="OKR">OKR (base compartida)</option>
+          <option value="EJECUCIÓN META 2025">EJECUCIÓN META 2025</option>
+          <option value="GESTIÓN TERRITORIAL">GESTIÓN TERRITORIAL</option>
+          <option value="CONSTRUYENDO TERRITORIO - PROBLEMÁTICA INTERNA">CONSTRUYENDO TERRITORIO — Problemática Interna</option>
+          <option value="CONSTRUYENDO TERRITORIO - PROBLEMÁTICA EXTERNA">CONSTRUYENDO TERRITORIO — Problemática Externa (entidades externas)</option>
+          <option value="RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA">RESPUESTA A PROBLEMÁTICA — Traslado a entidad externa</option>
+          <option value="RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO">RESPUESTA DERECHO DE PETICIÓN — Correo/Orfeo radicado</option>
+          <option value="REUNION INSTANCIAS DE PARTICIPACION">REUNIÓN INSTANCIAS DE PARTICIPACIÓN</option>
+        </select>
+      </div>
+
+      <!-- Campo condicional: ¿Qué entidades? (para Construyendo Territorio Externo y Traslado) -->
+      <div class="field span-2 cond-field" id="campo-entidades-externas">
+        <label for="entidades_externas">¿Cuáles entidades externas? <span class="req">*</span></label>
+        <input type="text" id="entidades_externas" name="entidades_externas" placeholder="Nombre de las entidades externas involucradas...">
+      </div>
+
+      <!-- Campo condicional: Número Orfeo (solo para Respuesta DP) -->
+      <div class="field span-2 cond-field" id="campo-orfeo">
+        <label for="numero_orfeo">Número Orfeo / Radicado <span class="req">*</span></label>
+        <input type="text" id="numero_orfeo" name="numero_orfeo" placeholder="Ej: 2025-0045678">
+        <div class="hint">📧 Incluya el número de radicado del sistema Orfeo o del correo institucional</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN OKR (solo visible cuando tipo = OKR) ══ -->
+  <div class="card" id="seccion-okr" style="display:none; border-left: 4px solid #1565C0;">
+    <div class="card-header" style="background: linear-gradient(90deg, #e8f0fe 0%, #f7f9ff 100%);">
+      <div class="card-icon" style="background:#1565C0;">🎯</div>
+      <div>
+        <div class="card-title" style="color:#1565C0;">Seguimiento OKR — Q4 2025</div>
+        <div style="font-size:.75rem;color:#5a7fc8;margin-top:2px;">Cuarto Trimestre · Alcaldía Local San Cristóbal</div>
+      </div>
+      <div class="card-num" style="background:#1565C0; color:#fff;">OKR</div>
+    </div>
+    <div class="card-body">
+
+      <!-- Selector de Resultado Clave OKR -->
+      <div class="field span-2">
+        <label for="okr_resultado">Resultado Clave <span class="req">*</span> <span class="lbl-badge" style="background:#e8f0fe;color:#1565C0;border-color:#c5d9f7">OKR 2025</span></label>
+        <select id="okr_resultado" name="okr_resultado" onchange="autocompleteOKR()">
+          <option value="">Seleccionar resultado clave...</option>
+          <optgroup label="── INFRAESTRUCTURA ──">
+            <option value="OKR-INF-1">INF-1 · Realizar intervención de 1 km/carril en la malla vial con acciones de movilidad (Parcheo y Bacheo)</option>
+            <option value="OKR-INF-2">INF-2 · Disponer mínimo de seis (6) frentes de obra de construcción y conservación de malla vial</option>
+          </optgroup>
+          <optgroup label="── AMBIENTE ──">
+            <option value="OKR-AMB-1">AMB-1 · Recuperar el espacio público mediante el levantamiento de 25 ocupaciones ilegales</option>
+            <option value="OKR-AMB-2">AMB-2 · Intervenir 250 m2 de Jardinería Convencional Urbana y coberturas verdes en Espacio Público</option>
+          </optgroup>
+          <optgroup label="── SEPARACIÓN EN LA FUENTE ──">
+            <option value="OKR-SEP-1">SEP-1 · Estrategias territoriales orientadas al mejoramiento del saneamiento básico</option>
+          </optgroup>
+          <optgroup label="── CYPA ──">
+            <option value="OKR-CYPA-1">CYPA-1 · Vincular 100 personas en acciones educativas en temas de protección y bienestar animal</option>
+          </optgroup>
+          <optgroup label="── RIESGOS / PyAR ──">
+            <option value="OKR-PYAR-1">PyAR-1 · Implementar escuelas de gestión del Riesgo en 8 barrios de la localidad</option>
+          </optgroup>
+          <optgroup label="── ESPACIO PÚBLICO - IVC ──">
+            <option value="OKR-EP-1">EP-1 · Implementar la intervención integral de 1.200 m² de espacio público en el polígono</option>
+          </optgroup>
+          <optgroup label="── PRENSA ──">
+            <option value="OKR-PRE-1">PRE-1 · Promocionar las actividades institucionales con mínimo 10 piezas audiovisuales</option>
+          </optgroup>
+          <optgroup label="── CALIDAD ──">
+            <option value="OKR-CAL-1">CAL-1 · Atender de manera oportuna el 100% de los derechos de petición</option>
+          </optgroup>
+          <optgroup label="── ORIENTACIÓN CIUDADANA ──">
+            <option value="OKR-OC-1">OC-1 · Alcanzar en la encuesta de percepción ciudadana por lo menos 4 de 5 puntos de satisfacción</option>
+          </optgroup>
+          <optgroup label="── PARTICIPACIÓN ──">
+            <option value="OKR-PART-1">PART-1 · Ejecutar dos Escuelas Locales de Gobierno para incentivar la participación ciudadana</option>
+          </optgroup>
+          <optgroup label="── DERECHOS DIFERENCIALES ──">
+            <option value="OKR-DD-1">DD-1 · Realizar proceso de formación dirigido a 100 mujeres en temas jurídicos</option>
+            <option value="OKR-DD-2">DD-2 · Realizar curso de conducción dirigido a 170 mujeres como estrategia de empoderamiento</option>
+          </optgroup>
+          <optgroup label="── MENOS POBREZA ──">
+            <option value="OKR-MP-1">MP-1 · Caracterizar y validar condiciones de 1.000 personas mayores beneficiarias</option>
+            <option value="OKR-MP-2">MP-2 · Desarrollar 60 talleres de encuentros de Desarrollo Humano</option>
+            <option value="OKR-MP-3">MP-3 · Identificar el 30% de 7.772 historias sociales del archivo</option>
+          </optgroup>
+          <optgroup label="── BIEN-ESTAR ──">
+            <option value="OKR-BE-1">BE-1 · Realizar el otorgamiento de ayudas técnicas a la comunidad</option>
+            <option value="OKR-BE-2">BE-2 · Organizar y desarrollar jornadas de tamizaje y vacunación, así como talleres educativos</option>
+          </optgroup>
+          <optgroup label="── SEGURIDAD ──">
+            <option value="OKR-SEG-1">SEG-1 · Realizar 12 campañas de prevención y registro ante el hurto a personas en transporte</option>
+          </optgroup>
+          <optgroup label="── JUSTICIA SOCIAL ──">
+            <option value="OKR-JS-1">JS-1 · Realizar la implementación de la Estrategia de convivencia y justicia del PISCCJ</option>
+          </optgroup>
+          <optgroup label="── TERRITORIO CONFIABLE ──">
+            <option value="OKR-TC-1">TC-1 · Desarrollar 70 Talleres de manualidades en artes y oficios para la comunidad</option>
+          </optgroup>
+          <optgroup label="── TEJIDO SOCIAL ──">
+            <option value="OKR-TS-1">TS-1 · Realizar mínimo dos actividades en la implementación de una estrategia de atención integral</option>
+          </optgroup>
+          <optgroup label="── DEPORTES ──">
+            <option value="OKR-DEP-1">DEP-1 · Desarrollar mínimo tres acciones de capacitación o eventos deportivos</option>
+          </optgroup>
+          <optgroup label="── PRODUCTIVIDAD ──">
+            <option value="OKR-PROD-1">PROD-1 · Preparar e implementar 2 rutas turísticas para incentivar el turismo</option>
+            <option value="OKR-PROD-2">PROD-2 · Realizar proceso de diagnóstico, formación y graduación de 100 unidades productivas</option>
+          </optgroup>
+          <optgroup label="── CULTURA ──">
+            <option value="OKR-CUL-1">CUL-1 · Realizar 3 articulaciones con instancias y organizaciones culturales</option>
+            <option value="OKR-CUL-2">CUL-2 · Realizar 6 eventos de promoción de actividades culturales</option>
+          </optgroup>
+          <optgroup label="── EDUCACIÓN ──">
+            <option value="OKR-EDU-1">EDU-DOT-1 · Llevar a cabo el proceso de entrega de los tres lotes de elementos (Dotaciones Escolares)</option>
+            <option value="OKR-EDU-2">EDU-2 · Realizar seguimiento y verificación de los beneficiarios activos de los convenios</option>
+            <option value="OKR-EDU-3">EDU-CON-1 · Realizar los procesos relacionados con la evaluación de grupos poblacionales (Conectividad)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Campos autocomplete del OKR seleccionado -->
+      <div class="field span-2">
+        <label for="okr_objetivo_tactico">Objetivo Táctico</label>
+        <textarea id="okr_objetivo_tactico" name="okr_objetivo_tactico" rows="2" readonly
+          style="background:#f7f9ff;color:#3a3a42;resize:none;font-size:.82rem;"
+          placeholder="Se autocompleta al seleccionar el Resultado Clave..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="okr_area_auto">Área</label>
+        <input type="text" id="okr_area_auto" name="okr_area_auto" readonly
+          style="background:#f7f9ff;color:#1565C0;font-weight:600;"
+          placeholder="Se autocompleta...">
+      </div>
+
+      <div class="field">
+        <label for="okr_lider">Gerente / Líder Responsable</label>
+        <input type="text" id="okr_lider" name="okr_lider" readonly
+          style="background:#f7f9ff;color:#3a3a42;"
+          placeholder="Se autocompleta...">
+      </div>
+
+      <div class="field span-2">
+        <label for="okr_carpeta">Carpeta OneDrive — Cargue de Evidencias</label>
+        <input type="text" id="okr_carpeta" name="okr_carpeta" readonly
+          style="background:#f7f9ff;color:#3a3a42;font-size:.82rem;"
+          placeholder="Se autocompleta...">
+        <div class="hint">📁 Nombre de la carpeta en OneDrive donde deben cargarse las evidencias del OKR</div>
+      </div>
+
+      <!-- % Avance Cuantitativo -->
+      <div class="field">
+        <label for="okr_pct_cuantitativo">% Avance Cuantitativo <span class="req">*</span></label>
+        <input type="number" id="okr_pct_cuantitativo" name="okr_pct_cuantitativo"
+          min="0" max="100" step="0.01"
+          placeholder="Ej: 33 (escribe el porcentaje del período)">
+        <div class="hint">📊 Ingrese el % de avance del período actual (0 a 100). Ej: 33 para un tercio del trimestre.</div>
+      </div>
+
+      <!-- Mes de reporte -->
+      <div class="field">
+        <label for="okr_mes">Mes de Reporte <span class="req">*</span></label>
+        <select id="okr_mes" name="okr_mes">
+          <option value="">Seleccionar mes...</option>
+          <option value="OCTUBRE">OCTUBRE</option>
+          <option value="NOVIEMBRE">NOVIEMBRE</option>
+          <option value="DICIEMBRE">DICIEMBRE</option>
+        </select>
+      </div>
+
+      <!-- Avance Cualitativo -->
+      <div class="field span-2">
+        <label for="okr_avance_cualitativo">Avance Cualitativo <span class="req">*</span></label>
+        <textarea id="okr_avance_cualitativo" name="okr_avance_cualitativo" rows="5"
+          placeholder="Describa detalladamente las acciones realizadas en el período, los logros obtenidos, las dificultades encontradas y las estrategias implementadas para el cumplimiento del resultado clave..."
+          oninput="updateCharCountOKR()"></textarea>
+        <div class="char-count" id="char-count-okr">0 caracteres</div>
+        <div class="hint">📝 Describa con detalle las acciones ejecutadas. Se recomienda mínimo 200 caracteres.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 2: PROYECTO Y METAS ══ -->
+  <div class="card" id="seccion-proyecto-metas">
+    <div class="card-header">
+      <div class="card-icon">📁</div>
+      <div><div class="card-title">Proyecto y Metas</div></div>
+      <div class="card-num">2 / 5</div>
+    </div>
+    <div class="card-body">
+
+      <!-- ID Proyecto (todos los proyectos del POAI) -->
+      <div class="field">
+        <label for="id_proyecto">ID Proyecto <span class="req">*</span> <span class="lbl-badge poai">POAI 2026</span></label>
+        <select id="id_proyecto" name="id_proyecto" required onchange="autocompleteProyecto()">
+          <option value="">Seleccionar proyecto...</option>
+          <option value="2251">2251 — Sostenibilidad del Ecosistema Cultural y Creativo</option>
+          <option value="2252">2252 — San Cristóbal Vial, Caminos de Oportunidad</option>
+          <option value="2254">2254 — Caminos Sostenibles, Espacios Peatonales</option>
+          <option value="2257">2257 — Red de Oportunidades, Parques y Cultura</option>
+          <option value="2273">2273 — San Cristóbal Resiliente</option>
+          <option value="2285">2285 — Seguridad y Fuerza Pública Equipada</option>
+          <option value="2316">2316 — San Cristóbal Sin Barreras, Salud y Bienestar</option>
+          <option value="2349">2349 — Espacio Público y Pacífico</option>
+          <option value="2385">2385 — Mujeres en Acción Contra la Violencia</option>
+          <option value="2405">2405 — Cultura y Memoria en Movimiento</option>
+          <option value="2409">2409 — San Cristóbal Incidente</option>
+          <option value="2481">2481 — Bienestar Animal y Educación</option>
+          <option value="2495">2495 — Actívate San Cristóbal, Deporte</option>
+          <option value="2502">2502 — Oportunidades para el Futuro Sostenible</option>
+          <option value="2506">2506 — Oportunidades con Bien-Estar</option>
+          <option value="2601">2601 — Pacto por Espacios Sostenibles</option>
+          <option value="2606">2606 — Tejiendo Memoria y Reconciliación</option>
+          <option value="2608">2608 — San Cristóbal Emprende</option>
+          <option value="2615">2615 — Educación que Genera Oportunidades</option>
+          <option value="2620">2620 — Camina Seguro, Vive Seguro</option>
+          <option value="2627">2627 — El Delirio del Turismo</option>
+          <option value="2633">2633 — Territorio para la Gestión de Conflictos</option>
+          <option value="2638">2638 — San Cristóbal Activa el Sector Cultural</option>
+          <option value="2648">2648 — Oportunidades con Bien-Estar, Avanza Más</option>
+          <option value="2667">2667 — Gobierno de lo Cotidiano</option>
+          <option value="2694">2694 — Redes de Oportunidad, Formación Digital</option>
+          <option value="2708">2708 — Chango y Pueblos Indígenas</option>
+          <option value="2791">2791 — Creciendo Juntos, Atención Integral</option>
+          <option value="2797">2797 — San Cristóbal Nuestra Pasión</option>
+          <option value="2802">2802 — Fortaleciendo Vidas, Mujeres en San Cristóbal</option>
+          <option value="2805">2805 — San Cristóbal, Oportunidades para el Futuro Reverdecido</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="proyecto">Proyecto (nombre completo)</label>
+        <input type="text" id="proyecto" name="proyecto" readonly placeholder="Se autocompleta al seleccionar ID">
+      </div>
+
+      <!-- METAS desde POAI (autocomplete) -->
+      <div class="field span-2">
+        <label for="metas">Metas 2025-2026 <span class="lbl-badge poai">POAI</span></label>
+        <input type="text" id="metas" name="metas" readonly placeholder="Se autocompleta al seleccionar el proyecto...">
+        <div class="hint">📋 Metas tomadas del POAI 2026. Modifique si corresponde a una meta diferente.</div>
+      </div>
+      <!-- Campo editable de meta si el usuario necesita personalizar -->
+      <div class="field span-2">
+        <label for="metas_custom">Meta específica de la actividad</label>
+        <input type="text" id="metas_custom" name="metas_custom" placeholder="Especifique si la meta difiere de la del proyecto (opcional)">
+      </div>
+
+      <!-- Contratos Jurídicos (desde BASE DE CONTRATACIÓN) -->
+      <div class="field span-2">
+        <label for="contrato_juridico">Contrato Jurídico <span class="lbl-badge base">Base Contratación</span></label>
+        <select id="contrato_juridico" name="contrato_juridico">
+          <option value="">Seleccionar contrato (opcional)...</option>
+          <optgroup label="── 2021 ──">
+            <option>FDLSC-CSU-244-2021</option><option>FDLSC-CPS-288-2021</option>
+            <option>FDLSC-CI-298-2021</option><option>FDLSC-CI-302-2021</option>
+            <option>FDLSC-CPS-319-2021</option><option>FDLSC-CI-320-2021</option>
+            <option>FDLSC-CI-324-2021</option><option>FDLSC-CI-334-2021</option>
+            <option>FDLSC-CSU-353-2021</option><option>FDLSC-CSU-355-2021</option>
+            <option>FDLSC-CSU-356-2021</option><option>FDLSC-CCV-359-2021</option>
+            <option>FDLSC-CPS-361-2021</option><option>FDLSC-CSU-391-2021</option>
+            <option>FDLSC-CPS-394-2021</option><option>FDLSC-CI-454-2021</option>
+            <option>FDLSC-CI-455-2021</option><option>FDLSC-CPS-462-2021</option>
+            <option>FDLSC-CO-507-2021</option><option>FDLSC-CPS-515-2021</option>
+            <option>FDLSC-CPS-516-2021</option><option>FDLSC-CPS-517-2021</option>
+            <option>FDLSC-CPS-518-2021</option><option>FDLSC-CPS-520-2021</option>
+            <option>FDLSC-CPS-523-2021</option><option>FDLSC-CPS-531-2021</option>
+            <option>FDLSC-CPS-532-2021</option><option>FDLSC-CPS-534-2021</option>
+            <option>FDLSC-CPS-535-2021</option><option>FDLSC-CPS-536-2021</option>
+            <option>FDLSC-CCI-539-2021</option><option>FDLSC-CPS-540-2021</option>
+            <option>FDLSC-CPS-542-2021</option>
+          </optgroup>
+          <optgroup label="── 2022 ──">
+            <option>FDLSC-CTOI-112-2022</option><option>FDLSC-CPS-361-2022</option>
+            <option>FDLSC-CPS-364-2022</option><option>FDLSC-CPS-365-2022</option>
+            <option>FDLSC-INTV-367-2022</option><option>FDLSC-CO-368-2022</option>
+            <option>FDLSC-CSU-370-2022</option><option>FDLSC-CSU-371-2022</option>
+            <option>FDLSC-CPS-372-2022</option><option>FDLSC-CSU-373-2022</option>
+            <option>FDLSC-CV-376-2022</option><option>FDLSC-INTV-379-2022</option>
+            <option>FDLSC-CSU-481-2022</option><option>FDLSC-CSU-497-2022</option>
+            <option>FDLSC-CPS-551-2022</option><option>FDLSC-CV-563-2022</option>
+            <option>FDLSC-CPS-620-2022</option><option>FDLSC-CPS-621-2022</option>
+            <option>FDLSC-CPS-623-2022</option><option>FDLSC-CPS-639-2022</option>
+            <option>FDLSC-CPS-641-2022</option><option>FDLSC-INTV-642-2022</option>
+            <option>FDLSC-CPS-651-2022</option><option>FDLSC-CPS-652-2022</option>
+            <option>FDLSC-CPS-659-2022</option><option>FDLSC-CPS-660-2022</option>
+            <option>FDLSC-CPS-666-2022</option><option>FDLSC-CPS-671-2022</option>
+          </optgroup>
+          <optgroup label="── 2023 ──">
+            <option>FDLSC-CPS-333-2023</option><option>FDLSC-CSU-335-2023</option>
+            <option>FDLSC-CTOI-367-2023</option><option>FDLSC-CPS-374-2023</option>
+            <option>FDLSC-CSU-390-2023</option><option>FDLSC-CPS-407-2023</option>
+            <option>FDLSC-CSU-413-2023</option><option>FDLSC-CPS-459-2023</option>
+            <option>FDLSC-CTOI-469-2023</option><option>FDLSC-CTOI-478-2023</option>
+            <option>FDLSC-COP-487-2023</option><option>FDLSC-COP-488-2023</option>
+            <option>FDLSC-CTOI-521-2023</option><option>FDLSC-INTV-524-2023</option>
+            <option>FDLSC-INTV-526-2023</option><option>FDLSC-CTOI-530-2023</option>
+            <option>FDLSC-CTOI-571-2023</option><option>FDLSC-CSU-610-2023</option>
+            <option>FDLSC-CSU-696-2023</option><option>FDLSC-CPS-731-2023</option>
+            <option>FDLSC-CPS-740-2023</option><option>FDLSC-CPS-742-2023</option>
+            <option>FDLSC-CPS-743-2023</option><option>FDLSC-CPS-767-2023</option>
+            <option>FDLSC-CPS-786-2023</option><option>FDLSC-CPS-871-2023</option>
+            <option>FDLSC-CSU-872-2023</option><option>FDLSC-CPS-902-2023</option>
+            <option>FDLSC-CPS-906-2023</option><option>FDLSC-CPS-935-2023</option>
+            <option>FDLSC-CPS-939-2023</option><option>FDLSC-CPS-941-2023</option>
+          </optgroup>
+          <optgroup label="── 2024 ──">
+            <option>FDLSC-CV-438-2024</option><option>FDLSC-CV-488-2024</option>
+            <option>FDLSC-COP-492-2024</option><option>FDLSC-INTV-493-2024</option>
+            <option>FDLSC-CSU-494-2024</option><option>FDLSC-CTOI-509-2024</option>
+            <option>FDLSC-CSU-527-2024</option><option>FDLSC-CPS-542-2024</option>
+            <option>FDLSC-CPS-644-2024</option><option>FDLSC-CVNI-677-2024</option>
+            <option>FDLSC-CV-691-2024</option><option>FDLSC-CTOI-751-2024</option>
+            <option>FDLSC-CPS-970-2024</option><option>FDLSC-CV-1009-2024</option>
+            <option>FDLSC-CPS-1099-2024</option><option>FDLSC-CPS-1100-2024</option>
+            <option>FDLSC-CPS-1118-2024</option><option>FDLSC-COP-1136-2024</option>
+            <option>FDLSC-COP-1137-2024</option><option>FDLSC-COP-1138-2024</option>
+            <option>FDLSC-CVAS-1140-2024</option><option>FDLSC-COP-1141-2024</option>
+            <option>FDLSC-CV-1143-2024</option><option>FDLSC-INTV-1144-2024</option>
+            <option>FDLSC-INTV-1145-2024</option><option>FDLSC-COP-1146-2024</option>
+            <option>FDLSC-CTOI-1147-2024</option><option>FDLSC-CCO-1148-2024</option>
+            <option>FDLSC-CTOI-1149-2024</option><option>FDLSC-CPS-1150-2024</option>
+            <option>FDLSC-CSU-1151-2024</option><option>FDLSC-CTOI-1153-2024</option>
+            <option>FDLSC-CTOI-1154-2024</option><option>FDLSC-INTV-1155-2024</option>
+            <option>FDLSC-INTV-1156-2024</option><option>FDLSC-INTV-1157-2024</option>
+            <option>FDLSC-CSU-1158-2024</option><option>FDLSC-CTOI-1159-2024</option>
+            <option>FDLSC-CTOI-1160-2024</option><option>FDLSC-CVNI-1161-2024</option>
+            <option>FDLSC-CTOI-1162-2024</option><option>FDLSC-CTOI-1163-2024</option>
+            <option>FDLSC-CTOI-1164-2024</option>
+          </optgroup>
+          <optgroup label="── 2025 ──">
+            <option>FDLSC-CD-114-2025</option><option>FDLSC-CPS-553-2025</option>
+            <option>FDLSC-CPS-683-2025</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Actividad: nombre corto + descripción separados -->
+      <div class="field span-2">
+        <label for="nombre_actividad">Nombre de la Actividad <span class="req">*</span></label>
+        <input type="text" id="nombre_actividad" name="nombre_actividad" required placeholder="Nombre corto y concreto de la actividad realizada...">
+      </div>
+
+      <!-- Participación otras entidades → ¿cuáles? -->
+      <div class="field">
+        <label for="participacion">Participación de Otras Entidades <span class="req">*</span></label>
+        <select id="participacion" name="participacion" required onchange="mostrarCualesEntidades()">
+          <option value="">Seleccionar...</option>
+          <option value="SI">SI</option>
+          <option value="NO">NO</option>
+        </select>
+      </div>
+
+      <div class="field cond-field" id="campo-cuales-entidades">
+        <label for="cuales_entidades">¿Cuáles entidades participaron? <span class="req">*</span></label>
+        <input type="text" id="cuales_entidades" name="cuales_entidades" placeholder="Ej: Policía Nacional, IDIPRON, Secretaría de Salud...">
+      </div>
+
+      <!-- MAGNITUD (reemplaza unidad+cantidad) -->
+      <div class="field">
+        <label for="magnitud">Magnitud (cantidad) <span class="req">*</span></label>
+        <input type="number" id="magnitud" name="magnitud" required placeholder="0" min="0" step="0.01">
+        <div class="hint">Ej: número de personas, m², km/carril, organizaciones...</div>
+      </div>
+
+      <!-- Descripción: mínimo 200 caracteres -->
+      <div class="field span-2">
+        <label for="descripcion">Descripción de la Actividad <span class="req">*</span> <span style="color:var(--gris-4);font-weight:400">(mín. 600 caracteres)</span></label>
+        <textarea id="descripcion" name="descripcion" required rows="5"
+          placeholder="Describe detalladamente: qué se realizó, quiénes participaron, dónde, resultados obtenidos, impacto en la comunidad..."
+          oninput="updateCharCount()"></textarea>
+        <div class="char-count" id="char-count">0 / mínimo 600 caracteres</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 3: GEORREFERENCIACIÓN ══ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📍</div>
+      <div><div class="card-title">Georreferenciación</div></div>
+      <div class="card-num">3 / 5</div>
+    </div>
+    <div class="card-body">
+
+      <div class="field">
+        <label for="zona">Zona <span class="req">*</span></label>
+        <select id="zona" name="zona" required onchange="actualizarLugares()">
+          <option value="">Seleccionar zona...</option>
+          <option>ZONA 1</option><option>ZONA 2</option><option>ZONA 3</option>
+          <option>ZONA 4</option><option>ZONA 5</option><option>ZONA 6</option>
+          <option>ZONA 7</option><option>ZONA 8</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="lugar">Lugar / Barrio <span class="req">*</span></label>
+        <select id="lugar" name="lugar" required onchange="checkLugarOtro()">
+          <option value="">— Seleccione zona primero —</option>
+        </select>
+        <div id="lugar-custom-wrap" style="display:none; margin-top:.5rem">
+          <input type="text" id="lugar_custom" name="lugar_custom" placeholder="Nombre del lugar específico...">
+        </div>
+      </div>
+
+      <div class="span-2 gps-box">
+        <div class="gps-title">📡 Captura de Coordenadas GPS</div>
+        <button type="button" class="btn-gps" id="btn-gps" onclick="capturarGPS()">
+          📍 Capturar mi Ubicación Actual
+        </button>
+        <div class="gps-status" id="gps-status"></div>
+        <div class="field" style="margin-top:.3rem">
+          <label for="coordenadas">Coordenadas (lat, lng)</label>
+          <input type="text" id="coordenadas" name="coordenadas"
+            placeholder="Ej: 4.571900, -74.074100 — o ingrese manualmente"
+            oninput="updateMapsLink()">
+          <div class="hint">💡 Si niega permisos GPS, ingrese coordenadas manualmente</div>
+        </div>
+        <div class="gps-link" id="gps-link"></div>
+        <input type="hidden" id="enlace_maps" name="enlace_maps">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 4: EVIDENCIAS (solo Acta + Registro Fotográfico) ══ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📎</div>
+      <div><div class="card-title">Evidencias</div></div>
+      <div class="card-num">4 / 5</div>
+    </div>
+    <div class="card-body">
+
+      <div class="info-box span-2">
+        ℹ️ <span>Solo se adjuntan <strong>Acta de Actividad</strong> y <strong>Registro Fotográfico</strong>. Los archivos se referencian en el registro; súbalos al repositorio institucional.</span>
+      </div>
+
+      <!-- Solo Acta (elimina Registro Acta separado) -->
+      <div class="field">
+        <label>Acta de Actividad con Evidencia</label>
+        <div class="file-zone">
+          <input type="file" id="acta_actividad" name="acta_actividad" accept=".pdf,.jpg,.jpeg,.png" onchange="previewFile(this,'prev-acta')">
+          <div class="file-zone-icon">📄</div>
+          <div class="file-zone-text"><strong>Clic para seleccionar</strong><br>PDF, JPG, PNG · máx. 10 MB</div>
+        </div>
+        <div id="prev-acta" class="file-previews"></div>
+      </div>
+
+      <!-- Solo Registro Fotográfico -->
+      <div class="field">
+        <label>Registro Fotográfico</label>
+        <div class="file-zone">
+          <input type="file" id="registro_fotos" name="registro_fotos" accept=".jpg,.jpeg,.png" multiple onchange="previewMultipleFiles(this,'prev-fotos')">
+          <div class="file-zone-icon">📷</div>
+          <div class="file-zone-text"><strong>Clic para seleccionar fotos</strong><br>JPG, PNG · múltiples archivos</div>
+        </div>
+        <div id="prev-fotos" class="file-previews"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ SECCIÓN 5: DATOS DEL DILIGENCIADOR ══ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">👤</div>
+      <div><div class="card-title">Datos del Diligenciador</div></div>
+      <div class="card-num">5 / 5</div>
+    </div>
+    <div class="card-body">
+
+      <div class="field">
+        <label for="nombre_diligenciador">Nombre Completo <span class="req">*</span></label>
+        <input type="text" id="nombre_diligenciador" name="nombre_diligenciador" required placeholder="Nombre y apellidos">
+      </div>
+
+      <div class="field">
+        <label for="email_diligenciador">Correo Electrónico <span class="req">*</span></label>
+        <input type="email" id="email_diligenciador" name="email_diligenciador" required placeholder="correo@alcaldialocalsc.gov.co">
+        <div class="hint">📧 Recibirá copia del registro. También se notificará al Gerente y al Líder del Área.</div>
+      </div>
+
+      <!-- Info de correos que se notificarán (solo lectura, informativo) -->
+      <div class="field span-2">
+        <label>Notificaciones automáticas</label>
+        <div id="info-correos" style="background:var(--gris-1);border:1px solid var(--gris-2);border-radius:var(--radio-sm);padding:.7rem 1rem;font-size:.8rem;color:var(--gris-4);">
+          Seleccione Gerencia y Área para ver a quiénes se notificará automáticamente.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Error box -->
+  <div class="error-box" id="error-box">
+    ⚠️ <span id="error-msg">Complete todos los campos obligatorios.</span>
+  </div>
+
+  <!-- Acciones -->
+  <div class="actions">
+    <button type="button" class="btn btn-outline" onclick="limpiarFormulario()">🗑 Limpiar</button>
+    <button type="button" class="btn btn-submit" id="btn-submit" onclick="confirmarEnvio()">Enviar Registro ➤</button>
+  </div>
+
+  <!-- Éxito -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✅</div>
+    <div class="success-title">¡Registro Enviado Exitosamente!</div>
+    <div class="success-text">La actividad territorial fue guardada en Google Sheets. Se enviaron notificaciones al gerente y al líder del área.</div>
+    <div class="success-id">Número de registro<strong id="success-id-val">#SCT-2025-0001</strong></div>
+    <div class="success-text" style="font-size:.8rem">📧 Revisa tu correo — recibirás el resumen completo en minutos.</div>
+    <button class="btn btn-submit" onclick="nuevoRegistro()" style="margin-top:.5rem">➕ Registrar Nueva Actividad</button>
+  </div>
+
+</main>
+
+<!-- Modal confirmación -->
+<div class="overlay" id="modal-confirm">
+  <div class="modal">
+    <div class="modal-head"><span style="font-size:1.4rem">📤</span><span class="mh-title">Confirmar Envío</span></div>
+    <div class="modal-body">¿Estás seguro de enviar el registro? Los datos quedarán guardados y se notificará al gerente y al líder del área.<br><br><strong>Esta acción no se puede deshacer.</strong></div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-submit" onclick="enviarFormulario()">Sí, Enviar ➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Enviando registro y notificaciones...</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURACIÓN — REEMPLAZAR ANTES DE PUBLICAR
+   ═══════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  GOOGLE_APPS_SCRIPT_URL: "REEMPLAZAR_CON_URL_DE_APPS_SCRIPT",
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   DATOS MAESTROS — GERENCIA → ÁREA → CORREOS
+   CORREGIDO: MasOportunidades sin DD/Bienestar
+              IVC-IVC incluido
+              Territorio Social sin DD/Bienestar
+   ═══════════════════════════════════════════════════════════════ */
+const AREAS_POR_GERENCIA = {
+  "CAMINA SEGURA":     ["SEGURIDAD","JUSTICIA SOCIAL","TERRITORIO CONFIABLE","TEJIDO SOCIAL","GESTORES DE CONVIVENCIA"],
+  "MAS OPORTUNIDADES": ["CULTURA","DEPORTES","EDUCACION","PRODUCTIVIDAD"],
+  "MAS TERRITORIO":    ["AMBIENTE CONFIABLE","CYPA","RIESGOS (PyAR)"],
+  "TERRITORIO SOCIAL": ["MENOS POBREZA","PARTICIPACION INCIDENTE","BIEN-ESTAR","DERECHOS DIFERENCIALES","DOTACIONES"],
+  "IVC":               ["IVC"],
+  "INFRAESTRUCTURA":   ["MEJORES VIAS","PARQUES ACTIVOS","OBRAS DE MITIGACION","OBRAS DE VIDA","MOVILIDAD"],
+};
+
+// Correos de gerentes/líderes por área — reemplazar con correos reales antes de publicar
+const CORREOS_POR_AREA = {
+  // ── CAMINA SEGURA ──────────────────────────────────────
+  "SEGURIDAD":                { gerente: "CORREO_GERENTE_CAMINA@alcaldia.gov.co", lider: "CORREO_LIDER_SEGURIDAD@alcaldia.gov.co" },
+  "JUSTICIA SOCIAL":          { gerente: "CORREO_GERENTE_CAMINA@alcaldia.gov.co", lider: "CORREO_LIDER_JUSTICIA@alcaldia.gov.co" },
+  "TERRITORIO CONFIABLE":     { gerente: "CORREO_GERENTE_CAMINA@alcaldia.gov.co", lider: "CORREO_LIDER_TC@alcaldia.gov.co" },
+  "TEJIDO SOCIAL":            { gerente: "CORREO_GERENTE_CAMINA@alcaldia.gov.co", lider: "CORREO_LIDER_TEJIDO@alcaldia.gov.co" },
+  "GESTORES DE CONVIVENCIA":  { gerente: "CORREO_GERENTE_CAMINA@alcaldia.gov.co", lider: "CORREO_LIDER_GESTORES@alcaldia.gov.co" },
+  // ── MAS OPORTUNIDADES ─────────────────────────────────
+  "CULTURA":                  { gerente: "CORREO_GERENTE_MAS_OP@alcaldia.gov.co", lider: "CORREO_LIDER_CULTURA@alcaldia.gov.co" },
+  "DEPORTES":                 { gerente: "CORREO_GERENTE_MAS_OP@alcaldia.gov.co", lider: "CORREO_LIDER_DEPORTES@alcaldia.gov.co" },
+  "EDUCACION":                { gerente: "CORREO_GERENTE_MAS_OP@alcaldia.gov.co", lider: "CORREO_LIDER_EDUCACION@alcaldia.gov.co" },
+  "PRODUCTIVIDAD":            { gerente: "CORREO_GERENTE_MAS_OP@alcaldia.gov.co", lider: "CORREO_LIDER_PRODUCTIVIDAD@alcaldia.gov.co" },
+  // ── MAS TERRITORIO ────────────────────────────────────
+  "AMBIENTE CONFIABLE":       { gerente: "CORREO_GERENTE_MAS_TER@alcaldia.gov.co", lider: "CORREO_LIDER_AMBIENTE@alcaldia.gov.co" },
+  "CYPA":                     { gerente: "CORREO_GERENTE_MAS_TER@alcaldia.gov.co", lider: "CORREO_LIDER_CYPA@alcaldia.gov.co" },
+  "RIESGOS (PyAR)":           { gerente: "CORREO_GERENTE_MAS_TER@alcaldia.gov.co", lider: "CORREO_LIDER_PYAR@alcaldia.gov.co" },
+  // ── TERRITORIO SOCIAL ─────────────────────────────────
+  "MENOS POBREZA":            { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_MP@alcaldia.gov.co" },
+  "PARTICIPACION INCIDENTE":  { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_PARTICIPACION@alcaldia.gov.co" },
+  "BIEN-ESTAR":               { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_BIENESTAR@alcaldia.gov.co" },
+  "DERECHOS DIFERENCIALES":   { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_DD@alcaldia.gov.co" },
+  "DOTACIONES":               { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_DOTACIONES@alcaldia.gov.co" },
+  // ── IVC ───────────────────────────────────────────────
+  "IVC":                      { gerente: "CORREO_GERENTE_IVC@alcaldia.gov.co", lider: "CORREO_LIDER_IVC@alcaldia.gov.co" },
+  // ── INFRAESTRUCTURA ───────────────────────────────────
+  "MEJORES VIAS":             { gerente: "CORREO_GERENTE_INFRA@alcaldia.gov.co", lider: "CORREO_LIDER_VIAS@alcaldia.gov.co" },
+  "PARQUES ACTIVOS":          { gerente: "CORREO_GERENTE_INFRA@alcaldia.gov.co", lider: "CORREO_LIDER_PARQUES@alcaldia.gov.co" },
+  "OBRAS DE MITIGACION":      { gerente: "CORREO_GERENTE_INFRA@alcaldia.gov.co", lider: "CORREO_LIDER_MITIGACION@alcaldia.gov.co" },
+  "OBRAS DE VIDA":            { gerente: "CORREO_GERENTE_INFRA@alcaldia.gov.co", lider: "CORREO_LIDER_OBRAS@alcaldia.gov.co" },
+  "MOVILIDAD":                { gerente: "CORREO_GERENTE_INFRA@alcaldia.gov.co", lider: "CORREO_LIDER_MOVILIDAD@alcaldia.gov.co" },
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   OKR 2025 — DATOS MAESTROS (Consolidado Q4 - Diciembre)
+   31 Resultados Clave con Objetivo Táctico, Área, Líder y Carpeta
+   ═══════════════════════════════════════════════════════════════ */
+const OKR_DATA = {
+  "OKR-INF-1": {
+    objetivo: "Fortalecer y Desarrollar la infraestructura de la localidad para mejorar la calidad de vida de los diferentes actores de San Cristóbal",
+    resultado: "Realizar intervención de 1 km/carril en la malla vial con acciones de movilidad (Parcheo y Bacheo).",
+    area: "INFRAESTRUCTURA", lider: "ISOLIER ANDRES EGUIS BENITEZ", carpeta: "INFRAESTRUCTURA - RESULTADO 1"
+  },
+  "OKR-INF-2": {
+    objetivo: "Fortalecer y Desarrollar la infraestructura de la localidad para mejorar la calidad de vida de los diferentes actores de San Cristóbal",
+    resultado: "Disponer mínimo de seis (6) frentes de obra de construcción y conservación de malla vial.",
+    area: "INFRAESTRUCTURA", lider: "ISOLIER ANDRES EGUIS BENITEZ", carpeta: "INFRAESTRUCTURA - RESULTADO 2"
+  },
+  "OKR-AMB-1": {
+    objetivo: "Implementar medidas para prevenir la contaminación, mejorar el entorno ambiental y garantizar la sostenibilidad de San Cristóbal",
+    resultado: "Recuperar el espacio público mediante el levantamiento de 25 ocupaciones ilegales.",
+    area: "AMBIENTE", lider: "DIEGO MAURICIO ROJAS", carpeta: "AMBIENTE - RESULTADO 1"
+  },
+  "OKR-AMB-2": {
+    objetivo: "Implementar medidas para prevenir la contaminación, mejorar el entorno ambiental y garantizar la sostenibilidad de San Cristóbal",
+    resultado: "Intervenir 250 m2 de Jardinería Convencional Urbana y coberturas verdes en Espacio Público.",
+    area: "AMBIENTE", lider: "DIEGO MAURICIO ROJAS", carpeta: "AMBIENTE - RESULTADO 2"
+  },
+  "OKR-SEP-1": {
+    objetivo: "Implementar medidas para prevenir la contaminación, mejorar el entorno ambiental y garantizar la sostenibilidad de San Cristóbal",
+    resultado: "Estrategias territoriales orientadas al mejoramiento del saneamiento básico y la gestión ambiental.",
+    area: "SEPARACIÓN EN LA FUENTE", lider: "SERGIO CASTILLO", carpeta: "SEPARACIÓN EN LA FUENTE"
+  },
+  "OKR-CYPA-1": {
+    objetivo: "Implementar medidas para prevenir la contaminación, mejorar el entorno ambiental y garantizar la sostenibilidad de San Cristóbal",
+    resultado: "Vincular 100 personas en acciones educativas en temas de protección y bienestar animal.",
+    area: "CYPA", lider: "XIMENA CONTO", carpeta: "CYPA"
+  },
+  "OKR-PYAR-1": {
+    objetivo: "Implementar medidas para prevenir la contaminación, mejorar el entorno ambiental y garantizar la sostenibilidad de San Cristóbal",
+    resultado: "Implementar escuelas de gestión del Riesgo en 8 barrios de la localidad de San Cristóbal.",
+    area: "RIESGOS (PyAR)", lider: "RAUL TORRES", carpeta: "PYAR"
+  },
+  "OKR-EP-1": {
+    objetivo: "Implementar medidas para prevenir la contaminación, mejorar el entorno ambiental y garantizar la sostenibilidad de San Cristóbal",
+    resultado: "Implementar la intervención integral de 1.200 m² de espacio público en el polígono priorizado.",
+    area: "ESPACIO PUBLICO - IVC", lider: "DIANA RODRIGUEZ", carpeta: "ESPACIO PUBLICO - IVC"
+  },
+  "OKR-PRE-1": {
+    objetivo: "Atender con oportunidad y eficiencia a los ciudadanos de la localidad de San Cristóbal",
+    resultado: "Promocionar las actividades institucionales con mínimo 10 piezas audiovisuales, gráficas o escritas.",
+    area: "PRENSA", lider: "JHEISSON ALBEIRO CAMPOS TIQUE", carpeta: "PRENSA - RESULTADO 1"
+  },
+  "OKR-CAL-1": {
+    objetivo: "Atender con oportunidad y eficiencia a los ciudadanos de la localidad de San Cristóbal",
+    resultado: "Atender de manera oportuna el 100% de los derechos de petición.",
+    area: "CALIDAD", lider: "ARCADIO SARMIENTO RAMÍREZ", carpeta: "CALIDAD - RESULTADO 2"
+  },
+  "OKR-OC-1": {
+    objetivo: "Atender con oportunidad y eficiencia a los ciudadanos de la localidad de San Cristóbal",
+    resultado: "Alcanzar en la encuesta de percepción ciudadana, por lo menos 4 de 5 puntos de satisfacción.",
+    area: "ORIENTACIÓN CIUDADANA", lider: "INGRITH YURIET VANBUENA CAINA", carpeta: "ORIENTACIÓN CIUDADANIA - RESULTADO 3"
+  },
+  "OKR-PART-1": {
+    objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los actores del territorio",
+    resultado: "Ejecutar dos Escuelas Locales de Gobierno con el objetivo de incentivar la participación ciudadana.",
+    area: "PARTICIPÁCION", lider: "DIANA RODRIGUEZ", carpeta: "PARTICIPACIÓN"
+  },
+  "OKR-DD-1": {
+    objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los actores del territorio",
+    resultado: "Realizar proceso de formación dirigido a 100 mujeres de la localidad en temas jurídicos.",
+    area: "DERECHOS DIFERENCIALES", lider: "KARINA LEON", carpeta: "DERECHOS DIFERENCIALES - RESULTADO 1"
+  },
+  "OKR-DD-2": {
+    objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los actores del territorio",
+    resultado: "Realizar curso de conducción dirigido a 170 mujeres de la localidad como estrategia de empoderamiento.",
+    area: "DERECHOS DIFERENCIALES", lider: "KARINA LEON", carpeta: "DERECHOS DIFERENCIALES - RESULTADO 2"
+  },
+  "OKR-MP-1": {
+    objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los actores del territorio",
+    resultado: "Caracterizar y validar condiciones de 1.000 personas mayores que son beneficiarias.",
+    area: "MENOS POBREZA", lider: "CARLOS PEDREROS", carpeta: "MENOS POBREZA - RESULTADO 1"
+  },
+  "OKR-MP-2": {
+    objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los actores del territorio",
+    resultado: "Desarrollar 60 talleres de encuentros de Desarrollo Humano.",
+    area: "MENOS POBREZA", lider: "CARLOS PEDREROS", carpeta: "MENOS POBREZA - RESULTADO 2"
+  },
+  "OKR-MP-3": {
+    objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los actores del territorio",
+    resultado: "Identificar el 30% de 7.772 historias sociales que se encuentran en el archivo.",
+    area: "MENOS POBREZA", lider: "CARLOS PEDREROS", carpeta: "MENOS POBREZA - RESULTADO 3"
+  },
+  "OKR-BE-1": {
+    objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los actores del territorio",
+    resultado: "Realizar el otorgamiento de ayudas técnicas a la comunidad, con el fin de mejorar su calidad de vida.",
+    area: "BIEN-ESTAR", lider: "ANDRES GRANADOS", carpeta: "BIEN- ESTAR RESULTADO 1"
+  },
+  "OKR-BE-2": {
+    objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los actores del territorio",
+    resultado: "Organizar y desarrollar jornadas de tamizaje y vacunación, así como talleres educativos en salud.",
+    area: "BIEN-ESTAR", lider: "ANDRES GRANADOS", carpeta: "BIEN- ESTAR RESULTADO 2"
+  },
+  "OKR-SEG-1": {
+    objetivo: "Intervenir y proteger los entornos residenciales, comerciales e industriales afectados por problemáticas de seguridad y convivencia",
+    resultado: "Realizar 12 campañas de prevención y registro ante el hurto a personas en transporte público.",
+    area: "SEGURIDAD", lider: "CARLOS ALBERTO MELENDEZ CAICEDO", carpeta: "SEGURIDAD - RESULTADO 1"
+  },
+  "OKR-JS-1": {
+    objetivo: "Intervenir y proteger los entornos residenciales, comerciales e industriales afectados por problemáticas de seguridad y convivencia",
+    resultado: "Realizar la implementación de la Estrategia de convivencia y justicia del PISCCJ.",
+    area: "JUSTICIA SOCIAL", lider: "FERNEY VÁSQUEZ MORENO", carpeta: "JUSTICIA SOCIAL - RESULTADO 2"
+  },
+  "OKR-TC-1": {
+    objetivo: "Intervenir y proteger los entornos residenciales, comerciales e industriales afectados por problemáticas de seguridad y convivencia",
+    resultado: "Desarrollar 70 Talleres de manualidades en artes y oficios, para la comunidad en general.",
+    area: "TERRITORIO CONFIABLE", lider: "GIOVANNY ALFONSO MARIN", carpeta: "TERRITORIO CONFIABLE - RESULTADO 3"
+  },
+  "OKR-TS-1": {
+    objetivo: "Intervenir y proteger los entornos residenciales, comerciales e industriales afectados por problemáticas de seguridad y convivencia",
+    resultado: "Realizar mínimo dos actividades en la implementación de una estrategia de atención integral a habitantes de calle.",
+    area: "TEJIDO SOCIAL", lider: "HERMES CAVIEDES", carpeta: "TEJIDO SOCIAL - RESULTADO 4"
+  },
+  "OKR-DEP-1": {
+    objetivo: "Fortalecer las rutas de acceso a la educación de los diferentes grupos poblacionales de San Cristóbal",
+    resultado: "Desarrollar, como mínimo, tres acciones de capacitación o eventos deportivos que fortalezcan el deporte local.",
+    area: "DEPORTES", lider: "JUAN ALEXANDER URREGO", carpeta: "DEPORTES - RESULTADO 1"
+  },
+  "OKR-PROD-1": {
+    objetivo: "Fortalecer las rutas de acceso a la educación de los diferentes grupos poblacionales de San Cristóbal",
+    resultado: "Preparar e implementar 2 rutas turísticas con el fin de incentivar el turismo receptivo.",
+    area: "PRODUCTIVIDAD", lider: "YORX NICOLÁS GORDILLO", carpeta: "PRODUCTIVIDAD - RESULTADO 1"
+  },
+  "OKR-PROD-2": {
+    objetivo: "Fortalecer las rutas de acceso a la educación de los diferentes grupos poblacionales de San Cristóbal",
+    resultado: "Realizar un proceso de diagnóstico, formación y graduación de 100 unidades productivas.",
+    area: "PRODUCTIVIDAD", lider: "YORX NICOLÁS GORDILLO", carpeta: "PRODUCTIVIDAD - RESULTADO 2"
+  },
+  "OKR-CUL-1": {
+    objetivo: "Fortalecer las rutas de acceso a la educación de los diferentes grupos poblacionales de San Cristóbal",
+    resultado: "Realizar 3 articulaciones con instancias y organizaciones culturales.",
+    area: "CULTURA", lider: "SILKA BARROS", carpeta: "CULTURA- RESULTADO 1"
+  },
+  "OKR-CUL-2": {
+    objetivo: "Fortalecer las rutas de acceso a la educación de los diferentes grupos poblacionales de San Cristóbal",
+    resultado: "Realizar 6 eventos de promoción de actividades culturales.",
+    area: "CULTURA", lider: "SILKA BARROS", carpeta: "CULTURA - RESULTADO 2"
+  },
+  "OKR-EDU-1": {
+    objetivo: "Fortalecer las rutas de acceso a la educación de los diferentes grupos poblacionales de San Cristóbal",
+    resultado: "Llevar a cabo el proceso de entrega de los tres lotes de los elementos pertenecientes a dotaciones escolares.",
+    area: "EDUCACIÓN - DOTACIONES ESCOLARES", lider: "YANETH MORENO", carpeta: "EDUCACIÓN - DOTACIONES ESCOLARES - RESULTADO 1"
+  },
+  "OKR-EDU-2": {
+    objetivo: "Fortalecer las rutas de acceso a la educación de los diferentes grupos poblacionales de San Cristóbal",
+    resultado: "Realizar seguimiento y verificación de los beneficiarios activos de los convenios de educación.",
+    area: "EDUCACIÓN", lider: "YANETH MORENO", carpeta: "EDUCACIÓN - RESULTADO 2"
+  },
+  "OKR-EDU-3": {
+    objetivo: "Fortalecer las rutas de acceso a la educación de los diferentes grupos poblacionales de San Cristóbal",
+    resultado: "Realizar los procesos relacionados con la evaluación de los grupos poblaciones para conectividad.",
+    area: "EDUCACIÓN - CONECTIVIDAD", lider: "YANETH MORENO", carpeta: "EDUCACIÓN - CONECTIVIDAD - RESULTADO 3"
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   PROYECTOS — POAI 2026 (con metas y magnitud)
+   ═══════════════════════════════════════════════════════════════ */
+const PROYECTOS = {
+  "2251":{"nombre":"Sostenibilidad del ecosistema cultural y creativo","meta":"Financiar 120 proyectos del sector cultural y creativo.","magnitud":30},
+  "2252":{"nombre":"Transformando espacios, conectando comunidades, San Cristóbal vial, caminos de oportunidad y progreso","meta":"Intervenir 17 Kilómetros-carril de malla vial urbana (local y/o intermedia) con acciones de construcción y/o conservación","magnitud":4.25},
+  "2254":{"nombre":"Caminos sostenibles, solidez en San Cristóbal, ampliando y conservando los espacios peatonales","meta":"Intervenir 4.290 metros cuadrados de elementos del sistema de espacio público peatonal con acciones de construcción y/o conservación.","magnitud":1230},
+  "2257":{"nombre":"Red de oportunidades, parques y cultura para el bienestar común","meta":"Construir 880 m2 de Parques de la red de proximidad (la construcción incluye su dotación).","magnitud":220},
+  "2273":{"nombre":"San Cristóbal resiliente, fortaleciendo capacidades locales","meta":"Realizar 4 acciones efectivas para el fortalecimiento de las capacidades locales en torno a la gestión del riesgo","magnitud":1},
+  "2285":{"nombre":"Seguridad y oportunidades con fuerza pública equipada","meta":"Intervenir 11 equipamientos de seguridad y acceso a la justicia con acciones de fortalecimiento, operación, adecuación y/o dotación","magnitud":3},
+  "2316":{"nombre":"San Cristóbal sin barreras, salud, bienestar y oportunidades para todos","meta":"Beneficiar 2.000 personas con discapacidad a través de Dispositivos de Asistencia Personal - Ayudas Técnicas","magnitud":500},
+  "2349":{"nombre":"San Cristóbal espacio público y pacífico","meta":"Implementar 4 estrategias de seguridad y convivencia a través de gestores locales","magnitud":1},
+  "2385":{"nombre":"San Cristóbal, mujeres en acción contra la violencia","meta":"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia contra la mujer.","magnitud":1500},
+  "2405":{"nombre":"Cultura y memoria en movimiento, San Cristóbal vive su patrimonio","meta":"Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregados.","magnitud":15},
+  "2409":{"nombre":"San Cristóbal incidente","meta":"Capacitar 2.600 personas a través de procesos de formación para la participación de manera virtual y presencial.","magnitud":650},
+  "2481":{"nombre":"San Cristóbal cuida, bienestar animal y educación para todos","meta":"Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y adopciones","magnitud":2500},
+  "2495":{"nombre":"Actívate San Cristóbal, deporte, recreación y bienestar","meta":"Beneficiar 13.200 personas en actividades recreo-deportivas comunitarias.","magnitud":3300},
+  "2502":{"nombre":"San Cristóbal, oportunidades para el futuro sostenible","meta":"Capacitar 6.000 personas en separación en la fuente y reciclaje.","magnitud":1500},
+  "2506":{"nombre":"Oportunidades con bien-estar, San Cristóbal avanza","meta":"Habilitar 300 cupos para la atención de población en inseguridad alimentaria a través de comedores comunitarios.","magnitud":75},
+  "2601":{"nombre":"Pacto por espacios sostenibles en San Cristóbal","meta":"Realizar 16 acuerdos para la organización, recuperación y cuidado del espacio público.","magnitud":4},
+  "2606":{"nombre":"Tejiendo memoria y reconciliación para el futuro","meta":"Realizar 4 acciones de construcción de paz que contribuyan al tejido social.","magnitud":1},
+  "2608":{"nombre":"San Cristóbal emprende, fortaleciendo el tejido empresarial local","meta":"Apoyar 800 Mipymes, emprendimientos y/o actores de la economía informal.","magnitud":200},
+  "2615":{"nombre":"Educación que genera oportunidades","meta":"Beneficiar 840 estudiantes con apoyo de sostenimiento para la permanencia en la educación posmedia.","magnitud":210},
+  "2620":{"nombre":"San Cristóbal: Camina Seguro, Vive Seguro","meta":"Fortalecer 100 organizaciones comunitarias a través de capacidades para promover corresponsabilidad en seguridad y convivencia.","magnitud":25},
+  "2627":{"nombre":"El delirio del turismo, San Cristóbal, un delirio turístico de oportunidades","meta":"Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades locales para el turismo.","magnitud":30},
+  "2633":{"nombre":"San Cristóbal, un territorio de oportunidades para la gestión de conflictos y la convivencia","meta":"Beneficiar 680 ciudadanos con habilidades y capacidades para gestionar la convivencia constructivamente","magnitud":170},
+  "2638":{"nombre":"San Cristóbal activa el sector cultural","meta":"Intervenir 4 equipamientos culturales con acciones de construcción, adecuación y/o dotación","magnitud":1},
+  "2648":{"nombre":"Oportunidades con bien-estar, San Cristóbal avanza más","meta":"Atender 8.000 personas con apoyos que contribuyan al ingreso mínimo garantizado.","magnitud":8000},
+  "2667":{"nombre":"Gobierno de lo cotidiano","meta":"Realizar 1 acciones de inspección, vigilancia y control.","magnitud":1},
+  "2694":{"nombre":"Redes de oportunidad, formación digital y participación ciudadana","meta":"Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o urbanas.","magnitud":5},
+  "2708":{"nombre":"Chango y Pueblos indígenas en resistencia y pervivencia cultural","meta":"Concertar e implementar 4 iniciativas de inversión local con comunidades negras, afrocolombianas y palenqueras.","magnitud":1},
+  "2791":{"nombre":"Creciendo juntos, atención integral y oportunidades para la comunidad","meta":"Dotar y/o acondicionar 1 unidades operativas orientadas a la atención de jóvenes.","magnitud":1},
+  "2797":{"nombre":"San Cristóbal nuestra pasión","meta":"Desarrollar 4 acciones orientadas a la ciudadanía en el marco de la estrategia Bogotaneidad.","magnitud":1},
+  "2802":{"nombre":"Fortaleciendo vidas, mujeres en San Cristóbal por la prevención y autonomía","meta":"Adecuar y dotar 2 espacios en las manzanas del cuidado.","magnitud":1},
+  "2805":{"nombre":"San Cristóbal, oportunidades para el futuro reverdecido","meta":"Generar 4.000 m2 de áreas renaturalizadas","magnitud":1000},
+};
+
+const LUGARES_POR_ZONA = {
+  "ZONA 1":["Aguas Claras","Amapolas","Amapolas II Sector","Arboleda de los Alpes","Balcones de San Pedro III","Buenavista II Sector","Buenavista Suroriental","Corinto","El Balcón de la Castaña","El Futuro","El Ramajal","El Ramajal San Pedro","El Tablón","El Triángulo El Manantial","Granjas y Huertas El Ramajal","La Castaña","La Cecilia","La Gran Colombia","La Sagrada Familia","Las Acacias","Las Mercedes","Los Alpes"],
+  "ZONA 2":["La Colmena","Los Libertadores","San Blas","El Rodeo","Los Libertadores II Sector"],
+  "ZONA 3":["La Gloria Baja","La Gloria Alta","Guacamayas","Córdoba","El Triángulo"],
+  "ZONA 4":["La Victoria","La Victoria II Sector","La Victoria III Sector","San José Sur Oriental","San Martín de Loba"],
+  "ZONA 5":["20 de Julio","Altamira","Los Altos","Villa del Cerro"],
+  "ZONA 6":["Juan Rey","Juan Rey II Sector","Las Lomas"],
+  "ZONA 7":["Las Guacamayas","Guacamayas III Sector","Malvinas"],
+  "ZONA 8":["S.C. Bellavista Sur","S.C. La Victoria","Urb. El Rodeo","La Gloria","La Victoria II Sector"],
+};
+
+const CAMPOS_OBLIGATORIOS = [
+  "fecha","jornada","gerencia","area","tipo_actividad",
+  "id_proyecto","nombre_actividad","participacion",
+  "descripcion","magnitud","zona","lugar",
+  "nombre_diligenciador","email_diligenciador"
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   LÓGICA CAMPOS DEPENDIENTES
+   ═══════════════════════════════════════════════════════════════ */
+function actualizarAreas() {
+  const gerencia = document.getElementById('gerencia').value;
+  const areaSelect = document.getElementById('area');
+  areaSelect.innerHTML = '<option value="">Seleccionar área...</option>';
+  if (gerencia && AREAS_POR_GERENCIA[gerencia]) {
+    AREAS_POR_GERENCIA[gerencia].forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = a;
+      areaSelect.appendChild(opt);
+    });
+  } else {
+    areaSelect.innerHTML = '<option value="">— Seleccione gerencia primero —</option>';
+  }
+  areaSelect.classList.remove('error');
+  actualizarCorreos();
+  actualizarProgreso();
+}
+
+function actualizarCorreos() {
+  const area = document.getElementById('area').value;
+  const info = document.getElementById('info-correos');
+  if (area && CORREOS_POR_AREA[area]) {
+    const c = CORREOS_POR_AREA[area];
+    info.innerHTML = `<span style="color:var(--verde);font-weight:600">✅ Notificaciones configuradas:</span><br>
+      🏢 <strong>Gerente:</strong> ${c.gerente}<br>
+      👤 <strong>Líder del Área:</strong> ${c.lider}<br>
+      <span style="font-size:.7rem;color:var(--gris-4)">Reemplace con correos reales en el Apps Script antes de publicar</span>`;
+  } else {
+    info.innerHTML = 'Seleccione Gerencia y Área para ver a quiénes se notificará automáticamente.';
+  }
+}
+
+function autocompleteProyecto() {
+  const id = document.getElementById('id_proyecto').value;
+  if (id && PROYECTOS[id]) {
+    document.getElementById('proyecto').value = PROYECTOS[id].nombre;
+    document.getElementById('metas').value = PROYECTOS[id].meta;
+    if (!document.getElementById('magnitud').value) {
+      document.getElementById('magnitud').value = PROYECTOS[id].magnitud || '';
+    }
+  } else {
+    document.getElementById('proyecto').value = '';
+    document.getElementById('metas').value = '';
+  }
+  actualizarProgreso();
+}
+
+function actualizarLugares() {
+  const zona = document.getElementById('zona').value;
+  const lugarSelect = document.getElementById('lugar');
+  lugarSelect.innerHTML = '<option value="">Seleccionar lugar...</option>';
+  if (zona && LUGARES_POR_ZONA[zona]) {
+    LUGARES_POR_ZONA[zona].forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = l;
+      lugarSelect.appendChild(opt);
+    });
+    const otro = document.createElement('option');
+    otro.value = 'OTRO'; otro.textContent = 'OTRO (escribir a continuación)';
+    lugarSelect.appendChild(otro);
+  }
+  document.getElementById('lugar-custom-wrap').style.display = 'none';
+  actualizarProgreso();
+}
+
+function checkLugarOtro() {
+  const val = document.getElementById('lugar').value;
+  const wrap = document.getElementById('lugar-custom-wrap');
+  const custom = document.getElementById('lugar_custom');
+  if (val === 'OTRO') { wrap.style.display = 'block'; custom.required = true; custom.focus(); }
+  else { wrap.style.display = 'none'; custom.required = false; custom.value = ''; }
+  actualizarProgreso();
+}
+
+function mostrarCamposTipoActividad() {
+  const tipo = document.getElementById('tipo_actividad').value;
+  const campoExt = document.getElementById('campo-entidades-externas');
+  const campoOrfeo = document.getElementById('campo-orfeo');
+  const extInput = document.getElementById('entidades_externas');
+  const orfeoInput = document.getElementById('numero_orfeo');
+  const secOKR = document.getElementById('seccion-okr');
+  const secProyecto = document.getElementById('seccion-proyecto-metas');
+  const idProy = document.getElementById('id_proyecto');
+  const okrRes = document.getElementById('okr_resultado');
+  const okrPct = document.getElementById('okr_pct_cuantitativo');
+  const okrMes = document.getElementById('okr_mes');
+  const okrCual = document.getElementById('okr_avance_cualitativo');
+
+  // Reset campos condicionales
+  campoExt.classList.remove('show');
+  campoOrfeo.classList.remove('show');
+  extInput.required = false;
+  orfeoInput.required = false;
+
+  if (tipo === 'OKR') {
+    // Mostrar sección OKR, ocultar Proyecto/Metas
+    secOKR.style.display = 'block';
+    secProyecto.style.display = 'none';
+    idProy.required = false;
+    okrRes.required = true;
+    okrPct.required = true;
+    okrMes.required = true;
+    okrCual.required = true;
+  } else {
+    // Ocultar sección OKR, mostrar Proyecto/Metas
+    secOKR.style.display = 'none';
+    secProyecto.style.display = 'block';
+    idProy.required = true;
+    okrRes.required = false;
+    okrPct.required = false;
+    okrMes.required = false;
+    okrCual.required = false;
+    // Limpiar campos OKR
+    ['okr_resultado','okr_objetivo_tactico','okr_area_auto','okr_lider','okr_carpeta',
+     'okr_pct_cuantitativo','okr_mes','okr_avance_cualitativo'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('char-count-okr').textContent = '0 caracteres';
+  }
+
+  if (tipo === 'CONSTRUYENDO TERRITORIO - PROBLEMÁTICA EXTERNA' ||
+      tipo === 'RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA') {
+    campoExt.classList.add('show');
+    extInput.required = true;
+  }
+  if (tipo === 'RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO') {
+    campoOrfeo.classList.add('show');
+    orfeoInput.required = true;
+  }
+  actualizarProgreso();
+}
+
+/* Autocomplete campos del OKR seleccionado */
+function autocompleteOKR() {
+  const key = document.getElementById('okr_resultado').value;
+  const okr = OKR_DATA[key];
+  if (!okr) return;
+  document.getElementById('okr_objetivo_tactico').value = okr.objetivo;
+  document.getElementById('okr_area_auto').value = okr.area;
+  document.getElementById('okr_lider').value = okr.lider;
+  document.getElementById('okr_carpeta').value = okr.carpeta;
+  // Sincronizar área/gerencia con el selector principal si el usuario no lo había marcado
+  const areaSelect = document.getElementById('area');
+  if (areaSelect && (!areaSelect.value || areaSelect.value === '')) {
+    // Intentar match
+    for (let i = 0; i < areaSelect.options.length; i++) {
+      if (areaSelect.options[i].value.toUpperCase().includes(okr.area.toUpperCase().split(' ')[0])) {
+        break;
+      }
+    }
+  }
+  actualizarProgreso();
+}
+
+/* Contador caracteres avance cualitativo OKR */
+function updateCharCountOKR() {
+  const len = document.getElementById('okr_avance_cualitativo').value.length;
+  const el = document.getElementById('char-count-okr');
+  el.textContent = `${len} caracteres`;
+  el.className = 'char-count ' + (len === 0 ? '' : len < 200 ? 'warn' : 'ok');
+}
+
+function mostrarCualesEntidades() {
+  const val = document.getElementById('participacion').value;
+  const campo = document.getElementById('campo-cuales-entidades');
+  const input = document.getElementById('cuales_entidades');
+  if (val === 'SI') { campo.classList.add('show'); input.required = true; input.focus(); }
+  else { campo.classList.remove('show'); input.required = false; input.value = ''; }
+  actualizarProgreso();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GPS
+   ═══════════════════════════════════════════════════════════════ */
+function capturarGPS() {
+  const btn = document.getElementById('btn-gps');
+  const status = document.getElementById('gps-status');
+  if (!navigator.geolocation) {
+    status.className = 'gps-status error';
+    status.textContent = '⚠️ Tu navegador no soporta GPS. Ingresa coordenadas manualmente.';
+    return;
+  }
+  btn.disabled = true;
+  status.className = 'gps-status loading';
+  status.innerHTML = '<div class="spinner"></div> Capturando ubicación...';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lng = pos.coords.longitude.toFixed(6);
+      document.getElementById('coordenadas').value = `${lat}, ${lng}`;
+      generarEnlaceMaps(lat, lng);
+      status.className = 'gps-status success';
+      status.textContent = `✅ Ubicación capturada: ${lat}, ${lng} (±${Math.round(pos.coords.accuracy)}m)`;
+      btn.disabled = false;
+      btn.textContent = '🔄 Actualizar Ubicación';
+      showToast('✅ GPS capturado exitosamente', 'success');
+    },
+    err => {
+      const msgs = {1:'Permiso denegado. Ingresa coordenadas manualmente.',2:'Posición no disponible.',3:'Tiempo agotado. Intente de nuevo.'};
+      status.className = 'gps-status error';
+      status.textContent = `⚠️ ${msgs[err.code] || 'Error GPS.'}`;
+      btn.disabled = false;
+      document.getElementById('coordenadas').removeAttribute('readonly');
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+function generarEnlaceMaps(lat, lng) {
+  const url = `https://maps.google.com/?q=${lat},${lng}`;
+  document.getElementById('enlace_maps').value = url;
+  document.getElementById('gps-link').innerHTML = `<a href="${url}" target="_blank" rel="noopener">🗺️ Ver en Google Maps</a>`;
+}
+
+function updateMapsLink() {
+  const val = document.getElementById('coordenadas').value.trim();
+  const match = val.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+  if (match) generarEnlaceMaps(match[1], match[2]);
+  else { document.getElementById('enlace_maps').value = ''; document.getElementById('gps-link').innerHTML = ''; }
+}
+
+/* CONTEO CARACTERES — mínimo 600 */
+function updateCharCount() {
+  const len = document.getElementById('descripcion').value.length;
+  const el = document.getElementById('char-count');
+  el.textContent = `${len} / mínimo 600 caracteres`;
+  el.className = 'char-count ' + (len === 0 ? '' : len < 600 ? 'warn' : 'ok');
+  actualizarProgreso();
+}
+
+/* PREVIEW ARCHIVOS */
+function previewFile(input, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  if (!input.files.length) return;
+  const file = input.files[0];
+  if (file.size > 10 * 1024 * 1024) { showToast('⚠️ Archivo supera 10 MB', 'error-t'); input.value = ''; return; }
+  if (file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = e => { container.innerHTML = `<div class="file-thumb"><img src="${e.target.result}" alt="preview"></div>`; };
+    reader.readAsDataURL(file);
+  } else {
+    container.innerHTML = `<div class="file-selected-name">✅ ${file.name}</div>`;
+  }
+}
+
+function previewMultipleFiles(input, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  if (!input.files.length) return;
+  container.innerHTML = `<div class="file-selected-name">✅ ${input.files.length} foto(s) seleccionada(s)</div>`;
+  Array.from(input.files).slice(0, 6).forEach(file => {
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const d = document.createElement('div'); d.className = 'file-thumb';
+        d.innerHTML = `<img src="${e.target.result}" alt="${file.name}">`;
+        container.appendChild(d);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+/* PROGRESO */
+const LABELS_PROG = [
+  "Sección 1 de 5 — Identificación General",
+  "Sección 2 de 5 — Proyecto y Metas",
+  "Sección 3 de 5 — Georreferenciación",
+  "Sección 4 de 5 — Evidencias",
+  "Sección 5 de 5 — Datos del Diligenciador",
+];
+
+function actualizarProgreso() {
+  const tipo = document.getElementById('tipo_actividad')?.value || '';
+  const s1 = ['fecha','jornada','gerencia','area','tipo_actividad'].every(id => document.getElementById(id)?.value);
+  const s2 = (() => {
+    if (tipo === 'OKR') {
+      // Sección OKR: resultado clave + % + mes + avance cualitativo
+      return ['okr_resultado','okr_pct_cuantitativo','okr_mes'].every(id => document.getElementById(id)?.value)
+        && (document.getElementById('okr_avance_cualitativo')?.value.length > 0);
+    } else {
+      const ids = ['id_proyecto','nombre_actividad','participacion','magnitud'];
+      const campos = ids.every(id => document.getElementById(id)?.value);
+      const desc = document.getElementById('descripcion').value.length >= 600;
+      return campos && desc;
+    }
+  })();
+  const s3 = ['zona','lugar'].every(id => document.getElementById(id)?.value);
+  const s4 = true;
+  const s5 = ['nombre_diligenciador','email_diligenciador'].every(id => document.getElementById(id)?.value);
+
+  const steps = [s1, s2, s3, s4, s5];
+  const done = steps.filter(Boolean).length;
+
+  steps.forEach((ok, i) => {
+    const el = document.getElementById(`ps${i+1}`);
+    if (!el) return;
+    el.className = 'p-step ' + (ok ? 'done' : i === done ? 'active' : '');
+  });
+  const sec = Math.min(done + 1, 5);
+  document.getElementById('progress-label').textContent = LABELS_PROG[sec - 1];
+}
+
+document.addEventListener('change', actualizarProgreso);
+document.addEventListener('input', actualizarProgreso);
+
+/* VALIDACIÓN */
+function validarFormulario() {
+  let ok = true; const errores = [];
+  const tipo = document.getElementById('tipo_actividad').value;
+  document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+
+  // ── Campos comunes siempre obligatorios ──
+  const COMUNES = ['fecha','jornada','gerencia','area','tipo_actividad',
+                   'zona','lugar','nombre_diligenciador','email_diligenciador'];
+  COMUNES.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || !el.value.trim()) { if(el) el.classList.add('error'); ok = false; }
+  });
+
+  if (tipo === 'OKR') {
+    // ── Validación rama OKR ──
+    ['okr_resultado','okr_pct_cuantitativo','okr_mes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || !el.value.trim()) { if(el) el.classList.add('error'); ok = false; }
+    });
+    const pct = parseFloat(document.getElementById('okr_pct_cuantitativo')?.value);
+    if (!isNaN(pct) && (pct < 0 || pct > 100)) {
+      document.getElementById('okr_pct_cuantitativo').classList.add('error');
+      errores.push('El % de avance debe estar entre 0 y 100.');
+      ok = false;
+    }
+    const cual = document.getElementById('okr_avance_cualitativo');
+    if (!cual.value.trim()) { cual.classList.add('error'); errores.push('Ingrese el avance cualitativo del OKR.'); ok = false; }
+  } else {
+    // ── Validación rama Proyecto/Metas ──
+    ['id_proyecto','nombre_actividad','participacion','magnitud'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || !el.value.trim()) { if(el) el.classList.add('error'); ok = false; }
+    });
+    const desc = document.getElementById('descripcion');
+    if (desc.value.trim().length < 600) { desc.classList.add('error'); errores.push('La descripción debe tener mínimo 600 caracteres.'); ok = false; }
+    const mag = document.getElementById('magnitud');
+    if (mag.value && parseFloat(mag.value) < 0) { mag.classList.add('error'); errores.push('Magnitud debe ser un valor positivo.'); ok = false; }
+    if (document.getElementById('participacion').value === 'SI' && !document.getElementById('cuales_entidades').value.trim()) {
+      document.getElementById('cuales_entidades').classList.add('error'); errores.push('Indique cuáles entidades participaron.'); ok = false;
+    }
+  }
+
+  const email = document.getElementById('email_diligenciador');
+  if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { email.classList.add('error'); errores.push('Formato de correo no válido.'); ok = false; }
+
+  if (!ok) {
+    const box = document.getElementById('error-box');
+    document.getElementById('error-msg').textContent = errores.length ? errores.join(' — ') : 'Complete todos los campos obligatorios (*).';
+    box.classList.add('show');
+    document.querySelector('.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else { document.getElementById('error-box').classList.remove('show'); }
+  return ok;
+}
+
+function confirmarEnvio() { if (!validarFormulario()) return; document.getElementById('modal-confirm').classList.add('show'); }
+function cerrarModal() { document.getElementById('modal-confirm').classList.remove('show'); }
+
+async function enviarFormulario() {
+  cerrarModal();
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('btn-submit').disabled = true;
+
+  const datos = {};
+  // Campos siempre presentes
+  [...['fecha','jornada','gerencia','area','tipo_actividad',
+       'zona','lugar','lugar_custom','coordenadas','enlace_maps',
+       'nombre_diligenciador','email_diligenciador']].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) datos[id] = el.value.trim();
+  });
+  if (datos.lugar === 'OTRO' && datos.lugar_custom) datos.lugar = datos.lugar_custom;
+
+  const tipo = datos.tipo_actividad;
+  if (tipo === 'OKR') {
+    // Capturar campos OKR
+    ['okr_resultado','okr_objetivo_tactico','okr_area_auto','okr_lider',
+     'okr_carpeta','okr_pct_cuantitativo','okr_mes','okr_avance_cualitativo'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) datos[id] = el.value.trim();
+    });
+  } else {
+    // Capturar campos Proyecto/Metas
+    ['id_proyecto','proyecto','metas','metas_custom','nombre_actividad',
+     'participacion','cuales_entidades','magnitud','descripcion',
+     'contrato_juridico','numero_orfeo','entidades_externas'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) datos[id] = el.value.trim();
+    });
+  }
+
+  const archivos = [];
+  ['acta_actividad','registro_fotos'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.files.length) Array.from(el.files).forEach(f => archivos.push(f.name));
+  });
+  datos.archivos = archivos.join(', ') || 'Sin adjuntos';
+  datos.timestamp = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+  const area = datos.area;
+  if (area && CORREOS_POR_AREA[area]) {
+    datos.correo_gerente = CORREOS_POR_AREA[area].gerente;
+    datos.correo_lider = CORREOS_POR_AREA[area].lider;
+  }
+
+  const regId = 'SCT-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random()*9000)+1000);
+  datos.id_registro = regId;
+
+  try {
+    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "REEMPLAZAR_CON_URL_DE_APPS_SCRIPT") {
+      await new Promise(r => setTimeout(r, 2000));
+      mostrarExito(regId);
+    } else {
+      const fd = new FormData();
+      Object.keys(datos).forEach(k => fd.append(k, datos[k]));
+      await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+      mostrarExito(regId);
+    }
+  } catch(e) {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('btn-submit').disabled = false;
+    showToast('❌ Error al enviar. Verifique la conexión.', 'error-t');
+  }
+}
+
+function mostrarExito(regId) {
+  document.getElementById('loading').classList.remove('show');
+  document.querySelectorAll('.card, .actions, .error-box').forEach(el => el.style.display = 'none');
+  document.getElementById('success-id-val').textContent = '#' + regId;
+  document.getElementById('success-screen').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('✅ Registro enviado. Notificaciones enviadas.', 'success');
+}
+
+function nuevoRegistro() {
+  limpiarFormulario();
+  document.querySelectorAll('.card, .actions').forEach(el => el.style.display = '');
+  document.getElementById('success-screen').classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function limpiarFormulario() {
+  document.querySelectorAll('input:not([type=file]), select, textarea').forEach(el => { if (!el.readOnly) el.value = ''; el.classList.remove('error'); });
+  document.querySelectorAll('input[type=file]').forEach(el => el.value = '');
+  document.querySelectorAll('.file-previews').forEach(el => el.innerHTML = '');
+  document.getElementById('area').innerHTML = '<option value="">— Seleccione gerencia primero —</option>';
+  document.getElementById('lugar').innerHTML = '<option value="">— Seleccione zona primero —</option>';
+  document.getElementById('lugar-custom-wrap').style.display = 'none';
+  document.getElementById('campo-entidades-externas').classList.remove('show');
+  document.getElementById('campo-orfeo').classList.remove('show');
+  document.getElementById('campo-cuales-entidades').classList.remove('show');
+  // Resetear sección OKR
+  document.getElementById('seccion-okr').style.display = 'none';
+  document.getElementById('seccion-proyecto-metas').style.display = 'block';
+  document.getElementById('char-count-okr').textContent = '0 caracteres';
+  document.getElementById('char-count-okr').className = 'char-count';
+  document.getElementById('gps-status').className = 'gps-status'; document.getElementById('gps-status').textContent = '';
+  document.getElementById('gps-link').innerHTML = '';
+  document.getElementById('char-count').textContent = '0 / mínimo 600 caracteres'; document.getElementById('char-count').className = 'char-count';
+  document.getElementById('error-box').classList.remove('show');
+  document.getElementById('btn-submit').disabled = false;
+  document.getElementById('info-correos').textContent = 'Seleccione Gerencia y Área para ver a quiénes se notificará automáticamente.';
+  for(let i=1;i<=5;i++){ const el = document.getElementById(`ps${i}`); if(el) el.className = 'p-step' + (i===1?' active':''); }
+  document.getElementById('progress-label').textContent = LABELS_PROG[0];
+}
+
+// Fecha máxima: hoy
+(function setFecha() {
+  const d = new Date(); d.setDate(d.getDate() + 1);
+  document.getElementById('fecha').max = d.toISOString().split('T')[0];
+  document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+})();
+
+let toastTimer;
+function showToast(msg, tipo = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${tipo} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = `toast ${tipo}`; }, 4000);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+document.getElementById('modal-confirm').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModal(); });
+</script>
+
+<!--
+╔════════════════════════════════════════════════════════════════════════
+║  CÓDIGO COMPLETO PARA GOOGLE APPS SCRIPT
+║  Ir a: script.google.com → Nuevo proyecto → Pegar este código
+╠════════════════════════════════════════════════════════════════════════
+
+const SHEET_ID      = "REEMPLAZAR_CON_ID_DE_GOOGLE_SHEET";
+
+// El correo del gerente y del líder ahora llegan desde el formulario
+// según el área seleccionada (ya configurados en CORREOS_POR_AREA del HTML)
+
+function doPost(e) {
+  try {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "ID Registro","Timestamp","Fecha","Jornada","Gerencia","Área","Tipo Actividad",
+        // Proyecto/Metas (si NO es OKR)
+        "ID Proyecto","Proyecto","Metas (POAI)","Meta específica","Contrato Jurídico",
+        "Nombre Actividad","Participación Entidades","¿Cuáles entidades?",
+        "Entidades externas/Orfeo","Magnitud","Descripción",
+        // OKR (si ES OKR)
+        "OKR - Resultado Clave","OKR - Objetivo Táctico","OKR - Área Auto",
+        "OKR - Líder","OKR - Carpeta OneDrive",
+        "OKR - % Avance Cuantitativo","OKR - Mes Reporte","OKR - Avance Cualitativo",
+        // Común
+        "Zona","Lugar","Coordenadas","Enlace Maps",
+        "Archivos adjuntos","Nombre Diligenciador","Email Diligenciador",
+        "Correo Gerente","Correo Líder"
+      ]);
+    }
+
+    const d = e.parameter;
+    sheet.appendRow([
+      d.id_registro, d.timestamp, d.fecha, d.jornada, d.gerencia, d.area, d.tipo_actividad,
+      // Proyecto/Metas
+      d.id_proyecto||'', d.proyecto||'', d.metas||'', d.metas_custom||'',
+      d.contrato_juridico||'', d.nombre_actividad||'', d.participacion||'',
+      d.cuales_entidades||'', d.entidades_externas||d.numero_orfeo||'',
+      d.magnitud||'', d.descripcion||'',
+      // OKR
+      d.okr_resultado||'', d.okr_objetivo_tactico||'', d.okr_area_auto||'',
+      d.okr_lider||'', d.okr_carpeta||'',
+      d.okr_pct_cuantitativo||'', d.okr_mes||'', d.okr_avance_cualitativo||'',
+      // Común
+      d.zona, d.lugar, d.coordenadas||'', d.enlace_maps||'',
+      d.archivos, d.nombre_diligenciador, d.email_diligenciador,
+      d.correo_gerente||'', d.correo_lider||''
+    ]);
+
+    enviarCorreos(d);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'ok', id: d.id_registro}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error', msg: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function enviarCorreos(d) {
+  const esOKR = d.tipo_actividad === 'OKR';
+  const asunto = esOKR
+    ? `[OKR] ${d.okr_area_auto} · ${d.okr_mes} · ${d.okr_pct_cuantitativo}% — ${d.fecha}`
+    : `[REG. TERRITORIAL] ${d.nombre_actividad} — ${d.zona} — ${d.fecha}`;
+
+  const seccionProyectoHTML = esOKR ? '' : `
+        <tr style="background:#f8f8f8"><td colspan="2" style="padding:10px 12px;font-weight:bold;color:#C8102E;font-size:13px">📁 PROYECTO Y METAS</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;width:38%;border-bottom:1px solid #f0f0f0">ID Proyecto</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.id_proyecto||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Proyecto</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.proyecto||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Meta POAI</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.metas||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Contrato Jurídico</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.contrato_juridico||'—'}</td></tr>
+        <tr style="background:#f8f8f8"><td colspan="2" style="padding:10px 12px;font-weight:bold;color:#C8102E;font-size:13px">✅ EJECUCIÓN</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Nombre Actividad</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0"><strong>${d.nombre_actividad||'—'}</strong></td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Magnitud</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.magnitud||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Participación otras entidades</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.participacion||'—'}${d.cuales_entidades ? ': ' + d.cuales_entidades : ''}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Descripción</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;line-height:1.5">${d.descripcion||'—'}</td></tr>`;
+
+  const seccionOKRHTML = !esOKR ? '' : `
+        <tr style="background:#e8f0fe"><td colspan="2" style="padding:10px 12px;font-weight:bold;color:#1565C0;font-size:13px">🎯 SEGUIMIENTO OKR — Q4 2025</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;width:38%;border-bottom:1px solid #f0f0f0">Resultado Clave</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.okr_resultado||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Objetivo Táctico</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;font-size:12px;line-height:1.4">${d.okr_objetivo_tactico||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Área</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0"><strong>${d.okr_area_auto||'—'}</strong></td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Gerente / Líder</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.okr_lider||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Carpeta OneDrive</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;font-size:12px">${d.okr_carpeta||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Mes de Reporte</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0"><strong>${d.okr_mes||'—'}</strong></td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">% Avance Cuantitativo</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0"><strong style="color:#1565C0;font-size:16px">${d.okr_pct_cuantitativo||'0'}%</strong></td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Avance Cualitativo</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;line-height:1.6">${d.okr_avance_cualitativo||'—'}</td></tr>`;
+
+  const html = `
+  <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto">
+    <div style="background:${esOKR ? '#1565C0' : '#C8102E'};padding:24px 28px;border-radius:10px 10px 0 0">
+      <h2 style="color:#fff;margin:0;font-size:20px">${esOKR ? '🎯 Seguimiento OKR' : '🏛️ Registro de Actividad Territorial'}</h2>
+      <p style="color:rgba(255,255,255,.75);margin:6px 0 0;font-size:12px">
+        Alcaldía Local San Cristóbal · PISCCJ 2025-2026 · ID: ${d.id_registro}</p>
+    </div>
+    <div style="padding:24px 28px;border:1px solid #eee;border-top:none;border-radius:0 0 10px 10px">
+      <table style="width:100%;border-collapse:collapse;font-size:14px">
+
+        <tr style="background:#f8f8f8"><td colspan="2" style="padding:10px 12px;font-weight:bold;color:#C8102E;font-size:13px">📋 IDENTIFICACIÓN</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;width:38%;border-bottom:1px solid #f0f0f0">Fecha</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.fecha}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Jornada</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.jornada}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Gerencia</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.gerencia}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Área</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.area}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Tipo de Actividad</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0"><strong>${d.tipo_actividad}</strong></td></tr>
+
+        ${seccionOKRHTML}
+        ${seccionProyectoHTML}
+
+        <tr style="background:#f8f8f8"><td colspan="2" style="padding:10px 12px;font-weight:bold;color:#C8102E;font-size:13px">📍 GEORREFERENCIACIÓN</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Zona</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.zona}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Lugar</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.lugar}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Coordenadas</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.coordenadas||'—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666;border-bottom:1px solid #f0f0f0">Google Maps</td><td style="padding:7px 12px;border-bottom:1px solid #f0f0f0">${d.enlace_maps ? '<a href="' + d.enlace_maps + '" style="color:#1565c0">Ver ubicación</a>' : '—'}</td></tr>
+        <tr><td style="padding:7px 12px;color:#666">Archivos adjuntos</td><td style="padding:7px 12px">${d.archivos}</td></tr>
+
+      </table>
+      <div style="margin-top:16px;padding:14px;background:#f8f8f8;border-radius:8px;font-size:12px;color:#666">
+        <strong>Diligenciado por:</strong> ${d.nombre_diligenciador} — ${d.email_diligenciador}<br>
+        <strong>Timestamp:</strong> ${d.timestamp} | <strong>ID:</strong> ${d.id_registro}
+      </div>
+    </div>
+    <div style="padding:14px;text-align:center;background:#0F0F0F;border-radius:0 0 10px 10px;margin-top:4px">
+      <p style="color:#888;font-size:11px;margin:0">Alcaldía Local San Cristóbal · Sistema de Registro Territorial PISCCJ 2025-2026</p>
+    </div>
+  </div>`;
+
+  const dest = [d.email_diligenciador, d.correo_gerente, d.correo_lider].filter(Boolean);
+  dest.forEach(email => {
+    try { GmailApp.sendEmail(email, asunto, '', {htmlBody: html}); } catch(e) {}
+  });
+}
+
+╚════════════════════════════════════════════════════════════════════════
+-->
+
+</body>
+</html>
