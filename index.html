@@ -25,7 +25,7 @@
 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro Territorial v2.2 · Alcaldía Local San Cristóbal</title>
+<title>Registro Territorial · Alcaldía Local San Cristóbal</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -215,9 +215,9 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
     <div class="header-logo">🏛️</div>
     <div class="header-text">
       <div class="header-title">Alcaldía Local San Cristóbal</div>
-      <div class="header-sub">Registro de Actividades Territoriales · PISCCJ 2025-2026</div>
+      
     </div>
-    <div class="header-badge">v2.2</div>
+    
   </div>
 </header>
 
@@ -288,14 +288,29 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <label for="tipo_actividad">Tipo de Actividad <span class="req">*</span></label>
         <select id="tipo_actividad" name="tipo_actividad" required onchange="mostrarCamposTipoActividad()">
           <option value="">Seleccionar tipo...</option>
-          <option value="OKR">OKR (base compartida)</option>
-          <option value="EJECUCIÓN META 2025">EJECUCIÓN META 2025</option>
-          <option value="GESTIÓN TERRITORIAL">GESTIÓN TERRITORIAL</option>
-          <option value="CONSTRUYENDO TERRITORIO - PROBLEMÁTICA INTERNA">CONSTRUYENDO TERRITORIO — Problemática Interna</option>
-          <option value="CONSTRUYENDO TERRITORIO - PROBLEMÁTICA EXTERNA">CONSTRUYENDO TERRITORIO — Problemática Externa (entidades externas)</option>
-          <option value="RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA">RESPUESTA A PROBLEMÁTICA — Traslado a entidad externa</option>
-          <option value="RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO">RESPUESTA DERECHO DE PETICIÓN — Correo/Orfeo radicado</option>
-          <option value="REUNION INSTANCIAS DE PARTICIPACION">REUNIÓN INSTANCIAS DE PARTICIPACIÓN</option>
+          <optgroup label="── Ejecución Meta ──">
+            <option value="EJECUCIÓN META 2025">EJECUCIÓN META 2025</option>
+            <option value="META 2026 GESTIÓN">META 2026 — Gestión</option>
+            <option value="META 2026 JURÍDICOS">META 2026 — Jurídicos</option>
+          </optgroup>
+          <optgroup label="── OKR ──">
+            <option value="OKR">OKR (seguimiento trimestral)</option>
+          </optgroup>
+          <optgroup label="── Actividades Misionales (no ejecutan meta) ──">
+            <option value="MISIONAL - LGBTI">Reuniones LGBTI</option>
+            <option value="MISIONAL - SELLO DISCRIMINACIÓN">Sello Discriminación</option>
+            <option value="MISIONAL - IGUALDAD">Igualdad</option>
+            <option value="MISIONAL - SIPRES">Sipres</option>
+            <option value="MISIONAL - COMPONENTES TRANSVERSALES">Componentes Transversales</option>
+          </optgroup>
+          <optgroup label="── Otras Actividades ──">
+            <option value="GESTIÓN TERRITORIAL">GESTIÓN TERRITORIAL</option>
+            <option value="CONSTRUYENDO TERRITORIO - PROBLEMÁTICA INTERNA">CONSTRUYENDO TERRITORIO — Problemática Interna</option>
+            <option value="CONSTRUYENDO TERRITORIO - PROBLEMÁTICA EXTERNA">CONSTRUYENDO TERRITORIO — Problemática Externa</option>
+            <option value="RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA">RESPUESTA A PROBLEMÁTICA — Traslado a entidad externa</option>
+            <option value="RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO">RESPUESTA DERECHO DE PETICIÓN — Correo/Orfeo radicado</option>
+            <option value="REUNION INSTANCIAS DE PARTICIPACION">REUNIÓN INSTANCIAS DE PARTICIPACIÓN</option>
+          </optgroup>
         </select>
       </div>
 
@@ -320,16 +335,16 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
     <div class="card-header" style="background: linear-gradient(90deg, #e8f0fe 0%, #f7f9ff 100%);">
       <div class="card-icon" style="background:#1565C0;">🎯</div>
       <div>
-        <div class="card-title" style="color:#1565C0;">Seguimiento OKR — Q4 2025</div>
-        <div style="font-size:.75rem;color:#5a7fc8;margin-top:2px;">Cuarto Trimestre · Alcaldía Local San Cristóbal</div>
+        <div class="card-title" style="color:#1565C0;">Seguimiento OKR — 2026</div>
+        <div style="font-size:.75rem;color:#5a7fc8;margin-top:2px;">Trimestral · Cierre el 27 de cada mes (Erwin) · Alcaldía Local San Cristóbal</div>
       </div>
-      <div class="card-num" style="background:#1565C0; color:#fff;">OKR</div>
+      <div class="card-num" style="background:#1565C0; color:#fff;">OKR 2026</div>
     </div>
     <div class="card-body">
 
       <!-- Selector de Resultado Clave OKR -->
       <div class="field span-2">
-        <label for="okr_resultado">Resultado Clave <span class="req">*</span> <span class="lbl-badge" style="background:#e8f0fe;color:#1565C0;border-color:#c5d9f7">OKR 2025</span></label>
+        <label for="okr_resultado">Resultado Clave <span class="req">*</span> <span class="lbl-badge" style="background:#e8f0fe;color:#1565C0;border-color:#c5d9f7">OKR 2026</span></label>
         <select id="okr_resultado" name="okr_resultado" onchange="autocompleteOKR()">
           <option value="">Seleccionar resultado clave...</option>
           <optgroup label="── INFRAESTRUCTURA ──">
@@ -451,10 +466,27 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
       <div class="field">
         <label for="okr_mes">Mes de Reporte <span class="req">*</span></label>
         <select id="okr_mes" name="okr_mes">
-          <option value="">Seleccionar mes...</option>
-          <option value="OCTUBRE">OCTUBRE</option>
-          <option value="NOVIEMBRE">NOVIEMBRE</option>
-          <option value="DICIEMBRE">DICIEMBRE</option>
+          <option value="">Seleccionar mes de reporte...</option>
+          <optgroup label="── Trimestre 1 (Enero–Marzo) ──">
+            <option value="ENERO">ENERO (cierre 27 ene)</option>
+            <option value="FEBRERO">FEBRERO (cierre 27 feb)</option>
+            <option value="MARZO">MARZO (cierre 27 mar)</option>
+          </optgroup>
+          <optgroup label="── Trimestre 2 (Abril–Junio) ──">
+            <option value="ABRIL">ABRIL (cierre 27 abr)</option>
+            <option value="MAYO">MAYO (cierre 27 may)</option>
+            <option value="JUNIO">JUNIO (cierre 27 jun)</option>
+          </optgroup>
+          <optgroup label="── Trimestre 3 (Julio–Septiembre) ──">
+            <option value="JULIO">JULIO (cierre 27 jul)</option>
+            <option value="AGOSTO">AGOSTO (cierre 27 ago)</option>
+            <option value="SEPTIEMBRE">SEPTIEMBRE (cierre 27 sep)</option>
+          </optgroup>
+          <optgroup label="── Trimestre 4 (Octubre–Diciembre) ──">
+            <option value="OCTUBRE">OCTUBRE (cierre 27 oct)</option>
+            <option value="NOVIEMBRE">NOVIEMBRE (cierre 27 nov)</option>
+            <option value="DICIEMBRE">DICIEMBRE (cierre 27 dic)</option>
+          </optgroup>
         </select>
       </div>
 
@@ -524,105 +556,189 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <input type="text" id="proyecto" name="proyecto" readonly placeholder="Se autocompleta al seleccionar ID">
       </div>
 
-      <!-- METAS desde POAI (autocomplete) -->
-      <div class="field span-2">
-        <label for="metas">Metas 2025-2026 <span class="lbl-badge poai">POAI</span></label>
-        <input type="text" id="metas" name="metas" readonly placeholder="Se autocompleta al seleccionar el proyecto...">
-        <div class="hint">📋 Metas tomadas del POAI 2026. Modifique si corresponde a una meta diferente.</div>
-      </div>
-      <!-- Campo editable de meta si el usuario necesita personalizar -->
-      <div class="field span-2">
-        <label for="metas_custom">Meta específica de la actividad</label>
-        <input type="text" id="metas_custom" name="metas_custom" placeholder="Especifique si la meta difiere de la del proyecto (opcional)">
+      <!-- METAS desde POAI (desplegable dinámica por proyecto) -->
+      <div class="field span-2" id="campo-meta-wrap" style="display:none;">
+        <label for="meta_proyecto">Meta Proyecto 2025-2028 <span class="req">*</span> <span class="lbl-badge poai">POAI</span></label>
+        <select id="meta_proyecto" name="meta_proyecto">
+          <option value="">— Seleccione el proyecto primero —</option>
+        </select>
+        <div class="hint">📋 Metas tomadas del POAI 2026. Seleccione la meta específica de la actividad.</div>
       </div>
 
-      <!-- Contratos Jurídicos (desde BASE DE CONTRATACIÓN) -->
+
+      <!-- Contratos Jurídicos (2024 · 2025 · 2026) -->
       <div class="field span-2">
         <label for="contrato_juridico">Contrato Jurídico <span class="lbl-badge base">Base Contratación</span></label>
         <select id="contrato_juridico" name="contrato_juridico">
           <option value="">Seleccionar contrato (opcional)...</option>
-          <optgroup label="── 2021 ──">
-            <option>FDLSC-CSU-244-2021</option><option>FDLSC-CPS-288-2021</option>
-            <option>FDLSC-CI-298-2021</option><option>FDLSC-CI-302-2021</option>
-            <option>FDLSC-CPS-319-2021</option><option>FDLSC-CI-320-2021</option>
-            <option>FDLSC-CI-324-2021</option><option>FDLSC-CI-334-2021</option>
-            <option>FDLSC-CSU-353-2021</option><option>FDLSC-CSU-355-2021</option>
-            <option>FDLSC-CSU-356-2021</option><option>FDLSC-CCV-359-2021</option>
-            <option>FDLSC-CPS-361-2021</option><option>FDLSC-CSU-391-2021</option>
-            <option>FDLSC-CPS-394-2021</option><option>FDLSC-CI-454-2021</option>
-            <option>FDLSC-CI-455-2021</option><option>FDLSC-CPS-462-2021</option>
-            <option>FDLSC-CO-507-2021</option><option>FDLSC-CPS-515-2021</option>
-            <option>FDLSC-CPS-516-2021</option><option>FDLSC-CPS-517-2021</option>
-            <option>FDLSC-CPS-518-2021</option><option>FDLSC-CPS-520-2021</option>
-            <option>FDLSC-CPS-523-2021</option><option>FDLSC-CPS-531-2021</option>
-            <option>FDLSC-CPS-532-2021</option><option>FDLSC-CPS-534-2021</option>
-            <option>FDLSC-CPS-535-2021</option><option>FDLSC-CPS-536-2021</option>
-            <option>FDLSC-CCI-539-2021</option><option>FDLSC-CPS-540-2021</option>
-            <option>FDLSC-CPS-542-2021</option>
-          </optgroup>
-          <optgroup label="── 2022 ──">
-            <option>FDLSC-CTOI-112-2022</option><option>FDLSC-CPS-361-2022</option>
-            <option>FDLSC-CPS-364-2022</option><option>FDLSC-CPS-365-2022</option>
-            <option>FDLSC-INTV-367-2022</option><option>FDLSC-CO-368-2022</option>
-            <option>FDLSC-CSU-370-2022</option><option>FDLSC-CSU-371-2022</option>
-            <option>FDLSC-CPS-372-2022</option><option>FDLSC-CSU-373-2022</option>
-            <option>FDLSC-CV-376-2022</option><option>FDLSC-INTV-379-2022</option>
-            <option>FDLSC-CSU-481-2022</option><option>FDLSC-CSU-497-2022</option>
-            <option>FDLSC-CPS-551-2022</option><option>FDLSC-CV-563-2022</option>
-            <option>FDLSC-CPS-620-2022</option><option>FDLSC-CPS-621-2022</option>
-            <option>FDLSC-CPS-623-2022</option><option>FDLSC-CPS-639-2022</option>
-            <option>FDLSC-CPS-641-2022</option><option>FDLSC-INTV-642-2022</option>
-            <option>FDLSC-CPS-651-2022</option><option>FDLSC-CPS-652-2022</option>
-            <option>FDLSC-CPS-659-2022</option><option>FDLSC-CPS-660-2022</option>
-            <option>FDLSC-CPS-666-2022</option><option>FDLSC-CPS-671-2022</option>
-          </optgroup>
-          <optgroup label="── 2023 ──">
-            <option>FDLSC-CPS-333-2023</option><option>FDLSC-CSU-335-2023</option>
-            <option>FDLSC-CTOI-367-2023</option><option>FDLSC-CPS-374-2023</option>
-            <option>FDLSC-CSU-390-2023</option><option>FDLSC-CPS-407-2023</option>
-            <option>FDLSC-CSU-413-2023</option><option>FDLSC-CPS-459-2023</option>
-            <option>FDLSC-CTOI-469-2023</option><option>FDLSC-CTOI-478-2023</option>
-            <option>FDLSC-COP-487-2023</option><option>FDLSC-COP-488-2023</option>
-            <option>FDLSC-CTOI-521-2023</option><option>FDLSC-INTV-524-2023</option>
-            <option>FDLSC-INTV-526-2023</option><option>FDLSC-CTOI-530-2023</option>
-            <option>FDLSC-CTOI-571-2023</option><option>FDLSC-CSU-610-2023</option>
-            <option>FDLSC-CSU-696-2023</option><option>FDLSC-CPS-731-2023</option>
-            <option>FDLSC-CPS-740-2023</option><option>FDLSC-CPS-742-2023</option>
-            <option>FDLSC-CPS-743-2023</option><option>FDLSC-CPS-767-2023</option>
-            <option>FDLSC-CPS-786-2023</option><option>FDLSC-CPS-871-2023</option>
-            <option>FDLSC-CSU-872-2023</option><option>FDLSC-CPS-902-2023</option>
-            <option>FDLSC-CPS-906-2023</option><option>FDLSC-CPS-935-2023</option>
-            <option>FDLSC-CPS-939-2023</option><option>FDLSC-CPS-941-2023</option>
-          </optgroup>
-          <optgroup label="── 2024 ──">
-            <option>FDLSC-CV-438-2024</option><option>FDLSC-CV-488-2024</option>
-            <option>FDLSC-COP-492-2024</option><option>FDLSC-INTV-493-2024</option>
-            <option>FDLSC-CSU-494-2024</option><option>FDLSC-CTOI-509-2024</option>
-            <option>FDLSC-CSU-527-2024</option><option>FDLSC-CPS-542-2024</option>
-            <option>FDLSC-CPS-644-2024</option><option>FDLSC-CVNI-677-2024</option>
-            <option>FDLSC-CV-691-2024</option><option>FDLSC-CTOI-751-2024</option>
-            <option>FDLSC-CPS-970-2024</option><option>FDLSC-CV-1009-2024</option>
-            <option>FDLSC-CPS-1099-2024</option><option>FDLSC-CPS-1100-2024</option>
-            <option>FDLSC-CPS-1118-2024</option><option>FDLSC-COP-1136-2024</option>
-            <option>FDLSC-COP-1137-2024</option><option>FDLSC-COP-1138-2024</option>
-            <option>FDLSC-CVAS-1140-2024</option><option>FDLSC-COP-1141-2024</option>
-            <option>FDLSC-CV-1143-2024</option><option>FDLSC-INTV-1144-2024</option>
-            <option>FDLSC-INTV-1145-2024</option><option>FDLSC-COP-1146-2024</option>
-            <option>FDLSC-CTOI-1147-2024</option><option>FDLSC-CCO-1148-2024</option>
-            <option>FDLSC-CTOI-1149-2024</option><option>FDLSC-CPS-1150-2024</option>
-            <option>FDLSC-CSU-1151-2024</option><option>FDLSC-CTOI-1153-2024</option>
-            <option>FDLSC-CTOI-1154-2024</option><option>FDLSC-INTV-1155-2024</option>
-            <option>FDLSC-INTV-1156-2024</option><option>FDLSC-INTV-1157-2024</option>
-            <option>FDLSC-CSU-1158-2024</option><option>FDLSC-CTOI-1159-2024</option>
-            <option>FDLSC-CTOI-1160-2024</option><option>FDLSC-CVNI-1161-2024</option>
-            <option>FDLSC-CTOI-1162-2024</option><option>FDLSC-CTOI-1163-2024</option>
-            <option>FDLSC-CTOI-1164-2024</option>
+          <optgroup label="── 2026 ──">
+            <option>317-2026</option>
+            <option>512-2026 CPS-(145208)</option>
+            <option>600-2026P(147837)</option>
+            <option>816-2026</option>
           </optgroup>
           <optgroup label="── 2025 ──">
-            <option>FDLSC-CD-114-2025</option><option>FDLSC-CPS-553-2025</option>
+            <option>FDLSC CPS-695-2025</option>
+            <option>FDLSC-CCO-890-2025</option>
+            <option>FDLSC-CCO-897-2025</option>
+            <option>FDLSC-CI-114-2025</option>
+            <option>FDLSC-COP-760-2025</option>
+            <option>FDLSC-COP-803-2025</option>
+            <option>FDLSC-COP-864-2025</option>
+            <option>FDLSC-COP-886-2025</option>
+            <option>FDLSC-COP-895-2025</option>
+            <option>FDLSC-CPS-553-2025</option>
             <option>FDLSC-CPS-683-2025</option>
+            <option>FDLSC-CPS-693-2025</option>
+            <option>FDLSC-CPS-694-2025</option>
+            <option>FDLSC-CPS-725-2025</option>
+            <option>FDLSC-CPS-743-2025</option>
+            <option>FDLSC-CPS-748-2025</option>
+            <option>FDLSC-CPS-776-2025</option>
+            <option>FDLSC-CPS-777-2025</option>
+            <option>FDLSC-CPS-785-2025</option>
+            <option>FDLSC-CPS-786-2025</option>
+            <option>FDLSC-CPS-788-2025</option>
+            <option>FDLSC-CPS-798-2025</option>
+            <option>FDLSC-CPS-807-2025</option>
+            <option>FDLSC-CPS-809-2025</option>
+            <option>FDLSC-CPS-811-2025</option>
+            <option>FDLSC-CPS-816-2025</option>
+            <option>FDLSC-CPS-820-2025</option>
+            <option>FDLSC-CPS-822-2025</option>
+            <option>FDLSC-CPS-823-2025</option>
+            <option>FDLSC-CPS-843-2025</option>
+            <option>FDLSC-CPS-844-2025</option>
+            <option>FDLSC-CPS-846-2025</option>
+            <option>FDLSC-CPS-848-2025</option>
+            <option>FDLSC-CPS-851-2025</option>
+            <option>FDLSC-CPS-855-2025</option>
+            <option>FDLSC-CPS-866-2025</option>
+            <option>FDLSC-CPS-873-2025</option>
+            <option>FDLSC-CPS-877-2025</option>
+            <option>FDLSC-CPS-879-2025</option>
+            <option>FDLSC-CPS-885-2025</option>
+            <option>FDLSC-CPS-892-2025</option>
+            <option>FDLSC-CPS-896-2025</option>
+            <option>FDLSC-CPS-904-2025</option>
+            <option>FDLSC-CS-791-2025</option>
+            <option>FDLSC-CSU-729-2025</option>
+            <option>FDLSC-CSU-738-2025</option>
+            <option>FDLSC-CSU-815-2025</option>
+            <option>FDLSC-CSU-850-2025</option>
+            <option>FDLSC-CSU-863-2025</option>
+            <option>FDLSC-CSU-875-2025</option>
+            <option>FDLSC-CSU-882-2025</option>
+            <option>FDLSC-CSU-889-2025</option>
+            <option>FDLSC-CSU-900-2025</option>
+            <option>FDLSC-CSU-902-2025</option>
+            <option>FDLSC-CV-739-2025</option>
+            <option>FDLSC-CV-793-2025</option>
+            <option>FDLSC-CV-861-2025</option>
+            <option>FDLSC-CV-888-2025</option>
+            <option>FDLSC-CV-901-2025</option>
+            <option>FDLSC-CV-903-2025</option>
+            <option>FDLSC-CVNI-677-2025</option>
+            <option>FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)</option>
+            <option>FDLSC-CVNI-716-2025</option>
+            <option>FDLSC-CVNI-721-2025 (NO. CONTRATO SDIS- _9285-2025)</option>
+            <option>FDLSC-CVNI-727-2025</option>
+            <option>FDLSC-CVNI-805-2025</option>
+            <option>FDLSC-CVNI-817-2025 (CONTRATO  SDIS 11131-2025)</option>
+            <option>FDLSC-CVNI-818-2025</option>
+            <option>FDLSC-CVNI-819-2025</option>
+            <option>FDLSC-D-016-2025</option>
+            <option>FDLSC-INTV-804-2025</option>
+            <option>FDLSC-INTV-813-2025</option>
+            <option>FDLSC-INTV-865-2025</option>
+            <option>FDLSC-INTV-898-2025</option>
+            <option>FDLSC-INTV-899-2025</option>
+          </optgroup>
+          <optgroup label="── 2024 ──">
+            <option>FDLSC-CV-438-2024</option>
+            <option>FDLSC-CV-488-2024</option>
+            <option>FDLSC-COP-492-2024</option>
+            <option>FDLSC-INTV-493-2024</option>
+            <option>FDLSC-CSU-494-2024</option>
+            <option>FDLSC-CTOI-509-2024</option>
+            <option>FDLSC-CSU-527-2024</option>
+            <option>FDLSC-CPS-542-2024</option>
+            <option>FDLSC-CVNI-552-2024 (8491-2024)</option>
+            <option>FDLSC-CPS-644-2024</option>
+            <option>FDLSC-CVNI-677-2024</option>
+            <option>FDLSC-CV-691-2024</option>
+            <option>FDLSC-CS-697-2024</option>
+            <option>FDLSC-CTOI-751-2024</option>
+            <option>FDLSC-CVNI-833-2024</option>
+            <option>FDLSC-CVNI-869-2024</option>
+            <option>FDLSC-CVNI-870-2024</option>
+            <option>FDLSC-CPS-970-2024</option>
+            <option>FDLSC-CV-1009-2024</option>
+            <option>FDLSC-CTOI -1011 DE 2024</option>
+            <option>FDLSC-CVNI-740-2024</option>
+            <option>FDLSC-CPS-1099-2024</option>
+            <option>FDLSC-CPS-1100-2024</option>
+            <option>FDLSC-CPS-1118-2024</option>
+            <option>FDLSC-COP-1136-2024</option>
+            <option>FDLSC-COP-1137-2024</option>
+            <option>FDLSC-COP-1138-2024</option>
+            <option>FDLSC-CVAS-1140-2024</option>
+            <option>FDLSC-COP-1141-2024</option>
+            <option>FDLSC-CVNI-1142-2024</option>
+            <option>FDLSC-CV-1143-2024</option>
+            <option>FDLSC-INTV-1144-2024</option>
+            <option>FDLSC-INTV-1145-2024</option>
+            <option>FDLSC-COP-1146-2024</option>
+            <option>FDLSC-CTOI-1147-2024</option>
+            <option>FDLSC-CCO-1148-2024</option>
+            <option>FDLSC-CTOI-1149-2024</option>
+            <option>FDLSC-CPS-1150-2024</option>
+            <option>FDLSC-CSU-1151-2024</option>
+            <option>FDLSC-CTOI-1153-2024</option>
+            <option>FDLSC-CTOI-1154-2024</option>
+            <option>FDLSC-INTV-1155-2024</option>
+            <option>FDLSC-INTV-1156-2024</option>
+            <option>FDLSC-INTV-1157-2024</option>
+            <option>FDLSC-CSU-1158-2024</option>
+            <option>FDLSC-CTOI-1159-2024</option>
+            <option>FDLSC-CTOI-1160-2024</option>
+            <option>FDLSC-CVNI-1161-2024</option>
+            <option>FDLSC-CTOI-1162-2024</option>
+            <option>FDLSC-CTOI-1163-2024</option>
+            <option>FDLSC-CTOI-1164-2024</option>
           </optgroup>
         </select>
+      </div>
+
+      <!-- Instancias: Gerencia - Proyecto - Área -->
+      <div class="field span-2">
+        <label>Instancia</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:.7rem;">
+          <select id="instancia_gerencia" name="instancia_gerencia">
+            <option value="">Gerencia...</option>
+            <option>CAMINA SEGURA</option>
+            <option>MAS OPORTUNIDADES</option>
+            <option>MAS TERRITORIO</option>
+            <option>TERRITORIO SOCIAL</option>
+            <option>IVC</option>
+            <option>INFRAESTRUCTURA</option>
+            <option>ADMINISTRATIVA</option>
+          </select>
+          <input type="text" id="instancia_proyecto" name="instancia_proyecto" placeholder="Proyecto...">
+          <input type="text" id="instancia_area" name="instancia_area" placeholder="Área...">
+        </div>
+        <div class="hint">📋 Indique la Gerencia, Proyecto y Área responsable de la actividad</div>
+      </div>
+
+      <!-- Compromisos con el Alcalde -->
+      <div class="field">
+        <label for="vincula_alcalde">¿Vincula al Alcalde? <span class="req">*</span></label>
+        <select id="vincula_alcalde" name="vincula_alcalde" required>
+          <option value="">Seleccionar...</option>
+          <option value="SI">SI</option>
+          <option value="NO">NO</option>
+        </select>
+        <div class="hint">Indique si este compromiso vincula directamente al Alcalde Local</div>
       </div>
 
       <!-- Actividad: nombre corto + descripción separados -->
@@ -653,6 +769,42 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <div class="hint">Ej: número de personas, m², km/carril, organizaciones...</div>
       </div>
 
+      <!-- Población — en contratos -->
+      <div class="field">
+        <label for="poblacion_mujeres">Población Mujeres (cantidad)</label>
+        <input type="number" id="poblacion_mujeres" name="poblacion_mujeres" placeholder="0" min="0" step="1">
+        <div class="hint">Número de mujeres beneficiadas en la actividad</div>
+      </div>
+
+      <div class="field">
+        <label for="tipo_poblacion">Tipo de Población</label>
+        <select id="tipo_poblacion" name="tipo_poblacion">
+          <option value="">Seleccionar (opcional)...</option>
+          <option>PERSONAS EN GENERAL</option>
+          <option>MUJERES</option>
+          <option>PERSONAS MAYORES</option>
+          <option>JÓVENES</option>
+          <option>NIÑOS Y NIÑAS</option>
+          <option>PRIMERA INFANCIA</option>
+          <option>PERSONAS CON DISCAPACIDAD</option>
+          <option>POBLACIÓN LGBTI</option>
+          <option>POBLACIÓN NARP</option>
+          <option>PUEBLOS INDÍGENAS</option>
+          <option>HABITANTES DE CALLE</option>
+          <option>VÍCTIMAS DEL CONFLICTO</option>
+          <option>ORGANIZACIONES SOCIALES</option>
+          <option>JAC</option>
+          <option>INSTANCIAS DE PARTICIPACIÓN</option>
+        </select>
+      </div>
+
+      <!-- Lugar de Ejecución -->
+      <div class="field span-2">
+        <label for="lugar_ejecucion">Lugar de Ejecución del Contrato</label>
+        <input type="text" id="lugar_ejecucion" name="lugar_ejecucion" placeholder="Barrio, sector o dirección donde se ejecuta el contrato...">
+        <div class="hint">📍 Lugar específico de ejecución del contrato o actividad</div>
+      </div>
+
       <!-- Descripción: mínimo 200 caracteres -->
       <div class="field span-2">
         <label for="descripcion">Descripción de la Actividad <span class="req">*</span> <span style="color:var(--gris-4);font-weight:400">(mín. 600 caracteres)</span></label>
@@ -678,10 +830,17 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <label for="zona">Zona <span class="req">*</span></label>
         <select id="zona" name="zona" required onchange="actualizarLugares()">
           <option value="">Seleccionar zona...</option>
-          <option>ZONA 1</option><option>ZONA 2</option><option>ZONA 3</option>
-          <option>ZONA 4</option><option>ZONA 5</option><option>ZONA 6</option>
-          <option>ZONA 7</option><option>ZONA 8</option>
+          <option value="ALCALDÍA LOCAL">ALCALDÍA LOCAL (sede central)</option>
+          <option value="ZONA 1">ZONA 1</option>
+          <option value="ZONA 2">ZONA 2</option>
+          <option value="ZONA 3">ZONA 3</option>
+          <option value="ZONA 4">ZONA 4</option>
+          <option value="ZONA 5">ZONA 5</option>
+          <option value="ZONA 6">ZONA 6</option>
+          <option value="ZONA 7">ZONA 7</option>
+          <option value="ZONA 8">ZONA 8</option>
         </select>
+        <div class="hint">🏛️ Seleccione "Alcaldía Local" si la actividad se realiza en la sede de la Alcaldía</div>
       </div>
 
       <div class="field">
@@ -1049,38 +1208,41 @@ const OKR_DATA = {
    PROYECTOS — POAI 2026 (con metas y magnitud)
    ═══════════════════════════════════════════════════════════════ */
 const PROYECTOS = {
-  "2251":{"nombre":"Sostenibilidad del ecosistema cultural y creativo","meta":"Financiar 120 proyectos del sector cultural y creativo.","magnitud":30},
-  "2252":{"nombre":"Transformando espacios, conectando comunidades, San Cristóbal vial, caminos de oportunidad y progreso","meta":"Intervenir 17 Kilómetros-carril de malla vial urbana (local y/o intermedia) con acciones de construcción y/o conservación","magnitud":4.25},
-  "2254":{"nombre":"Caminos sostenibles, solidez en San Cristóbal, ampliando y conservando los espacios peatonales","meta":"Intervenir 4.290 metros cuadrados de elementos del sistema de espacio público peatonal con acciones de construcción y/o conservación.","magnitud":1230},
-  "2257":{"nombre":"Red de oportunidades, parques y cultura para el bienestar común","meta":"Construir 880 m2 de Parques de la red de proximidad (la construcción incluye su dotación).","magnitud":220},
-  "2273":{"nombre":"San Cristóbal resiliente, fortaleciendo capacidades locales","meta":"Realizar 4 acciones efectivas para el fortalecimiento de las capacidades locales en torno a la gestión del riesgo","magnitud":1},
-  "2285":{"nombre":"Seguridad y oportunidades con fuerza pública equipada","meta":"Intervenir 11 equipamientos de seguridad y acceso a la justicia con acciones de fortalecimiento, operación, adecuación y/o dotación","magnitud":3},
-  "2316":{"nombre":"San Cristóbal sin barreras, salud, bienestar y oportunidades para todos","meta":"Beneficiar 2.000 personas con discapacidad a través de Dispositivos de Asistencia Personal - Ayudas Técnicas","magnitud":500},
-  "2349":{"nombre":"San Cristóbal espacio público y pacífico","meta":"Implementar 4 estrategias de seguridad y convivencia a través de gestores locales","magnitud":1},
-  "2385":{"nombre":"San Cristóbal, mujeres en acción contra la violencia","meta":"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia contra la mujer.","magnitud":1500},
-  "2405":{"nombre":"Cultura y memoria en movimiento, San Cristóbal vive su patrimonio","meta":"Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregados.","magnitud":15},
-  "2409":{"nombre":"San Cristóbal incidente","meta":"Capacitar 2.600 personas a través de procesos de formación para la participación de manera virtual y presencial.","magnitud":650},
-  "2481":{"nombre":"San Cristóbal cuida, bienestar animal y educación para todos","meta":"Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y adopciones","magnitud":2500},
-  "2495":{"nombre":"Actívate San Cristóbal, deporte, recreación y bienestar","meta":"Beneficiar 13.200 personas en actividades recreo-deportivas comunitarias.","magnitud":3300},
-  "2502":{"nombre":"San Cristóbal, oportunidades para el futuro sostenible","meta":"Capacitar 6.000 personas en separación en la fuente y reciclaje.","magnitud":1500},
-  "2506":{"nombre":"Oportunidades con bien-estar, San Cristóbal avanza","meta":"Habilitar 300 cupos para la atención de población en inseguridad alimentaria a través de comedores comunitarios.","magnitud":75},
-  "2601":{"nombre":"Pacto por espacios sostenibles en San Cristóbal","meta":"Realizar 16 acuerdos para la organización, recuperación y cuidado del espacio público.","magnitud":4},
-  "2606":{"nombre":"Tejiendo memoria y reconciliación para el futuro","meta":"Realizar 4 acciones de construcción de paz que contribuyan al tejido social.","magnitud":1},
-  "2608":{"nombre":"San Cristóbal emprende, fortaleciendo el tejido empresarial local","meta":"Apoyar 800 Mipymes, emprendimientos y/o actores de la economía informal.","magnitud":200},
-  "2615":{"nombre":"Educación que genera oportunidades","meta":"Beneficiar 840 estudiantes con apoyo de sostenimiento para la permanencia en la educación posmedia.","magnitud":210},
-  "2620":{"nombre":"San Cristóbal: Camina Seguro, Vive Seguro","meta":"Fortalecer 100 organizaciones comunitarias a través de capacidades para promover corresponsabilidad en seguridad y convivencia.","magnitud":25},
-  "2627":{"nombre":"El delirio del turismo, San Cristóbal, un delirio turístico de oportunidades","meta":"Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades locales para el turismo.","magnitud":30},
-  "2633":{"nombre":"San Cristóbal, un territorio de oportunidades para la gestión de conflictos y la convivencia","meta":"Beneficiar 680 ciudadanos con habilidades y capacidades para gestionar la convivencia constructivamente","magnitud":170},
-  "2638":{"nombre":"San Cristóbal activa el sector cultural","meta":"Intervenir 4 equipamientos culturales con acciones de construcción, adecuación y/o dotación","magnitud":1},
-  "2648":{"nombre":"Oportunidades con bien-estar, San Cristóbal avanza más","meta":"Atender 8.000 personas con apoyos que contribuyan al ingreso mínimo garantizado.","magnitud":8000},
-  "2667":{"nombre":"Gobierno de lo cotidiano","meta":"Realizar 1 acciones de inspección, vigilancia y control.","magnitud":1},
-  "2694":{"nombre":"Redes de oportunidad, formación digital y participación ciudadana","meta":"Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o urbanas.","magnitud":5},
-  "2708":{"nombre":"Chango y Pueblos indígenas en resistencia y pervivencia cultural","meta":"Concertar e implementar 4 iniciativas de inversión local con comunidades negras, afrocolombianas y palenqueras.","magnitud":1},
-  "2791":{"nombre":"Creciendo juntos, atención integral y oportunidades para la comunidad","meta":"Dotar y/o acondicionar 1 unidades operativas orientadas a la atención de jóvenes.","magnitud":1},
-  "2797":{"nombre":"San Cristóbal nuestra pasión","meta":"Desarrollar 4 acciones orientadas a la ciudadanía en el marco de la estrategia Bogotaneidad.","magnitud":1},
-  "2802":{"nombre":"Fortaleciendo vidas, mujeres en San Cristóbal por la prevención y autonomía","meta":"Adecuar y dotar 2 espacios en las manzanas del cuidado.","magnitud":1},
-  "2805":{"nombre":"San Cristóbal, oportunidades para el futuro reverdecido","meta":"Generar 4.000 m2 de áreas renaturalizadas","magnitud":1000},
+  "2251":{"nombre": "Sostenibilidad del ecosistema cutural y creativo", "meta": "Financiar 120 proyectos del sector cultural y creativo.", "metas": ["Financiar 120 proyectos del sector cultural y creativo."], "magnitud": null},
+  "2252":{"nombre": "Transformando espacios, conectando comunidades, San Cristóbal vial, caminos de oportunidad y progreso", "meta": "Intervenir 17 Kilómetros-carril de malla vial urbana (local y/o intermedia) con acciones de construcción y/o conservación", "metas": ["Intervenir 17 Kilómetros-carril de malla vial urbana (local y/o intermedia) con acciones de construcción y/o conservación"], "magnitud": null},
+  "2254":{"nombre": "Caminos sostenibles, solidez en San Cristóbal, ampliando y conservando los espacios peatonales", "meta": "Intervenir 4.290  metros cuadrados de elementos del sistema de espacio público peatonal con acciones de construcción y/o conservación.", "metas": ["Intervenir 4.290  metros cuadrados de elementos del sistema de espacio público peatonal con acciones de construcción y/o conservación."], "magnitud": null},
+  "2257":{"nombre": "Red de oportunidades, parques y cultura para el bienestar común", "meta": "Construir 880 m2 de Parques de la red de proximidad (la construcción incluye su dotación).", "metas": ["Construir 880 m2 de Parques de la red de proximidad (la construcción incluye su dotación).", "Intervenir 32 Parques  de la red de proximidad con acciones de mejoramiento, mantenimiento y/o dotación."], "magnitud": null},
+  "2273":{"nombre": "San Cristóbal resiliente, fortaleciendo capacidades locales", "meta": "Realizar 4 acciones efectivas para el fortalecimiento de las capacidades locales en torno a la gestión del riesgo", "metas": ["Realizar 4 acciones efectivas para el fortalecimiento de las capacidades locales en torno a la gestión del riesgo", "Realizar 4 obras de mitigación y/u obras de mitigación existentes con mantenimiento"], "magnitud": null},
+  "2285":{"nombre": "Seguridad y oportunidades con fuerza pública equipada", "meta": "Intervenir 11 equipamientos de seguridad y acceso a la justicia con acciones de fortalecimiento, operación, adecuación y/o dotación", "metas": ["Intervenir 11 equipamientos de seguridad y acceso a la justicia con acciones de fortalecimiento, operación, adecuación y/o dotación", "Suministrar 4 dotaciones a organismos de seguridad"], "magnitud": null},
+  "2316":{"nombre": "San Cristóbal sin barreras, salud, bienestar y oportunidades para todos", "meta": "Beneficiar 2.000 personas con discapacidad a través de Dispositivos de Asistencia Personal - Ayudas Técnicas (no incluidas en los Planes de Beneficios)", "metas": ["Beneficiar 2.000 personas con discapacidad a través de Dispositivos de Asistencia Personal - Ayudas Técnicas (no incluidas en los Planes de Beneficios)", "Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental", "Vincular 1.200 personas con discapacidad, cuidadores y cuidadoras, en actividades complementarias en salud", "Vincular 1.600 personas a las acciones desarrolladas desde los dispositivos de base comunitaria en respuesta al consumo de SPA", "Vincular 2.000 personas a las acciones y estrategias para promover la salud sexual y reproductiva consciente en los diferentes ciclos de vida", "Vincular 3.200 personas en acciones complementarias en salud física, nutricional y oral, a través del Circuito del Cuidado"], "magnitud": null},
+  "2349":{"nombre": "San Cristóbal espacio público y pacifico", "meta": "Implementar 4 estrategias de seguridad y convivencia a través de gestores locales, que permitan el uso y disfrute del espacio público", "metas": ["Implementar 4 estrategias de seguridad y convivencia a través de gestores locales, que permitan el uso y disfrute del espacio público"], "magnitud": null},
+  "2385":{"nombre": "San Cristóbal, mujeres en acción contra la violencia", "meta": "Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia contra la mujer.", "metas": ["Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia contra la mujer."], "magnitud": null},
+  "2405":{"nombre": "Cultura y memoria en movimiento, San Cristóbal vive su patrimonio", "meta": "Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregados.", "metas": ["Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregados.", "Capacitar 1.480 personas en los campos artísticos, interculturales, culturales y/o patrimoniales.", "Otorgar 100 estímulos de apoyo al sector artístico y cultural.", "Realizar 80 eventos de promoción, circulción y apropiación de actividades artísticas, culturales y patrimoniales."], "magnitud": null},
+  "2409":{"nombre": "San Cristobal incidente", "meta": "Capacitar 2.600 personas a través de procesos de formación para la participación de manera virtual y presencial.", "metas": ["Capacitar 2.600 personas a través de procesos de formación para la participación de manera virtual y presencial.", "Fortalecer 100 organizaciones comunales.", "Fortalecer 200 Organizaciones sociales e Instancias de participación ciudadana."], "magnitud": null},
+  "2481":{"nombre": "San Cristóbal cuida, bienestar animal y educación para todos", "meta": "Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y adopciones", "metas": ["Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y adopciones", "Esterilizar 15.000 perros y gatos incluyendo los que está en condición de vulnerabilidad", "Vincular 2.400 personas en acciones educativas en temas de protección y bienestar animal"], "magnitud": null},
+  "2495":{"nombre": "Actívate San Cristóbal, deporte, recreación y bienestar", "meta": "Beneficiar  13.200 personas en actividades recreo-deportivas comunitarias.", "metas": ["Beneficiar  13.200 personas en actividades recreo-deportivas comunitarias.", "Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que implementan iniciativas de carácter barrial con apoyos economicos", "Beneficiar 4.000 Personas con la entrega de dotaciones deportivas.", "Capacitar 6.400 personas en los campos deportivos o recreativos"], "magnitud": null},
+  "2502":{"nombre": "San Cristóbal, oportunidades para el futuro sostenible", "meta": "Capacitar 6.000 personas en separación en la fuente y reciclaje.", "metas": ["Capacitar 6.000 personas en separación en la fuente y reciclaje.", "Implementar 160 huertas urbanas", "Mantener 1.000 árboles en zona urbana", "Mantener 2.000 m2 de jardinería"], "magnitud": null},
+  "2506":{"nombre": "Oportunidades con bien-estar, San Cristóbal avanza", "meta": "Habilitar 300 cupos para la atención de población en inseguridad alimentaria y nutricional del Distrito Capital, a través de comedores comunitarios.", "metas": ["Habilitar 300 cupos para la atención de población en inseguridad alimentaria y nutricional del Distrito Capital, a través de comedores comunitarios."], "magnitud": null},
+  "2601":{"nombre": "Pacto por espacios sostenibles en San Cristóbal", "meta": "Realizar 16 acuerdos para la organización, la recuperación, el cuidado, el embellecimiento, la sostenibilidad, el mejoramiento y el aprovechamiento económico del espacio público.", "metas": ["Realizar 16 acuerdos para la organización, la recuperación, el cuidado, el embellecimiento, la sostenibilidad, el mejoramiento y el aprovechamiento económico del espacio público."], "magnitud": null},
+  "2606":{"nombre": "Tejiendo memoria y reconciliación para el futuro", "meta": "Realizar 4 acciones de construcción de paz que contribuyan al tejido social, la integración local, la sostenibilidad económica y/o desarrollo territorial para la reconciliación.", "metas": ["Realizar 4 acciones de construcción de paz que contribuyan al tejido social, la integración local, la sostenibilidad económica y/o desarrollo territorial para la reconciliación.", "Realizar 4 procesos de fortalecimiento de habilidades y capacidades de la población víctima del conflicto armado o excombatientes para promover su partitipación en los diferentes escenarios.", "Realizar 4 procesos pedagógicos, artísticos, culturales, formativos o para el fortalecimiento de iniciativas ciudadanas para la apropiación social de la memoria, verdad, reparación integral a víctimas, paz y reconciliación."], "magnitud": null},
+  "2608":{"nombre": "San Cristóbal emprende, fortaleciendo el tejido empresarial local", "meta": "Apoyar 800 Mipymes, emprendimientos y/o actores de la economia informal para el fortalecimiento del tejido empresarial local.", "metas": ["Apoyar 800 Mipymes, emprendimientos y/o actores de la economia informal para el fortalecimiento del tejido empresarial local."], "magnitud": null},
+  "2615":{"nombre": "Educación que genera oportunidades", "meta": "Beneficiar 840 estudiantes con apoyo de sostenimiento para la permanencia en la educación posmedia (niveles de formación técnico profesional, tecnólogo, profesional universitario y educación para el trabajo y desarrollo humano).", "metas": ["Beneficiar 840 estudiantes con apoyo de sostenimiento para la permanencia en la educación posmedia (niveles de formación técnico profesional, tecnólogo, profesional universitario y educación para el trabajo y desarrollo humano).", "Beneficiar 840 estudiantes en programas de educación posmedia (niveles de formación técnico profesional, tecnólogo, profesional universitario y educación para el trabajo y desarrollo humano).", "Dotar 61 sedes educativas urbanas y rurales con recursos pedagógicos y/o tecnológicos"], "magnitud": null},
+  "2620":{"nombre": "San Cristóbal: Camina Seguro, Vive Seguro", "meta": "Fortalecer 100 organizaciones comunitarias a través de capacidades para promover acciones de corresponsabilidad en la gestión de la seguridad y la convivencia", "metas": ["Fortalecer 100 organizaciones comunitarias a través de capacidades para promover acciones de corresponsabilidad en la gestión de la seguridad y la convivencia", "Implementar 120 acciones formativas diferenciales para la promoción de la convivencia ciudadana", "Implementar 120 iniciativas de convivencia con participación de la ciudadanía"], "magnitud": null},
+  "2627":{"nombre": "El delirio del turismo, San Cristóbal, un delirio turístico de oportunidades", "meta": "Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades locales para la gestión y el desarrollo turístico", "metas": ["Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades locales para la gestión y el desarrollo turístico", "Realizar 8 acciones para fortalecer las capacidades y/o habilidades, técnicas y blandas de las personas de la localidad, con el fin de mejorar el acceso a oportunidades de empleo."], "magnitud": null},
+  "2633":{"nombre": "San Cristóbal, un territorio de oportunidades para la gestión de conflictos y la convivencia", "meta": "Beneficiar 680 ciudadanos con habilidades y capacidades para gestionar la convivencia constructivamente", "metas": ["Beneficiar 680 ciudadanos con habilidades y capacidades para gestionar la convivencia constructivamente", "Ejecutar 4 programas comunitarios con enfoque restaurativo para el cuidado del espacio público y del medio ambiente", "Fortalecer 1.600 actores comunitarios con herramientas y capacidades para la implementación de un enfoque restaurativo para la justicia y la convivencia", "Fortalecer 4 programas de abordaje de conflictividad escolar para la convivencia con enfoque restaurativo", "Implementar 24 proyectos comunitarios en la localidad, para la apropiación del Código Nacional de Seguridad y Convivencia Ciudadana", "Implementar 24 proyectos de justicia local para la resolución efectiva de conflictividades de manera integral en el sistema de justicia", "Implementar 80 acciones pedagógicas para la gestión de conflictividades y prevención de violencias"], "magnitud": null},
+  "2638":{"nombre": "San Cristobal activa el sector cultural", "meta": "Intervenir 4 equipamientos culturales con acciones de construcción, adecuación y/o dotación", "metas": ["Intervenir 4 equipamientos culturales con acciones de construcción, adecuación y/o dotación"], "magnitud": null},
+  "2648":{"nombre": "Oportunidades con bien-estar, San Cristóbal avanza más", "meta": "Atender 8.000 personas con apoyos que contribuyan al ingreso mínimo garantizado.", "metas": ["Atender 8.000 personas con apoyos que contribuyan al ingreso mínimo garantizado.", "Beneficiar 1.160 jóvenes con transferencias condicionadas y  acompañamiento psicosocial para la promoción al acceso y permanencia a oportunidades de formación y empleabilidad", "Beneficiar 6.250 personas mayores con transferencias monetarias"], "magnitud": null},
+  "2667":{"nombre": "Gobierno de lo cotidiano", "meta": "Realizar 1 acciones de inspección, vigilancia y control.", "metas": ["Realizar 1 acciones de inspección, vigilancia y control.", "Realizar 4 estrategias de fortalecimiento institucional (una por vigencia)."], "magnitud": null},
+  "2694":{"nombre": "Redes de oportunidad, formación digital y participación ciudadana", "meta": "Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas, con énfasis en procesos de formación y desarrollo de competencias digitales.", "metas": ["Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas, con énfasis en procesos de formación y desarrollo de competencias digitales.", "Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas, con énfasis en Servicios TIC´s generados."], "magnitud": null},
+  "2708":{"nombre": "Chango y Pueblos indigenas en resistencia y pervivencia cultural", "meta": "Concertar e implementar cuatro (4) iniciativa de inversión local con las comunidades negras, afrocolombianas y palenqueras (aplica en todas las localidades con autoridades NAP)", "metas": ["Concertar e implementar cuatro (4) iniciativa de inversión local con las comunidades negras, afrocolombianas y palenqueras (aplica en todas las localidades con autoridades NAP)", "Concertar e implementar cuatro (4) iniciativa de inversión local con los pueblos indígenas (aplica en todas las localidades con autoridades indígenas)"], "magnitud": null},
+  "2791":{"nombre": "Creciendo juntos, atención integral y oportunidades para la comunidad", "meta": "Dotar y/o acondicionar 1 unidades operativas orientadas a la atención de jóvenes (casas de la juventud, centros forjar)", "metas": ["Dotar y/o acondicionar 1 unidades operativas orientadas a la atención de jóvenes (casas de la juventud, centros forjar)", "Dotar y/o acondicionar 1 unidades operativas para la prestación de servicios  y  la generación de estrategias dirigidas a personas habitantes de calle y/o en riesgo de estarlo (Hogares de paso, Autocuidado, SEDID, Atención Socio-saniatria y Comunidad de Vida El Camino)", "Dotar y/o acondicionar 16 unidades operativas orientadas a la atención de la primera infancia (Jardines Infantiles, Casas de Pensamiento Intercultural, Modalidad Espacios Rurales, Crecemos en la Ruralidad, Creciendo Juntos, Centros Amar, Centros Forjar)", "Dotar y/o acondicionar 2 Centros de Desarrollo Comunitarios  para la prestación de servicios sociales dirigidas al desarrollo de capacidades y generación de oportunidades", "Dotar y/o acondicionar 2 unidades operativas de atención especializada (Centros Integrarte, Centros Crecer y Cadis)", "Dotar y/o acondicionar 2 unidades operativas orientadas a la prestación de servicios a la persona mayor"], "magnitud": null},
+  "2797":{"nombre": "San Cristóbal nuestra pasión", "meta": "Desarrollar 4 acciones orientadas a la ciudadanía, en el marco de la estrategia \"Bogotaneidad", "metas": ["Desarrollar 4 acciones orientadas a la ciudadanía, en el marco de la estrategia \"Bogotaneidad", "Fortalecer 1 unidades de innovación publica y  social a nivel local"], "magnitud": null},
+  "2802":{"nombre": "Fortaleciendo vidas, mujeres en San Cristóbal por la prevención y autonomía", "meta": "Adecuar y dotar 2 espacios en las manzanas del cuidado", "metas": ["Adecuar y dotar 2 espacios en las manzanas del cuidado", "Vincular 1.600 mujeres para el ejercicio de derechos y el fortalecimiento de su autonomía económica", "Vincular 4.000 personas en procesos para la prevención de violencias en el contexto familiar y/o violencia sexual", "Vincular 6.000 mujeres cuidadoras a estrategias de cuidado."], "magnitud": null},
+  "2805":{"nombre": "San Cristóbal, oportunidades para el futuro reverdecido", "meta": "Generar 4.000 m2 de áreas renaturalizadas", "metas": ["Generar 4.000 m2 de áreas renaturalizadas", "Implementar 4 procesos comunitarios de educación ambiental que promueven la conservación de la biodiversidad y el agua", "Intervenir 4 hectáreas de conectores ecosistémicos", "Lograr 10 hectáreas en proceso de restauración ecológica", "Realizar acciones de conservación en 5 hectáreas de la  Estructura Ecológica Principal"], "magnitud": null}
 };
+
+/* METAS por proyecto (para el select dinámico) */
+const POAI_METAS = {"2251": {"nombre": "Sostenibilidad del ecosistema cutural y creativo", "metas": ["Financiar 120 proyectos del sector cultural y creativo."]}, "2252": {"nombre": "Transformando espacios, conectando comunidades, San Cristóbal vial, caminos de oportunidad y progreso", "metas": ["Intervenir 17 Kilómetros-carril de malla vial urbana (local y/o intermedia) con acciones de construcción y/o conservación"]}, "2254": {"nombre": "Caminos sostenibles, solidez en San Cristóbal, ampliando y conservando los espacios peatonales", "metas": ["Intervenir 4.290  metros cuadrados de elementos del sistema de espacio público peatonal con acciones de construcción y/o conservación."]}, "2257": {"nombre": "Red de oportunidades, parques y cultura para el bienestar común", "metas": ["Construir 880 m2 de Parques de la red de proximidad (la construcción incluye su dotación).", "Intervenir 32 Parques  de la red de proximidad con acciones de mejoramiento, mantenimiento y/o dotación."]}, "2273": {"nombre": "San Cristóbal resiliente, fortaleciendo capacidades locales", "metas": ["Realizar 4 acciones efectivas para el fortalecimiento de las capacidades locales en torno a la gestión del riesgo", "Realizar 4 obras de mitigación y/u obras de mitigación existentes con mantenimiento"]}, "2285": {"nombre": "Seguridad y oportunidades con fuerza pública equipada", "metas": ["Intervenir 11 equipamientos de seguridad y acceso a la justicia con acciones de fortalecimiento, operación, adecuación y/o dotación", "Suministrar 4 dotaciones a organismos de seguridad"]}, "2316": {"nombre": "San Cristóbal sin barreras, salud, bienestar y oportunidades para todos", "metas": ["Beneficiar 2.000 personas con discapacidad a través de Dispositivos de Asistencia Personal - Ayudas Técnicas (no incluidas en los Planes de Beneficios)", "Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental", "Vincular 1.200 personas con discapacidad, cuidadores y cuidadoras, en actividades complementarias en salud", "Vincular 1.600 personas a las acciones desarrolladas desde los dispositivos de base comunitaria en respuesta al consumo de SPA", "Vincular 2.000 personas a las acciones y estrategias para promover la salud sexual y reproductiva consciente en los diferentes ciclos de vida", "Vincular 3.200 personas en acciones complementarias en salud física, nutricional y oral, a través del Circuito del Cuidado"]}, "2349": {"nombre": "San Cristóbal espacio público y pacifico", "metas": ["Implementar 4 estrategias de seguridad y convivencia a través de gestores locales, que permitan el uso y disfrute del espacio público"]}, "2385": {"nombre": "San Cristóbal, mujeres en acción contra la violencia", "metas": ["Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia contra la mujer."]}, "2405": {"nombre": "Cultura y memoria en movimiento, San Cristóbal vive su patrimonio", "metas": ["Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregados.", "Capacitar 1.480 personas en los campos artísticos, interculturales, culturales y/o patrimoniales.", "Otorgar 100 estímulos de apoyo al sector artístico y cultural.", "Realizar 80 eventos de promoción, circulción y apropiación de actividades artísticas, culturales y patrimoniales."]}, "2409": {"nombre": "San Cristobal incidente", "metas": ["Capacitar 2.600 personas a través de procesos de formación para la participación de manera virtual y presencial.", "Fortalecer 100 organizaciones comunales.", "Fortalecer 200 Organizaciones sociales e Instancias de participación ciudadana."]}, "2481": {"nombre": "San Cristóbal cuida, bienestar animal y educación para todos", "metas": ["Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y adopciones", "Esterilizar 15.000 perros y gatos incluyendo los que está en condición de vulnerabilidad", "Vincular 2.400 personas en acciones educativas en temas de protección y bienestar animal"]}, "2495": {"nombre": "Actívate San Cristóbal, deporte, recreación y bienestar", "metas": ["Beneficiar  13.200 personas en actividades recreo-deportivas comunitarias.", "Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que implementan iniciativas de carácter barrial con apoyos economicos", "Beneficiar 4.000 Personas con la entrega de dotaciones deportivas.", "Capacitar 6.400 personas en los campos deportivos o recreativos"]}, "2502": {"nombre": "San Cristóbal, oportunidades para el futuro sostenible", "metas": ["Capacitar 6.000 personas en separación en la fuente y reciclaje.", "Implementar 160 huertas urbanas", "Mantener 1.000 árboles en zona urbana", "Mantener 2.000 m2 de jardinería"]}, "2506": {"nombre": "Oportunidades con bien-estar, San Cristóbal avanza", "metas": ["Habilitar 300 cupos para la atención de población en inseguridad alimentaria y nutricional del Distrito Capital, a través de comedores comunitarios."]}, "2601": {"nombre": "Pacto por espacios sostenibles en San Cristóbal", "metas": ["Realizar 16 acuerdos para la organización, la recuperación, el cuidado, el embellecimiento, la sostenibilidad, el mejoramiento y el aprovechamiento económico del espacio público."]}, "2606": {"nombre": "Tejiendo memoria y reconciliación para el futuro", "metas": ["Realizar 4 acciones de construcción de paz que contribuyan al tejido social, la integración local, la sostenibilidad económica y/o desarrollo territorial para la reconciliación.", "Realizar 4 procesos de fortalecimiento de habilidades y capacidades de la población víctima del conflicto armado o excombatientes para promover su partitipación en los diferentes escenarios.", "Realizar 4 procesos pedagógicos, artísticos, culturales, formativos o para el fortalecimiento de iniciativas ciudadanas para la apropiación social de la memoria, verdad, reparación integral a víctimas, paz y reconciliación."]}, "2608": {"nombre": "San Cristóbal emprende, fortaleciendo el tejido empresarial local", "metas": ["Apoyar 800 Mipymes, emprendimientos y/o actores de la economia informal para el fortalecimiento del tejido empresarial local."]}, "2615": {"nombre": "Educación que genera oportunidades", "metas": ["Beneficiar 840 estudiantes con apoyo de sostenimiento para la permanencia en la educación posmedia (niveles de formación técnico profesional, tecnólogo, profesional universitario y educación para el trabajo y desarrollo humano).", "Beneficiar 840 estudiantes en programas de educación posmedia (niveles de formación técnico profesional, tecnólogo, profesional universitario y educación para el trabajo y desarrollo humano).", "Dotar 61 sedes educativas urbanas y rurales con recursos pedagógicos y/o tecnológicos"]}, "2620": {"nombre": "San Cristóbal: Camina Seguro, Vive Seguro", "metas": ["Fortalecer 100 organizaciones comunitarias a través de capacidades para promover acciones de corresponsabilidad en la gestión de la seguridad y la convivencia", "Implementar 120 acciones formativas diferenciales para la promoción de la convivencia ciudadana", "Implementar 120 iniciativas de convivencia con participación de la ciudadanía"]}, "2627": {"nombre": "El delirio del turismo, San Cristóbal, un delirio turístico de oportunidades", "metas": ["Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades locales para la gestión y el desarrollo turístico", "Realizar 8 acciones para fortalecer las capacidades y/o habilidades, técnicas y blandas de las personas de la localidad, con el fin de mejorar el acceso a oportunidades de empleo."]}, "2633": {"nombre": "San Cristóbal, un territorio de oportunidades para la gestión de conflictos y la convivencia", "metas": ["Beneficiar 680 ciudadanos con habilidades y capacidades para gestionar la convivencia constructivamente", "Ejecutar 4 programas comunitarios con enfoque restaurativo para el cuidado del espacio público y del medio ambiente", "Fortalecer 1.600 actores comunitarios con herramientas y capacidades para la implementación de un enfoque restaurativo para la justicia y la convivencia", "Fortalecer 4 programas de abordaje de conflictividad escolar para la convivencia con enfoque restaurativo", "Implementar 24 proyectos comunitarios en la localidad, para la apropiación del Código Nacional de Seguridad y Convivencia Ciudadana", "Implementar 24 proyectos de justicia local para la resolución efectiva de conflictividades de manera integral en el sistema de justicia", "Implementar 80 acciones pedagógicas para la gestión de conflictividades y prevención de violencias"]}, "2638": {"nombre": "San Cristobal activa el sector cultural", "metas": ["Intervenir 4 equipamientos culturales con acciones de construcción, adecuación y/o dotación"]}, "2648": {"nombre": "Oportunidades con bien-estar, San Cristóbal avanza más", "metas": ["Atender 8.000 personas con apoyos que contribuyan al ingreso mínimo garantizado.", "Beneficiar 1.160 jóvenes con transferencias condicionadas y  acompañamiento psicosocial para la promoción al acceso y permanencia a oportunidades de formación y empleabilidad", "Beneficiar 6.250 personas mayores con transferencias monetarias"]}, "2667": {"nombre": "Gobierno de lo cotidiano", "metas": ["Realizar 1 acciones de inspección, vigilancia y control.", "Realizar 4 estrategias de fortalecimiento institucional (una por vigencia)."]}, "2694": {"nombre": "Redes de oportunidad, formación digital y participación ciudadana", "metas": ["Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas, con énfasis en procesos de formación y desarrollo de competencias digitales.", "Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas, con énfasis en Servicios TIC´s generados."]}, "2708": {"nombre": "Chango y Pueblos indigenas en resistencia y pervivencia cultural", "metas": ["Concertar e implementar cuatro (4) iniciativa de inversión local con las comunidades negras, afrocolombianas y palenqueras (aplica en todas las localidades con autoridades NAP)", "Concertar e implementar cuatro (4) iniciativa de inversión local con los pueblos indígenas (aplica en todas las localidades con autoridades indígenas)"]}, "2791": {"nombre": "Creciendo juntos, atención integral y oportunidades para la comunidad", "metas": ["Dotar y/o acondicionar 1 unidades operativas orientadas a la atención de jóvenes (casas de la juventud, centros forjar)", "Dotar y/o acondicionar 1 unidades operativas para la prestación de servicios  y  la generación de estrategias dirigidas a personas habitantes de calle y/o en riesgo de estarlo (Hogares de paso, Autocuidado, SEDID, Atención Socio-saniatria y Comunidad de Vida El Camino)", "Dotar y/o acondicionar 16 unidades operativas orientadas a la atención de la primera infancia (Jardines Infantiles, Casas de Pensamiento Intercultural, Modalidad Espacios Rurales, Crecemos en la Ruralidad, Creciendo Juntos, Centros Amar, Centros Forjar)", "Dotar y/o acondicionar 2 Centros de Desarrollo Comunitarios  para la prestación de servicios sociales dirigidas al desarrollo de capacidades y generación de oportunidades", "Dotar y/o acondicionar 2 unidades operativas de atención especializada (Centros Integrarte, Centros Crecer y Cadis)", "Dotar y/o acondicionar 2 unidades operativas orientadas a la prestación de servicios a la persona mayor"]}, "2797": {"nombre": "San Cristóbal nuestra pasión", "metas": ["Desarrollar 4 acciones orientadas a la ciudadanía, en el marco de la estrategia \"Bogotaneidad", "Fortalecer 1 unidades de innovación publica y  social a nivel local"]}, "2802": {"nombre": "Fortaleciendo vidas, mujeres en San Cristóbal por la prevención y autonomía", "metas": ["Adecuar y dotar 2 espacios en las manzanas del cuidado", "Vincular 1.600 mujeres para el ejercicio de derechos y el fortalecimiento de su autonomía económica", "Vincular 4.000 personas en procesos para la prevención de violencias en el contexto familiar y/o violencia sexual", "Vincular 6.000 mujeres cuidadoras a estrategias de cuidado."]}, "2805": {"nombre": "San Cristóbal, oportunidades para el futuro reverdecido", "metas": ["Generar 4.000 m2 de áreas renaturalizadas", "Implementar 4 procesos comunitarios de educación ambiental que promueven la conservación de la biodiversidad y el agua", "Intervenir 4 hectáreas de conectores ecosistémicos", "Lograr 10 hectáreas en proceso de restauración ecológica", "Realizar acciones de conservación en 5 hectáreas de la  Estructura Ecológica Principal"]}};
 
 const LUGARES_POR_ZONA = {
   "ZONA 1":["Aguas Claras","Amapolas","Amapolas II Sector","Arboleda de los Alpes","Balcones de San Pedro III","Buenavista II Sector","Buenavista Suroriental","Corinto","El Balcón de la Castaña","El Futuro","El Ramajal","El Ramajal San Pedro","El Tablón","El Triángulo El Manantial","Granjas y Huertas El Ramajal","La Castaña","La Cecilia","La Gran Colombia","La Sagrada Familia","Las Acacias","Las Mercedes","Los Alpes"],
@@ -1137,15 +1299,29 @@ function actualizarCorreos() {
 
 function autocompleteProyecto() {
   const id = document.getElementById('id_proyecto').value;
+  const wrapMeta = document.getElementById('campo-meta-wrap');
+  const selMeta = document.getElementById('meta_proyecto');
   if (id && PROYECTOS[id]) {
     document.getElementById('proyecto').value = PROYECTOS[id].nombre;
-    document.getElementById('metas').value = PROYECTOS[id].meta;
+    // Populate metas dropdown
+    const metas = PROYECTOS[id].metas || [];
+    selMeta.innerHTML = '<option value="">Seleccionar meta...</option>';
+    metas.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = m;
+      selMeta.appendChild(opt);
+    });
+    // If only one meta, auto-select it
+    if (metas.length === 1) selMeta.value = metas[0];
+    wrapMeta.style.display = 'flex';
     if (!document.getElementById('magnitud').value) {
       document.getElementById('magnitud').value = PROYECTOS[id].magnitud || '';
     }
   } else {
     document.getElementById('proyecto').value = '';
-    document.getElementById('metas').value = '';
+    selMeta.innerHTML = '<option value="">— Seleccione el proyecto primero —</option>';
+    wrapMeta.style.display = 'none';
   }
   actualizarProgreso();
 }
@@ -1494,7 +1670,7 @@ async function enviarFormulario() {
     });
   } else {
     // Capturar campos Proyecto/Metas
-    ['id_proyecto','proyecto','metas','metas_custom','nombre_actividad',
+    ['id_proyecto','proyecto','meta_proyecto','nombre_actividad',
      'participacion','cuales_entidades','magnitud','descripcion',
      'contrato_juridico','numero_orfeo','entidades_externas'].forEach(id => {
       const el = document.getElementById(id);
@@ -1632,7 +1808,7 @@ function doPost(e) {
     sheet.appendRow([
       d.id_registro, d.timestamp, d.fecha, d.jornada, d.gerencia, d.area, d.tipo_actividad,
       // Proyecto/Metas
-      d.id_proyecto||'', d.proyecto||'', d.metas||'', d.metas_custom||'',
+      d.id_proyecto||'', d.proyecto||'', d.meta_proyecto||'',
       d.contrato_juridico||'', d.nombre_actividad||'', d.participacion||'',
       d.cuales_entidades||'', d.entidades_externas||d.numero_orfeo||'',
       d.magnitud||'', d.descripcion||'',
