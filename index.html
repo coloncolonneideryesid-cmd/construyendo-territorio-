@@ -683,17 +683,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <div class="hint">Porcentaje de ejecución financiera (giros realizados)</div>
       </div>
 
-      <!-- Fase del contrato -->
-      <div class="field">
-        <label for="inv_fase">Fase del Contrato <span class="req">*</span></label>
-        <select id="inv_fase" name="inv_fase" required>
-          <option value="">Seleccionar fase...</option>
-          <option value="ESTRATEGIA TERRITORIAL">1. Estrategia Territorial</option>
-          <option value="FORMULACIÓN">2. Formulación</option>
-          <option value="SEGUIMIENTO CONTRATO">3. Seguimiento Contrato</option>
-        </select>
-      </div>
-
       <!-- Estado del contrato -->
       <div class="field">
         <label for="inv_estado_contrato">Estado del Contrato</label>
@@ -1018,7 +1007,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
           <option>CULTURA</option><option>DEPORTES</option><option>EDUCACION</option><option>PRODUCTIVIDAD</option>
           <option>AMBIENTE CONFIABLE</option><option>CYPA</option><option>RIESGOS (PyAR)</option>
           <option>MENOS POBREZA</option><option>PARTICIPACION INCIDENTE</option>
-          <option>BIEN-ESTAR</option><option>DERECHOS DIFERENCIALES</option><option>DOTACIONES</option>
+          <option>BIEN-ESTAR</option><option>DERECHOS DIFERENCIALES</option>
           <option>IVC</option><option>MEJORES VIAS</option><option>PARQUES ACTIVOS</option>
           <option>OBRAS DE MITIGACION</option><option>OBRAS DE VIDA</option><option>MOVILIDAD</option>
           <option>ADMINISTRATIVA Y FINANCIERA</option>
@@ -1120,6 +1109,80 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
       <div class="card-num">2 / 5</div>
     </div>
     <div class="card-body">
+
+      <div class="field span-2">
+        <label for="inst_instancia">Instancia de Participación <span class="req">*</span></label>
+        <select id="inst_instancia" name="inst_instancia" required>
+          <option value="">Seleccionar instancia...</option>
+          <option value="COLEV">COLEV</option>
+          <option value="COMITÉ OPERATIVO LOCAL PARA LAS FAMILIAS (COLFA)">COMITÉ OPERATIVO LOCAL PARA LAS FAMILIAS (COLFA)</option>
+          <option value="COMITE OPERATIVO LOCAL DE MUJER Y GENERO (COLMYEG)">COMITE OPERATIVO LOCAL DE MUJER Y GENERO (COLMYEG)</option>
+          <option value="CONSEJO RED DEL BUEN TRATO CRBT">CONSEJO RED DEL BUEN TRATO CRBT</option>
+          <option value="MESA LOCAL DE RESIDENTES EXTRANJEROS">MESA LOCAL DE RESIDENTES EXTRANJEROS</option>
+          <option value="CONSEJO LOCAL DE SEGURIDAD PARA LAS MUJERES (CLSM)">CONSEJO LOCAL DE SEGURIDAD PARA LAS MUJERES (CLSM)</option>
+          <option value="CONSEJO LOCAL DE GESTIÓN DEL RIESGO Y CAMBIO CLIMÁTICO (CLGRRC)">CONSEJO LOCAL DE GESTIÓN DEL RIESGO Y CAMBIO CLIMÁTICO (CLGRRC)</option>
+          <option value="MESA LOCAL DE CERROS">MESA LOCAL DE CERROS</option>
+          <option value="COMISIÓN AMBIENTAL LOCAL">COMISIÓN AMBIENTAL LOCAL</option>
+          <option value="MESA LOCAL DE RESIDUOS">MESA LOCAL DE RESIDUOS</option>
+          <option value="MESA LOCAL DE AGRICULTURA URBANA">MESA LOCAL DE AGRICULTURA URBANA</option>
+          <option value="CONSEJO LOCAL DE PROTECCIÓN Y BIENESTAR ANIMAL (PYBA)">CONSEJO LOCAL DE PROTECCIÓN Y BIENESTAR ANIMAL (PYBA)</option>
+          <option value="OBSERVATORIO LOCAL Y VEEDURÍA">OBSERVATORIO LOCAL Y VEEDURÍA</option>
+          <option value="CONSEJO LOCAL DE PROPIEDAD HORIZONTAL CLPH">CONSEJO LOCAL DE PROPIEDAD HORIZONTAL CLPH</option>
+          <option value="CONSEJO LOCAL LGTBI">CONSEJO LOCAL LGTBI</option>
+          <option value="COMITÉ OPERATIVO LOCAL PARA EL FENÓMENO DE HABITABILIDAD EN CALLE">COMITÉ OPERATIVO LOCAL PARA EL FENÓMENO DE HABITABILIDAD EN CALLE</option>
+          <option value="MESA LOCAL DE COMUNICACIÓN Y MEDIOS COMUNITARIOS">MESA LOCAL DE COMUNICACIÓN Y MEDIOS COMUNITARIOS</option>
+          <option value="CONSEJO LOCAL PARA LA ATENCIÓN INTEGRAL A VICTIMAS DE VIOLENCIA INTRAFAMILIAR Y VIOLENCIA EXPLOTACIÓN SEXUAL">CONSEJO LOCAL PARA LA ATENCIÓN INTEGRAL A VICTIMAS DE VIOLENCIA INTRAFAMILIAR Y VIOLENCIA EXPLOTACIÓN SEXUAL</option>
+          <option value="CONSEJO LOCAL DE JUVENTUD - (COLJ)">CONSEJO LOCAL DE JUVENTUD - (COLJ)</option>
+          <option value="CONSEJO LOCAL DE LA BICICLETA  (CLB )">CONSEJO LOCAL DE LA BICICLETA  (CLB )</option>
+          <option value="CONSEJO LOCAL DE MOVILIDAD Y CULTURA VIAL">CONSEJO LOCAL DE MOVILIDAD Y CULTURA VIAL</option>
+          <option value="COMITE LOCAL DE SEGURIDAD Y CONVIVENCIA (CLSC)">COMITE LOCAL DE SEGURIDAD Y CONVIVENCIA (CLSC)</option>
+          <option value="COMITÉ CIVIL DE CONVIVENCIA LOCAL">COMITÉ CIVIL DE CONVIVENCIA LOCAL</option>
+          <option value="CONSEJO LOCAL DE BARRAS FUTBOLERAS (CLBF)">CONSEJO LOCAL DE BARRAS FUTBOLERAS (CLBF)</option>
+          <option value="CONSEJO LOCAL DE DEPORTES, RECREACIÓN, ACTIVIDAD FÍSICA, PARQUES, ESCENARIOS Y EQUIPAMIENTO DEPORTIVO Y RECREATIVOS (DRAFE)">CONSEJO LOCAL DE DEPORTES, RECREACIÓN, ACTIVIDAD FÍSICA, PARQUES, ESCENARIOS Y EQUIPAMIENTO DEPORTIVO Y RECREATIVOS (DRAFE)</option>
+          <option value="MESA  FEMENINA DE BARRAS FUTBOLERAS">MESA  FEMENINA DE BARRAS FUTBOLERAS</option>
+          <option value="CONSEJO LOCAL DE ARTE, CULTURA Y PATRIMONIO (CLACP)">CONSEJO LOCAL DE ARTE, CULTURA Y PATRIMONIO (CLACP)</option>
+          <option value="MESA LOCAL DE HIP-HOP">MESA LOCAL DE HIP-HOP</option>
+          <option value="MESA LOCAL DE GRAFITI">MESA LOCAL DE GRAFITI</option>
+          <option value="MESA LOCAL DE MUSICA">MESA LOCAL DE MUSICA</option>
+          <option value="MESA LOCAL DE TATUADORES">MESA LOCAL DE TATUADORES</option>
+          <option value="MESA LOCAL DE ROCK">MESA LOCAL DE ROCK</option>
+          <option value="COMITÉ LOCAL DE LIBERTAD RELIGIOSA, CULTO Y CONVIVENCIA">COMITÉ LOCAL DE LIBERTAD RELIGIOSA, CULTO Y CONVIVENCIA</option>
+          <option value="CONSEJO LOCAL DE GOBIERNO">CONSEJO LOCAL DE GOBIERNO</option>
+          <option value="UNIDAD DE APOYO TÉCNICO (UAT)">UNIDAD DE APOYO TÉCNICO (UAT)</option>
+          <option value="CONSEJO LOCAL DE POLÍTICA SOCIAL - (CLOPS)">CONSEJO LOCAL DE POLÍTICA SOCIAL - (CLOPS)</option>
+          <option value="CONSEJO DE PLANEACIÓN LOCAL (CPL)">CONSEJO DE PLANEACIÓN LOCAL (CPL)</option>
+          <option value="COMISIÓN LOCAL INTERSECTORIAL DE PARTICIPACIÓN (CLIP)">COMISIÓN LOCAL INTERSECTORIAL DE PARTICIPACIÓN (CLIP)</option>
+          <option value="COMITÉ OPERATIVO LOCAL DE INFANCIA Y ADOLESCENCIA (COLIA)">COMITÉ OPERATIVO LOCAL DE INFANCIA Y ADOLESCENCIA (COLIA)</option>
+          <option value="MESA DE PREVENCIÓN CONTRA EL TRABAJO INFANTIL Y ADOLESCENTES (PETIA)">MESA DE PREVENCIÓN CONTRA EL TRABAJO INFANTIL Y ADOLESCENTES (PETIA)</option>
+          <option value="CONSEJO LOCAL DE NIÑOS, NIÑAS, ADOLESCENTES (CCLONNA)">CONSEJO LOCAL DE NIÑOS, NIÑAS, ADOLESCENTES (CCLONNA)</option>
+          <option value="CONSEJO TUTELAR DE NIÑOS, NIÑAS Y ADOLESCENTES">CONSEJO TUTELAR DE NIÑOS, NIÑAS Y ADOLESCENTES</option>
+          <option value="POLÍTICA PÚBLICA DE PREVENCIÓN DEL RECLUTAMIENTO Y USO DE NIÑOS, NIÑAS Y ADOLESCENTES - PRUUNNA">POLÍTICA PÚBLICA DE PREVENCIÓN DEL RECLUTAMIENTO Y USO DE NIÑOS, NIÑAS Y ADOLESCENTES - PRUUNNA</option>
+          <option value="RUTA INTEGRAL DE ATENCIONES PARA LA PRIMERA INFANCIA –(RIAPI)">RUTA INTEGRAL DE ATENCIONES PARA LA PRIMERA INFANCIA –(RIAPI)</option>
+          <option value="CONSEJO LOCAL DE POLÍTICA SOCIAL  - CLOPS DE INFANCIA">CONSEJO LOCAL DE POLÍTICA SOCIAL  - CLOPS DE INFANCIA</option>
+          <option value="MESA LOCAL DE ESTUPEFACIENTES">MESA LOCAL DE ESTUPEFACIENTES</option>
+          <option value="CONSEJO LOCAL DE DISCAPACIDAD">CONSEJO LOCAL DE DISCAPACIDAD</option>
+          <option value="COMITÉ DE PARTICIPACIÓN COMUNITARIA EN SALUD- (COPACOS)">COMITÉ DE PARTICIPACIÓN COMUNITARIA EN SALUD- (COPACOS)</option>
+          <option value="MESA LOCAL DE BIENESTAR">MESA LOCAL DE BIENESTAR</option>
+          <option value="COMITE DE SEGURIDAD ALIMENTARIA Y NUTRICIONAL">COMITE DE SEGURIDAD ALIMENTARIA Y NUTRICIONAL</option>
+          <option value="COMITÉ DE VIGILANCIA EPIDEMIOLÓGICA COMUNITARIA">COMITÉ DE VIGILANCIA EPIDEMIOLÓGICA COMUNITARIA</option>
+          <option value="MESA LOCAL DE PARTICIPACIÓN EFECTIVA DE VICTIMAS DEL CONFLICTO ARMADO">MESA LOCAL DE PARTICIPACIÓN EFECTIVA DE VICTIMAS DEL CONFLICTO ARMADO</option>
+          <option value="COMITÉ LOCAL DE LA DEFENSA, PROTECCIÓN Y PROMOCIÓN DE DERECHOS HUMANOS">COMITÉ LOCAL DE LA DEFENSA, PROTECCIÓN Y PROMOCIÓN DE DERECHOS HUMANOS</option>
+          <option value="COMITÉ LOCAL DE JUSTICIA TRANSICIONAL CLIT">COMITÉ LOCAL DE JUSTICIA TRANSICIONAL CLIT</option>
+          <option value="ALERTAS TEMPRANAS">ALERTAS TEMPRANAS</option>
+          <option value="MESA INDÍGENA">MESA INDÍGENA</option>
+          <option value="MESA PALENQUEROS">MESA PALENQUEROS</option>
+          <option value="COMISIONES CONSULTIVAS LOCALES DE COMUNIDADES NEGRAS, AFROCOLOMBIANAS, RAIZALES Y PALENQUERAS">COMISIONES CONSULTIVAS LOCALES DE COMUNIDADES NEGRAS, AFROCOLOMBIANAS, RAIZALES Y PALENQUERAS</option>
+          <option value="EL CONSEJO LOCAL DE PAZ, RECONCILIACIÓN, CONVIVENCIA Y TRANSFORMACIÓN DE CONFLICTOS DE SAN CRISTÓBAL (CLPRCTCSC)">EL CONSEJO LOCAL DE PAZ, RECONCILIACIÓN, CONVIVENCIA Y TRANSFORMACIÓN DE CONFLICTOS DE SAN CRISTÓBAL (CLPRCTCSC)</option>
+          <option value="CONSEJO LOCAL DE PRODUCTIVIDAD, COMPETITIVIDAD Y DESARROLLO ECONÓMICO">CONSEJO LOCAL DE PRODUCTIVIDAD, COMPETITIVIDAD Y DESARROLLO ECONÓMICO</option>
+          <option value="CONSEJO LOCAL DE VENDEDORES INFORMALES">CONSEJO LOCAL DE VENDEDORES INFORMALES</option>
+          <option value="COMITÉ DE PRODUCTIVIDAD CP">COMITÉ DE PRODUCTIVIDAD CP</option>
+          <option value="Consejo Local de Víctimas">Consejo Local de Víctimas</option>
+          <option value="Mesa Local de Trabajadores Desempleados">Mesa Local de Trabajadores Desempleados</option>
+          <option value="Consejo Local del riesgo">Consejo Local del riesgo</option>
+          <option value="Consejo Local de Sabios y Sabias">Consejo Local de Sabios y Sabias</option>
+        </select>
+        <div class="hint">📋 Seleccione la instancia a la que corresponde esta actividad (66 instancias locales)</div>
+      </div>
 
       <div class="field">
         <label for="inst_tipo_reunion">Tipo de Actividad <span class="req">*</span></label>
@@ -1272,7 +1335,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
   <div class="card">
     <div class="card-header">
       <div class="card-icon">👤</div>
-      <div><div class="card-title">Responsable de Planeación / Encargado de Seguimiento a la Inversión</div></div>
+      <div><div class="card-title" id="responsable-title">Persona que Diligencia el Formulario</div></div>
       <div class="card-num">5 / 5</div>
     </div>
     <div class="card-body">
@@ -1364,7 +1427,7 @@ const AREAS_POR_GERENCIA = {
   "CAMINA SEGURA":     ["SEGURIDAD","JUSTICIA SOCIAL","TERRITORIO CONFIABLE","TEJIDO SOCIAL","GESTORES DE CONVIVENCIA"],
   "MAS OPORTUNIDADES": ["CULTURA","DEPORTES","EDUCACION","PRODUCTIVIDAD"],
   "MAS TERRITORIO":    ["AMBIENTE CONFIABLE","CYPA","RIESGOS (PyAR)"],
-  "TERRITORIO SOCIAL": ["MENOS POBREZA","PARTICIPACION INCIDENTE","BIEN-ESTAR","DERECHOS DIFERENCIALES","DOTACIONES"],
+  "TERRITORIO SOCIAL": ["MENOS POBREZA","PARTICIPACION INCIDENTE","BIEN-ESTAR","DERECHOS DIFERENCIALES"],
   "IVC":               ["IVC"],
   "INFRAESTRUCTURA":   ["MEJORES VIAS","PARQUES ACTIVOS","OBRAS DE MITIGACION","OBRAS DE VIDA","MOVILIDAD"],
 };
@@ -1391,7 +1454,6 @@ const CORREOS_POR_AREA = {
   "PARTICIPACION INCIDENTE":  { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_PARTICIPACION@alcaldia.gov.co" },
   "BIEN-ESTAR":               { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_BIENESTAR@alcaldia.gov.co" },
   "DERECHOS DIFERENCIALES":   { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_DD@alcaldia.gov.co" },
-  "DOTACIONES":               { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_DOTACIONES@alcaldia.gov.co" },
   // ── IVC ───────────────────────────────────────────────
   "IVC":                      { gerente: "CORREO_GERENTE_IVC@alcaldia.gov.co", lider: "CORREO_LIDER_IVC@alcaldia.gov.co" },
   // ── INFRAESTRUCTURA ───────────────────────────────────
@@ -1618,11 +1680,11 @@ function mostrarCamposTipoActividad() {
 
   // Quitar required de todos los campos de secciones dinámicas
   ['okr_resultado','okr_pct_cuantitativo','okr_mes','okr_avance_cualitativo',
-   'inv_mes','inv_avance_fisico','inv_avance_financiero','inv_fase','inv_descripcion',
+   'inv_mes','inv_avance_fisico','inv_avance_financiero','inv_descripcion',
    'id_proyecto','mis_nombre','mis_objetivo','mis_descripcion','mis_poblacion_cantidad',
    'gest_nombre','gest_objetivo','gest_descripcion','gest_meta','gest_avance_cuantitativo','gest_avance_cualitativo_breve','gest_poblacion_cantidad',
    'ct_tipo_item','ct_fecha','ct_area_responsable','ct_descripcion',
-   'inst_tipo_reunion','inst_descripcion','inst_vincula_alcalde',
+   'inst_instancia','inst_tipo_reunion','inst_descripcion','inst_vincula_alcalde',
    'zona','lugar'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.required = false;
@@ -1647,7 +1709,7 @@ function mostrarCamposTipoActividad() {
     mostrar('seccion-inversion');
     mostrar('seccion-evidencias');
     // No geo para inversión
-    ['inv_mes','inv_avance_fisico','inv_avance_financiero','inv_fase','inv_descripcion','id_proyecto','inv_poblacion_cantidad'].forEach(r);
+    ['inv_mes','inv_avance_fisico','inv_avance_financiero','inv_descripcion','id_proyecto','inv_poblacion_cantidad'].forEach(r);
 
   } else if (esMisional) {
     mostrar('seccion-misional');
@@ -2108,7 +2170,7 @@ async function enviarFormulario() {
     });
   } else if (tipo.startsWith('CONTRATO')) {
     ['contrato_juridico','inv_mes','inv_avance_fisico','inv_avance_financiero',
-     'inv_fase','inv_estado_contrato','inv_descripcion','id_proyecto','proyecto',
+     'inv_estado_contrato','inv_descripcion','id_proyecto','proyecto',
      'meta_proyecto','inv_poblacion_cantidad'].forEach(id => {
       const el = document.getElementById(id); if (el) datos[id] = el.value.trim();
     });
@@ -2145,7 +2207,7 @@ async function enviarFormulario() {
     const codEl = document.getElementById('ct_codigo');
     if (codEl) codEl.value = cod;
   } else if (tipo === 'INSTANCIAS DE PARTICIPACION') {
-    ['inst_tipo_reunion','inst_descripcion','inst_compromisos',
+    ['inst_instancia','inst_tipo_reunion','inst_descripcion','inst_compromisos',
      'inst_vincula_alcalde','inst_vincula_instituciones','inst_cuales_instituciones',
      'zona','lugar','lugar_custom','coordenadas','enlace_maps'].forEach(id => {
       const el = document.getElementById(id); if (el) datos[id] = el.value.trim();
