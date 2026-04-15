@@ -2163,7 +2163,7 @@ async function enviarFormulario() {
   datos.id_registro = regId;
 
   try {
-    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwNPmDTvUhnG4FhmZ608HBwDiGIAcsfqc5rxZ0fAdI0QrG2bfJgRFeiFPkZEz41Yueu/exec") {
+    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxQvhOrKkebCpxzNIcKHrykO-8DQg5FGrnKG4h91u9a-Y_Me6vrBbN9b0WJn7hf/exec") {
       await new Promise(r => setTimeout(r, 2000));
       mostrarExito(regId);
     } else {
@@ -2291,7 +2291,7 @@ async function enviarFormulario() {
   // ────────────────────────────────────────────────────────────────
 
   try {
-    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwNPmDTvUhnG4FhmZ608HBwDiGIAcsfqc5rxZ0fAdI0QrG2bfJgRFeiFPkZEz41Yueu/exec") {
+    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxQvhOrKkebCpxzNIcKHrykO-8DQg5FGrnKG4h91u9a-Y_Me6vrBbN9b0WJn7hf/exec") {
       // MODO DEMO: simula el envío y muestra en consola los datos que se enviarían
       console.table({ ...datos, target_sheet: hojaDestino });
       await new Promise(res => setTimeout(res, 1500));
