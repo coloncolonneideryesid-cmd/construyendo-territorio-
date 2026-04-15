@@ -1377,6 +1377,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
     <div class="success-icon">✅</div>
     <div class="success-title">¡Registro Enviado Exitosamente!</div>
     <div class="success-text">El registro fue guardado correctamente. Se enviaron notificaciones al gerente y al líder del área.</div>
+    <div id="success-sheet-info" style="display:none;background:var(--verde-light);border:1px solid #1B7E45;border-radius:8px;padding:.6rem 1.2rem;font-size:.82rem;color:#1B7E45;font-weight:600;"></div>
     <div class="success-id">Número de registro<strong id="success-id-val">#SCT-2026-0001</strong></div>
     <button class="btn btn-submit" onclick="nuevoRegistro()" style="margin-top:.5rem">➕ Registrar Nueva Actividad</button>
   </div>
@@ -1409,9 +1410,41 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
 /* ═══════════════════════════════════════════════════════════════
    FORMULARIO DIGITAL — REGISTRO TERRITORIAL v3.1
    Alcaldía Local San Cristóbal · 2026
+   BASE DE DATOS: "Construyendo Territorio" (Google Sheets)
+   ─────────────────────────────────────────────────────────────
+   HOJAS DEL LIBRO:
+   · SEGUIMIENTO A LA INVERSION  → tipo CONTRATO (Gestión/Jurídicos)
+   · OKR                         → tipo OKR
+   · ACTIVIDADES MISIONALES      → tipo MISIONAL (LGBTI/Sello/etc.)
+   · GESTION TERRITORIAL         → tipo GESTIÓN TERRITORIAL
+   · TERRITORIO                  → tipo CONSTRUYENDO TERRITORIO
+   · PARTICIPACION               → tipo INSTANCIAS DE PARTICIPACION
+   ─────────────────────────────────────────────────────────────
+   CONFIGURACIÓN:
+   1. Crear Google Sheet llamado "Construyendo Territorio"
+   2. Crear 6 hojas con los nombres exactos de arriba
+   3. Publicar el Apps Script al final de este archivo como Web App
+   4. Reemplazar GOOGLE_APPS_SCRIPT_URL con la URL generada
    ═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  GOOGLE_APPS_SCRIPT_URL: "REEMPLAZAR_CON_URL_DE_APPS_SCRIPT",
+  GOOGLE_APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwNPmDTvUhnG4FhmZ608HBwDiGIAcsfqc5rxZ0fAdI0QrG2bfJgRFeiFPkZEz41Yueu/exec",
+  SPREADSHEET_NAME: "Construyendo Territorio",
+  /* Mapeo Tipo de Actividad → Nombre de Hoja */
+  SHEET_MAP: {
+    "CONTRATO - META 2026 GESTIÓN":       "SEGUIMIENTO A LA INVERSION",
+    "CONTRATO - META 2026 JURÍDICOS":     "SEGUIMIENTO A LA INVERSION",
+    "OKR":                                "OKR",
+    "MISIONAL - LGBTI":                   "ACTIVIDADES MISIONALES",
+    "MISIONAL - SELLO":                   "ACTIVIDADES MISIONALES",
+    "MISIONAL - IGUALDAD":                "ACTIVIDADES MISIONALES",
+    "MISIONAL - SIPRES":                  "ACTIVIDADES MISIONALES",
+    "MISIONAL - TRANSVERSAL":             "ACTIVIDADES MISIONALES",
+    "GESTIÓN TERRITORIAL":                "GESTION TERRITORIAL",
+    "CONSTRUYENDO TERRITORIO":            "TERRITORIO",
+    "INSTANCIAS DE PARTICIPACION":        "PARTICIPACION",
+    "RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA": "TERRITORIO",
+    "RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO":    "TERRITORIO",
+  }
 };
 
 
@@ -2130,7 +2163,7 @@ async function enviarFormulario() {
   datos.id_registro = regId;
 
   try {
-    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "REEMPLAZAR_CON_URL_DE_APPS_SCRIPT") {
+    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwNPmDTvUhnG4FhmZ608HBwDiGIAcsfqc5rxZ0fAdI0QrG2bfJgRFeiFPkZEz41Yueu/exec") {
       await new Promise(r => setTimeout(r, 2000));
       mostrarExito(regId);
     } else {
@@ -2237,15 +2270,37 @@ async function enviarFormulario() {
   const regId = 'SCT-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random()*9000)+1000);
   datos.id_registro = regId;
 
+  // ── ENRUTAMIENTO A HOJA POR TIPO DE ACTIVIDAD ──────────────────
+  // Determina la hoja destino según el tipo_actividad seleccionado
+  const tipoActual = datos.tipo_actividad || tipo;
+  let hojaDestino = CONFIG.SHEET_MAP[tipoActual];
+
+  // Si el tipo empieza por "MISIONAL" y no hay match exacto, usar hoja misional
+  if (!hojaDestino && tipoActual && tipoActual.startsWith('MISIONAL')) {
+    hojaDestino = 'ACTIVIDADES MISIONALES';
+  }
+  // Si el tipo empieza por "CONTRATO" y no hay match exacto, usar inversión
+  if (!hojaDestino && tipoActual && tipoActual.startsWith('CONTRATO')) {
+    hojaDestino = 'SEGUIMIENTO A LA INVERSION';
+  }
+  // Fallback: TERRITORIO para tipos no reconocidos
+  if (!hojaDestino) hojaDestino = 'TERRITORIO';
+
+  datos.target_sheet    = hojaDestino;
+  datos.spreadsheet_name = CONFIG.SPREADSHEET_NAME;
+  // ────────────────────────────────────────────────────────────────
+
   try {
-    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "REEMPLAZAR_CON_URL_DE_APPS_SCRIPT") {
+    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwNPmDTvUhnG4FhmZ608HBwDiGIAcsfqc5rxZ0fAdI0QrG2bfJgRFeiFPkZEz41Yueu/exec") {
+      // MODO DEMO: simula el envío y muestra en consola los datos que se enviarían
+      console.table({ ...datos, target_sheet: hojaDestino });
       await new Promise(res => setTimeout(res, 1500));
-      mostrarExito(regId);
+      mostrarExito(regId, hojaDestino);
     } else {
       const fd = new FormData();
       Object.keys(datos).forEach(k => fd.append(k, datos[k]));
       await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
-      mostrarExito(regId);
+      mostrarExito(regId, hojaDestino);
     }
   } catch(e) {
     document.getElementById('loading').classList.remove('show');
@@ -2254,13 +2309,19 @@ async function enviarFormulario() {
   }
 }
 
-function mostrarExito(regId) {
+function mostrarExito(regId, hojaDestino) {
   document.getElementById('loading').classList.remove('show');
   document.querySelectorAll('.card, .actions, .error-box').forEach(el => el.style.display = 'none');
   document.getElementById('success-id-val').textContent = '#' + regId;
+  // Mostrar hoja destino en pantalla de éxito
+  const sheetInfo = document.getElementById('success-sheet-info');
+  if (sheetInfo && hojaDestino) {
+    sheetInfo.textContent = `📊 Guardado en hoja: "${hojaDestino}" · Libro: "Construyendo Territorio"`;
+    sheetInfo.style.display = 'block';
+  }
   document.getElementById('success-screen').classList.add('show');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  showToast('✅ Registro enviado. Notificaciones enviadas.', 'success');
+  showToast('✅ Registro enviado a hoja: ' + (hojaDestino || 'BD'), 'success');
 }
 
 function nuevoRegistro() {
@@ -2335,3 +2396,262 @@ function limpiarFormulario() {
 
 let toastTimer;
 </script>
+
+<!--
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  GOOGLE APPS SCRIPT — PEGAR EN: script.google.com → Nuevo Proyecto          ║
+║  Libro destino: "Construyendo Territorio"                                    ║
+║  Publicar como: Web App → Ejecutar como: Yo · Acceso: Cualquiera            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  // ── PASO 1: CREAR EL LIBRO ──────────────────────────────────────────    ║
+║  // En Google Drive crea un Spreadsheet llamado "Construyendo Territorio"   ║
+║  // y crea las siguientes 6 hojas con estos nombres EXACTOS:                ║
+║  //   SEGUIMIENTO A LA INVERSION                                            ║
+║  //   OKR                                                                   ║
+║  //   ACTIVIDADES MISIONALES                                                ║
+║  //   GESTION TERRITORIAL                                                   ║
+║  //   TERRITORIO                                                            ║
+║  //   PARTICIPACION                                                         ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+CÓDIGO DEL APPS SCRIPT (copiar TODO lo de abajo):
+─────────────────────────────────────────────────────────────────────────────
+
+const SPREADSHEET_NAME = "Construyendo Territorio";
+
+// Encabezados por hoja — deben coincidir con los campos enviados desde el formulario
+const HEADERS = {
+  "SEGUIMIENTO A LA INVERSION": [
+    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
+    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
+    "Contrato Jurídico","Mes Reporte","Avance Físico (%)","Avance Financiero (%)",
+    "Descripción Avance","ID Proyecto POAI","Proyecto","Meta Proyecto",
+    "Cantidad Personas","Tipo Población","Lugar Ejecución Contrato",
+    "Entidades Externas","N° Orfeo","Archivos Adjuntos","Correo Gerente","Correo Líder"
+  ],
+  "OKR": [
+    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
+    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
+    "Resultado Clave (KR)","Objetivo Táctico","Área OKR","Líder OKR","Carpeta OKR",
+    "Mes Reporte","% Avance Cuantitativo","Avance Cualitativo",
+    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+  ],
+  "ACTIVIDADES MISIONALES": [
+    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
+    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
+    "Tipo Misional","Nombre Actividad","Objetivo Actividad","Descripción Actividad",
+    "Cantidad Personas","Tipo Población","Otro Tipo Población",
+    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+  ],
+  "GESTION TERRITORIAL": [
+    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
+    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
+    "Nombre Actividad","Objetivo Actividad","Descripción Actividad",
+    "Meta POAI Relacionada","Avance Cuantitativo","Avance Cualitativo Breve",
+    "Cantidad Personas","Tipo Población","Otro Tipo Población",
+    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+  ],
+  "TERRITORIO": [
+    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
+    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
+    "Código CT","Tipo Item","Fecha Situación","Área Responsable CT","Descripción Situación",
+    "Referencia Problemática","% Respuesta","Tipo CT","Cantidad Mujeres CT","Tipo Población CT",
+    "Entidades Externas","N° Orfeo",
+    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+  ],
+  "PARTICIPACION": [
+    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
+    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
+    "Instancia de Participación","Tipo Reunión","Descripción Actividad",
+    "Compromisos Adquiridos","¿Vincula al Alcalde?",
+    "¿Vincula Otras Instituciones?","Cuáles Instituciones",
+    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+  ]
+};
+
+// Mapeo campo formulario → columna por hoja
+const FIELD_MAP = {
+  "SEGUIMIENTO A LA INVERSION": [
+    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
+    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
+    "contrato_juridico","inv_mes","inv_avance_fisico","inv_avance_financiero",
+    "inv_descripcion","id_proyecto","proyecto","meta_proyecto",
+    "inv_poblacion_cantidad","inv_tipo_poblacion","lugar_ejecucion_contrato",
+    "entidades_externas","numero_orfeo","archivos","correo_gerente","correo_lider"
+  ],
+  "OKR": [
+    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
+    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
+    "okr_resultado","okr_objetivo_tactico","okr_area_auto","okr_lider","okr_carpeta",
+    "okr_mes","okr_pct_cuantitativo","okr_avance_cualitativo",
+    "archivos","correo_gerente","correo_lider"
+  ],
+  "ACTIVIDADES MISIONALES": [
+    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
+    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
+    "construyendo_tipo","mis_nombre","mis_objetivo","mis_descripcion",
+    "mis_poblacion_cantidad","mis_tipo_poblacion","mis_tipo_poblacion_otro",
+    "archivos","correo_gerente","correo_lider"
+  ],
+  "GESTION TERRITORIAL": [
+    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
+    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
+    "gest_nombre","gest_objetivo","gest_descripcion",
+    "gest_meta","gest_avance_cuantitativo","gest_avance_cualitativo_breve",
+    "gest_poblacion_cantidad","gest_tipo_poblacion","gest_tipo_poblacion_otro",
+    "archivos","correo_gerente","correo_lider"
+  ],
+  "TERRITORIO": [
+    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
+    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
+    "ct_codigo","ct_tipo_item","ct_fecha","ct_area_responsable","ct_descripcion",
+    "ct_problema_referencia","ct_pct_respuesta","construyendo_tipo","ct_mujeres_cantidad","ct_tipo_poblacion",
+    "entidades_externas","numero_orfeo",
+    "archivos","correo_gerente","correo_lider"
+  ],
+  "PARTICIPACION": [
+    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
+    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
+    "inst_instancia","inst_tipo_reunion","inst_descripcion",
+    "inst_compromisos","inst_vincula_alcalde",
+    "inst_vincula_instituciones","inst_cuales_instituciones",
+    "archivos","correo_gerente","correo_lider"
+  ]
+};
+
+function doPost(e) {
+  try {
+    const params = e.parameter;
+    const sheetName = params.target_sheet || "TERRITORIO";
+
+    // Abrir el libro por nombre
+    const files = DriveApp.getFilesByName(SPREADSHEET_NAME);
+    if (!files.hasNext()) {
+      return ContentService.createTextOutput(
+        JSON.stringify({ status: "error", message: "No se encontró el libro: " + SPREADSHEET_NAME })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+    const ss = SpreadsheetApp.open(files.next());
+    let sheet = ss.getSheetByName(sheetName);
+
+    // Si la hoja no existe, crearla
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+    }
+
+    // Si la hoja está vacía, agregar encabezados
+    if (sheet.getLastRow() === 0) {
+      const headers = HEADERS[sheetName] || ["ID Registro","Timestamp","Datos"];
+      sheet.appendRow(headers);
+      // Estilizar encabezado
+      const headerRange = sheet.getRange(1, 1, 1, headers.length);
+      headerRange.setBackground(getSheetColor(sheetName));
+      headerRange.setFontColor("#FFFFFF");
+      headerRange.setFontWeight("bold");
+      headerRange.setFontSize(10);
+      headerRange.setHorizontalAlignment("center");
+      sheet.setFrozenRows(1);
+    }
+
+    // Construir fila con los campos en el orden correcto
+    const fields = FIELD_MAP[sheetName] || Object.keys(params);
+    const row = fields.map(f => params[f] || "");
+
+    sheet.appendRow(row);
+
+    // Enviar notificaciones por correo
+    enviarNotificaciones(params, sheetName);
+
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "ok", sheet: sheetName, id: params.id_registro })
+    ).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "error", message: err.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getSheetColor(sheetName) {
+  const colors = {
+    "SEGUIMIENTO A LA INVERSION": "#1B7E45",
+    "OKR":                         "#1565C0",
+    "ACTIVIDADES MISIONALES":      "#E65C00",
+    "GESTION TERRITORIAL":         "#1A237E",
+    "TERRITORIO":                  "#7A5F00",
+    "PARTICIPACION":               "#6A1B9A"
+  };
+  return colors[sheetName] || "#C8102E";
+}
+
+function enviarNotificaciones(p, sheetName) {
+  try {
+    const asunto = `[Construyendo Territorio] Nuevo registro ${p.id_registro} — ${sheetName}`;
+    const cuerpo = `
+Se registró una nueva actividad en el formulario territorial.
+
+📋 ID Registro:      ${p.id_registro}
+📅 Fecha:            ${p.fecha}
+🗂️  Tipo Actividad:  ${p.tipo_actividad}
+🏢 Gerencia:         ${p.gerencia}
+📌 Área:             ${p.area}
+📊 Hoja destino:     ${sheetName} (Libro: Construyendo Territorio)
+📍 Zona/Lugar:       ${p.zona} / ${p.lugar}
+👤 Diligenciado por: ${p.nombre_diligenciador} (${p.email_diligenciador})
+
+Ingrese al libro para ver el registro completo.
+    `;
+
+    const destinatarios = [];
+    if (p.email_diligenciador) destinatarios.push(p.email_diligenciador);
+    if (p.correo_gerente && p.correo_gerente !== "CORREO_GERENTE_CAMINA@alcaldia.gov.co")
+      destinatarios.push(p.correo_gerente);
+    if (p.correo_lider && p.correo_lider !== p.correo_gerente)
+      destinatarios.push(p.correo_lider);
+
+    if (destinatarios.length > 0) {
+      MailApp.sendEmail(destinatarios.join(","), asunto, cuerpo);
+    }
+  } catch(e) {
+    // No interrumpir el flujo si falla el correo
+    Logger.log("Error enviando correo: " + e.toString());
+  }
+}
+
+// ── FUNCIÓN DE PRUEBA ────────────────────────────────────────────────────
+// Ejecutar manualmente para verificar que el libro y hojas existen
+function testConexion() {
+  const files = DriveApp.getFilesByName(SPREADSHEET_NAME);
+  if (files.hasNext()) {
+    const ss = SpreadsheetApp.open(files.next());
+    Logger.log("✅ Libro encontrado: " + ss.getName());
+    Logger.log("📋 Hojas: " + ss.getSheets().map(s => s.getName()).join(", "));
+  } else {
+    Logger.log("❌ Libro NO encontrado. Cree un Google Sheet llamado: " + SPREADSHEET_NAME);
+  }
+}
+
+─────────────────────────────────────────────────────────────────────────────
+FIN DEL CÓDIGO APPS SCRIPT
+─────────────────────────────────────────────────────────────────────────────
+
+PASOS DE CONFIGURACIÓN:
+1. Ir a https://script.google.com → Nuevo proyecto
+2. Pegar TODO el código de arriba
+3. Guardar con nombre "Construyendo Territorio - Script"
+4. Menú: Implementar → Nueva implementación
+   - Tipo: Aplicación web
+   - Ejecutar como: Yo (tu cuenta)
+   - Acceso: Cualquier persona
+5. Copiar la URL generada
+6. En este HTML, reemplazar:
+   REEMPLAZAR_CON_URL_DE_APPS_SCRIPT
+   con la URL copiada
+7. Ejecutar testConexion() para verificar que todo funciona
+
+-->
+</body>
+</html>
