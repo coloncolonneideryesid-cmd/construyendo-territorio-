@@ -1430,7 +1430,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
    4. Reemplazar GOOGLE_APPS_SCRIPT_URL con la URL generada
    ═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  GOOGLE_APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwNPmDTvUhnG4FhmZ608HBwDiGIAcsfqc5rxZ0fAdI0QrG2bfJgRFeiFPkZEz41Yueu/exec",
+  GOOGLE_APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwETWancUkNulLgc2CQH7VanCkGuBeww6Jyk1KJHqIY-zYfh6aQ248PovDedzRo/exec",
   SPREADSHEET_NAME: "Construyendo Territorio",
   /* Mapeo Tipo de Actividad → Nombre de Hoja */
   SHEET_MAP: {
@@ -2180,6 +2180,10 @@ function actualizarProgreso() {
 
 document.addEventListener('change', actualizarProgreso);
 document.addEventListener('input', actualizarProgreso);
+
+function cerrarModal() {
+  document.getElementById('modal-confirm').classList.remove('show');
+}
 
 function confirmarEnvio() { if (!validarFormulario()) return; document.getElementById('modal-confirm').classList.add('show'); }
 
