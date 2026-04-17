@@ -492,6 +492,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <div class="char-count" id="char-count-okr">0 / 800 caracteres</div>
       </div>
 
+      <input type="hidden" id="okr_carpeta" name="okr_carpeta">
     </div>
   </div>
 
@@ -798,6 +799,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <div class="hint">Puede seleccionar múltiples opciones (Ctrl+clic)</div>
       </div>
 
+      <input type="hidden" id="magnitud" name="magnitud">
     </div>
   </div>
 
@@ -1431,19 +1433,29 @@ const CONFIG = {
   SPREADSHEET_NAME: "Construyendo Territorio",
   /* Mapeo Tipo de Actividad → Nombre de Hoja */
   SHEET_MAP: {
-    "CONTRATO - META 2026 GESTIÓN":       "SEGUIMIENTO A LA INVERSION",
-    "CONTRATO - META 2026 JURÍDICOS":     "SEGUIMIENTO A LA INVERSION",
-    "OKR":                                "OKR",
-    "MISIONAL - LGBTI":                   "ACTIVIDADES MISIONALES",
-    "MISIONAL - SELLO":                   "ACTIVIDADES MISIONALES",
-    "MISIONAL - IGUALDAD":                "ACTIVIDADES MISIONALES",
-    "MISIONAL - SIPRES":                  "ACTIVIDADES MISIONALES",
-    "MISIONAL - TRANSVERSAL":             "ACTIVIDADES MISIONALES",
-    "GESTIÓN TERRITORIAL":                "GESTION TERRITORIAL",
-    "CONSTRUYENDO TERRITORIO":            "TERRITORIO",
-    "INSTANCIAS DE PARTICIPACION":        "PARTICIPACION",
-    "RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA": "TERRITORIO",
-    "RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO":    "TERRITORIO",
+    "CONTRATO 2024":"SEGUIMIENTO A LA INVERSION",
+    "CONTRATO 2025":"SEGUIMIENTO A LA INVERSION",
+    "CONTRATO 2026":"SEGUIMIENTO A LA INVERSION",
+    "CONTRATO - META 2026 GESTIÓN":"SEGUIMIENTO A LA INVERSION",
+    "CONTRATO - META 2026 JURÍDICOS":"SEGUIMIENTO A LA INVERSION",
+    "OKR":"OKR",
+    "MISIONAL - LGBTI":"ACTIVIDADES MISIONALES",
+    "MISIONAL - SELLO DISCRIMINACIÓN":"ACTIVIDADES MISIONALES",
+    "MISIONAL - SELLO":"ACTIVIDADES MISIONALES",
+    "MISIONAL - IGUALDAD":"ACTIVIDADES MISIONALES",
+    "MISIONAL - SIPRES":"ACTIVIDADES MISIONALES",
+    "MISIONAL - COMPONENTES TRANSVERSALES":"ACTIVIDADES MISIONALES",
+    "MISIONAL - TRANSVERSAL":"ACTIVIDADES MISIONALES",
+    "MISIONAL - REUNIONES COMUNIDAD":"ACTIVIDADES MISIONALES",
+    "MISIONAL - ACTORES INSTITUCIONALES":"ACTIVIDADES MISIONALES",
+    "MISIONAL - ACTIVIDADES ADMINISTRATIVAS":"ACTIVIDADES MISIONALES",
+    "MISIONAL - OTRAS":"ACTIVIDADES MISIONALES",
+    "GESTIÓN TERRITORIAL":"GESTION TERRITORIAL",
+    "CONSTRUYENDO TERRITORIO":"TERRITORIO",
+    "RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA":"TERRITORIO",
+    "RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO":"TERRITORIO",
+    "INSTANCIAS DE PARTICIPACION":"PARTICIPACION",
+    "INSTANCIAS DE PARTICIPACIÓN":"PARTICIPACION",
   }
 };
 
@@ -1866,7 +1878,7 @@ function autocompleteOKR() {
   document.getElementById('okr_objetivo_tactico').value = okr.objetivo;
   document.getElementById('okr_area_auto').value = okr.area;
   document.getElementById('okr_lider').value = okr.lider;
-  document.getElementById('okr_carpeta').value = okr.carpeta;
+  const carEl = document.getElementById('okr_carpeta'); if (carEl) carEl.value = okr.carpeta;
   // Sincronizar área/gerencia con el selector principal si el usuario no lo había marcado
   const areaSelect = document.getElementById('area');
   if (areaSelect && (!areaSelect.value || areaSelect.value === '')) {
@@ -1899,9 +1911,8 @@ function autocompleteProyecto() {
     // If only one meta, auto-select it
     if (metas.length === 1) selMeta.value = metas[0];
     wrapMeta.style.display = 'flex';
-    if (!document.getElementById('magnitud').value) {
-      document.getElementById('magnitud').value = PROYECTOS[id].magnitud || '';
-    }
+    const magEl = document.getElementById('magnitud');
+    if (magEl && !magEl.value) magEl.value = PROYECTOS[id].magnitud || '';
   } else {
     document.getElementById('proyecto').value = '';
     selMeta.innerHTML = '<option value="">— Seleccione el proyecto primero —</option>';
@@ -2059,18 +2070,69 @@ function showToast(msg, tipo = '') {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 document.getElementById('modal-confirm').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModal(); });
-</script>
 
-<!--
-╔════════════════════════════════════════════════════════════════════════
-║  CÓDIGO COMPLETO PARA GOOGLE APPS SCRIPT
-║  Ir a: script.google.com → Nuevo proyecto → Pegar este código
-╠════════════════════════════════════════════════════════════════════════
 
-const SHEET_ID      = "REEMPLAZAR_CON_ID_DE_GOOGLE_SHEET";
+/* ═══════════════════════════════════════════════════
+   CORRECCIONES v3.2 — funciones faltantes restauradas
+   ═══════════════════════════════════════════════════ */
 
-// El correo del gerente y del líder ahora llegan desde el formulario
-// según el área seleccionada (ya configurados en CORREOS_POR_AREA del HTML)
+const LUGARES_POR_ZONA = {
+  "ALCALDÍA LOCAL": ["ALCALDÍA LOCAL - SEDE CENTRAL"],
+  "ZONA 1": ["SAN BLAS","EGIPTO","LA VICTORIA","QUINDIO","LAS CRUCES","SANTA BÁRBARA ORIENTAL","OTRO"],
+  "ZONA 2": ["ALTAMIRA","LOS ALPES","GUACAMAYAS","VILLA CLAUDIA","VILLA DEL CERRO","CORINTO","OTRO"],
+  "ZONA 3": ["LA GLORIA","JUAN REY","EL RUBÍ","LA CASTAÑA","CIUDAD LONDRES","BELLO HORIZONTE","OTRO"],
+  "ZONA 4": ["MONTEBELLO","SAN ISIDRO","SOSIEGO","VEINTE DE JULIO","BELLO SUR","EL EDEN","OTRO"],
+  "ZONA 5": ["MORALBA","EL TRIANGULO","EL CONSUELO","DIANA TURBAY","LAS MERCEDES","OTRO"],
+  "ZONA 6": ["SAN CRISTOBAL SUR","LA PAZ","ARRAYANAL","RODRIGO LARA BONILLA","EL RODEO","OTRO"],
+  "ZONA 7": ["SAN JOSÉ","BELÉN","CALVO SUR","SAN JOSE SUR","EL POBLADO","OTRO"],
+  "ZONA 8": ["SAN PEDRO","CERRO SUR","SAN MARTÍN","BELLA FLOR SUR","OTRO"]
+};
+
+function generarEnlaceMaps(lat, lng) {
+  const url = `https://www.google.com/maps?q=${lat},${lng}`;
+  document.getElementById('enlace_maps').value = url;
+  const linkDiv = document.getElementById('gps-link');
+  if (linkDiv) linkDiv.innerHTML = `<a href="${url}" target="_blank" rel="noopener">🗺️ Ver en Google Maps</a>`;
+}
+
+function validarFormulario() {
+  const tipo = document.getElementById('tipo_actividad').value;
+  let req = ['fecha','gerencia','area','tipo_actividad','nombre_diligenciador','email_diligenciador'];
+  if (tipo === 'OKR') {
+    req.push('okr_resultado','okr_pct_cuantitativo','okr_mes','okr_avance_cualitativo','zona','lugar');
+  } else if (tipo.startsWith('CONTRATO')) {
+    req.push('inv_mes','inv_avance_fisico','inv_avance_financiero','inv_descripcion','id_proyecto','inv_poblacion_cantidad');
+  } else if (tipo.startsWith('MISIONAL')) {
+    req.push('mis_nombre','mis_objetivo','mis_descripcion','mis_poblacion_cantidad','zona','lugar');
+  } else if (tipo === 'GESTIÓN TERRITORIAL') {
+    req.push('gest_nombre','gest_objetivo','gest_descripcion','gest_meta','gest_avance_cuantitativo','gest_avance_cualitativo_breve','gest_poblacion_cantidad','zona','lugar');
+  } else if (tipo === 'CONSTRUYENDO TERRITORIO') {
+    req.push('ct_tipo_item','ct_fecha','ct_area_responsable','ct_descripcion','zona','lugar');
+  } else if (tipo === 'INSTANCIAS DE PARTICIPACION') {
+    req.push('inst_instancia','inst_tipo_reunion','inst_descripcion','inst_vincula_alcalde','zona','lugar');
+  } else if (tipo === 'RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA') {
+    req.push('entidades_externas','zona','lugar');
+  } else if (tipo === 'RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO') {
+    req.push('numero_orfeo','zona','lugar');
+  }
+  let ok = true; const errs = [];
+  req.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!(el.value||'').trim()) {
+      el.classList.add('error'); ok = false;
+      errs.push(el.labels&&el.labels[0] ? el.labels[0].textContent.replace(/[*]/g,'').trim() : id);
+    } else { el.classList.remove('error'); }
+  });
+  const eb = document.getElementById('error-box');
+  const em = document.getElementById('error-msg');
+  if (!ok) {
+    eb.classList.add('show');
+    em.textContent = 'Complete los campos obligatorios: ' + errs.slice(0,5).join(', ');
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else { eb.classList.remove('show'); }
+  return ok;
+}
 
 function actualizarProgreso() {
   const tipo = document.getElementById('tipo_actividad')?.value || '';
@@ -2080,11 +2142,23 @@ function actualizarProgreso() {
       // Sección OKR: resultado clave + % + mes + avance cualitativo
       return ['okr_resultado','okr_pct_cuantitativo','okr_mes'].every(id => document.getElementById(id)?.value)
         && (document.getElementById('okr_avance_cualitativo')?.value.length > 0);
+    } else if (tipo.startsWith('CONTRATO')) {
+      return ['inv_mes','inv_avance_fisico','inv_avance_financiero','inv_descripcion','id_proyecto','inv_poblacion_cantidad']
+        .every(id => document.getElementById(id)?.value);
+    } else if (tipo.startsWith('MISIONAL')) {
+      return ['mis_nombre','mis_objetivo','mis_descripcion','mis_poblacion_cantidad']
+        .every(id => document.getElementById(id)?.value);
+    } else if (tipo === 'GESTIÓN TERRITORIAL') {
+      return ['gest_nombre','gest_objetivo','gest_descripcion','gest_meta','gest_avance_cuantitativo','gest_avance_cualitativo_breve','gest_poblacion_cantidad']
+        .every(id => document.getElementById(id)?.value);
+    } else if (tipo === 'CONSTRUYENDO TERRITORIO') {
+      return ['ct_tipo_item','ct_fecha','ct_area_responsable','ct_descripcion']
+        .every(id => document.getElementById(id)?.value);
+    } else if (tipo === 'INSTANCIAS DE PARTICIPACION') {
+      return ['inst_instancia','inst_tipo_reunion','inst_descripcion','inst_vincula_alcalde']
+        .every(id => document.getElementById(id)?.value);
     } else {
-      const ids = ['id_proyecto','nombre_actividad','participacion','magnitud'];
-      const campos = ids.every(id => document.getElementById(id)?.value);
-      const desc = document.getElementById('descripcion').value.length >= 600;
-      return campos && desc;
+      return true;
     }
   })();
   const s3 = ['zona','lugar'].every(id => document.getElementById(id)?.value);
@@ -2106,79 +2180,7 @@ function actualizarProgreso() {
 document.addEventListener('change', actualizarProgreso);
 document.addEventListener('input', actualizarProgreso);
 
-/* VALIDACIÓN */
 function confirmarEnvio() { if (!validarFormulario()) return; document.getElementById('modal-confirm').classList.add('show'); }
-function cerrarModal() { document.getElementById('modal-confirm').classList.remove('show'); }
-
-async function enviarFormulario() {
-  cerrarModal();
-  document.getElementById('loading').classList.add('show');
-  document.getElementById('btn-submit').disabled = true;
-
-  const datos = {};
-  // Campos siempre presentes
-  [...['fecha','jornada','gerencia','area','tipo_actividad',
-       'zona','lugar','lugar_custom','coordenadas','enlace_maps',
-       'nombre_diligenciador','email_diligenciador']].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) datos[id] = el.value.trim();
-  });
-  if (datos.lugar === 'OTRO' && datos.lugar_custom) datos.lugar = datos.lugar_custom;
-
-  const tipo = datos.tipo_actividad;
-  if (tipo === 'OKR') {
-    // Capturar campos OKR
-    ['okr_resultado','okr_objetivo_tactico','okr_area_auto','okr_lider',
-     'okr_carpeta','okr_pct_cuantitativo','okr_mes','okr_avance_cualitativo'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) datos[id] = el.value.trim();
-    });
-  } else {
-    // Capturar campos Proyecto/Metas + nuevos campos v3.0
-    ['id_proyecto','proyecto','meta_proyecto','nombre_actividad',
-     'participacion','cuales_entidades','magnitud','descripcion',
-     'contrato_juridico','numero_orfeo','entidades_externas',
-     'instancia_gerencia','instancia_proyecto','instancia_area',
-     'vincula_alcalde','poblacion_mujeres','tipo_poblacion','lugar_ejecucion'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) datos[id] = el.value.trim();
-    });
-  }
-
-  const archivos = [];
-  ['acta_actividad','registro_fotos'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el && el.files.length) Array.from(el.files).forEach(f => archivos.push(f.name));
-  });
-  datos.archivos = archivos.join(', ') || 'Sin adjuntos';
-  datos.timestamp = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
-
-  const area = datos.area;
-  if (area && CORREOS_POR_AREA[area]) {
-    datos.correo_gerente = CORREOS_POR_AREA[area].gerente;
-    datos.correo_lider = CORREOS_POR_AREA[area].lider;
-  }
-
-  const regId = 'SCT-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random()*9000)+1000);
-  datos.id_registro = regId;
-
-  try {
-    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxQvhOrKkebCpxzNIcKHrykO-8DQg5FGrnKG4h91u9a-Y_Me6vrBbN9b0WJn7hf/exec") {
-      await new Promise(r => setTimeout(r, 2000));
-      mostrarExito(regId);
-    } else {
-      const fd = new FormData();
-      Object.keys(datos).forEach(k => fd.append(k, datos[k]));
-      await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
-      mostrarExito(regId);
-    }
-  } catch(e) {
-    document.getElementById('loading').classList.remove('show');
-    document.getElementById('btn-submit').disabled = false;
-    showToast('❌ Error al enviar. Verifique la conexión.', 'error-t');
-  }
-}
-
 
 async function enviarFormulario() {
   cerrarModal();
@@ -2331,7 +2333,6 @@ function nuevoRegistro() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-
 function limpiarFormulario() {
   document.querySelectorAll('input:not([type=file]), select, textarea').forEach(el => {
     if (!el.readOnly) el.value = '';
@@ -2388,14 +2389,15 @@ function limpiarFormulario() {
 }
 
 (function setFecha() {
-  const d = new Date(); d.setDate(d.getDate() + 1);
-  document.getElementById('fecha').max = d.toISOString().split('T')[0];
-  document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+  const d = new Date();
+  document.getElementById('fecha').max = new Date(d.getTime()+86400000).toISOString().split('T')[0];
+  document.getElementById('fecha').value = d.toISOString().split('T')[0];
 })();
 
-
 let toastTimer;
+
 </script>
+
 
 <!--
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -2478,7 +2480,7 @@ const FIELD_MAP = {
     "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
     "contrato_juridico","inv_mes","inv_avance_fisico","inv_avance_financiero",
     "inv_descripcion","id_proyecto","proyecto","meta_proyecto",
-    "inv_poblacion_cantidad","inv_tipo_poblacion","lugar_ejecucion_contrato",
+    "inv_poblacion_cantidad","inv_tipo_poblacion","inv_lugar_ejecucion",
     "entidades_externas","numero_orfeo","archivos","correo_gerente","correo_lider"
   ],
   "OKR": [
@@ -2491,7 +2493,7 @@ const FIELD_MAP = {
   "ACTIVIDADES MISIONALES": [
     "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
     "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
-    "construyendo_tipo","mis_nombre","mis_objetivo","mis_descripcion",
+    "tipo_actividad","mis_nombre","mis_objetivo","mis_descripcion",
     "mis_poblacion_cantidad","mis_tipo_poblacion","mis_tipo_poblacion_otro",
     "archivos","correo_gerente","correo_lider"
   ],
@@ -2507,7 +2509,7 @@ const FIELD_MAP = {
     "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
     "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
     "ct_codigo","ct_tipo_item","ct_fecha","ct_area_responsable","ct_descripcion",
-    "ct_problema_referencia","ct_pct_respuesta","construyendo_tipo","ct_mujeres_cantidad","ct_tipo_poblacion",
+    "ct_problema_referencia","ct_pct_respuesta","tipo_actividad","poblacion_mujeres","ct_tipo_poblacion",
     "entidades_externas","numero_orfeo",
     "archivos","correo_gerente","correo_lider"
   ],
@@ -2652,6 +2654,6 @@ PASOS DE CONFIGURACIÓN:
    con la URL copiada
 7. Ejecutar testConexion() para verificar que todo funciona
 
--->
+
 </body>
 </html>
