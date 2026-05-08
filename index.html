@@ -686,6 +686,19 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <div class="hint">Porcentaje de ejecución financiera (giros realizados)</div>
       </div>
 
+      <!-- Magnitud programada y ejecutada -->
+      <div class="field">
+        <label for="inv_magnitud_programada">📐 Magnitud Programada (período) <span class="req">*</span></label>
+        <input type="text" id="inv_magnitud_programada" name="inv_magnitud_programada" required placeholder="Ej: 4.25 · 1230 · 160">
+        <div class="hint">Unidades programadas para el período (km-carril, m², personas, huertas…)</div>
+      </div>
+
+      <div class="field">
+        <label for="inv_magnitud_ejecutada">⚡ Magnitud Ejecutada (período) <span class="req">*</span></label>
+        <input type="text" id="inv_magnitud_ejecutada" name="inv_magnitud_ejecutada" required placeholder="Ej: 2.1 · 487 · 7">
+        <div class="hint">Unidades realmente ejecutadas en este período de reporte</div>
+      </div>
+
       <!-- Estado del contrato -->
       <div class="field">
         <label for="inv_estado_contrato">Estado del Contrato</label>
@@ -1334,7 +1347,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
           <input type="hidden" id="pp_nombre"          name="pp_nombre">
           <input type="hidden" id="pp_proponente"      name="pp_proponente">
           <input type="hidden" id="pp_contratista"     name="pp_contratista">
-          <input type="hidden" id="pp_valor_iniciativa" name="pp_valor_iniciativa">
           <input type="hidden" id="pp_plazo"           name="pp_plazo">
           <input type="hidden" id="pp_estado"          name="pp_estado">
 
@@ -1347,8 +1359,24 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
           </div>
 
           <div class="field">
+            <label for="pp_valor_iniciativa">💰 Valor de la Iniciativa (Millones COP) <span class="lbl-badge" style="background:#F3E5F5;color:#6A1B9A;">Base PP</span></label>
+            <input type="text" id="pp_valor_iniciativa" name="pp_valor_iniciativa"
+              style="background:#f7f5ff;font-weight:700;color:#1B7E45;"
+              placeholder="Se autocompleta desde la base...">
+            <div class="hint">💵 Asignación presupuestal 2026 (en millones de $)</div>
+          </div>
+
+          <div class="field">
             <label for="pp_valor_contrato">Valor del Contrato (COP)</label>
             <input type="text" id="pp_valor_contrato" name="pp_valor_contrato" placeholder="Ej: $250.000.000">
+          </div>
+
+          <div class="field">
+            <label for="pp_magnitud_programada">📐 Magnitud Programada 2026 <span class="lbl-badge" style="background:#F3E5F5;color:#6A1B9A;">Base PP</span></label>
+            <input type="text" id="pp_magnitud_programada" name="pp_magnitud_programada"
+              style="background:#f7f5ff;font-weight:700;color:#6A1B9A;"
+              placeholder="Se autocompleta desde la base...">
+            <div class="hint">📊 Unidades totales programadas para 2026 (ej: 160 huertas · 1500 personas)</div>
           </div>
 
           <div class="field">
@@ -1400,6 +1428,12 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <label for="pp_avance_mes">% Avance por Mes de la Iniciativa <span class="req">*</span></label>
         <input type="number" id="pp_avance_mes" name="pp_avance_mes" required min="0" max="100" step="0.1" placeholder="Ej: 35">
         <div class="hint">📊 Porcentaje de avance a la fecha de reporte (0–100)</div>
+      </div>
+
+      <div class="field">
+        <label for="pp_magnitud_ejecutada">📐 Magnitud Ejecutada este período <span class="req">*</span></label>
+        <input type="number" id="pp_magnitud_ejecutada" name="pp_magnitud_ejecutada" required min="0" step="any" placeholder="Ej: 7">
+        <div class="hint">⚡ Unidades realmente ejecutadas en este período (ej: 7 huertas · 214 personas)</div>
       </div>
 
       <div class="field">
@@ -1697,7 +1731,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
    4. Reemplazar GOOGLE_APPS_SCRIPT_URL con la URL generada
    ═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  GOOGLE_APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwpxINSifJuGas32xbmnbMtJNz0F6Axui8NE-WMEOikEMrZLdwGxHS6syzXEO3lrA/exec",
+  GOOGLE_APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxa0llut0OJh4F9J8aWe_MoyG15vvVGN1gxN8PgiH_jjBTroaI-ZwESRuGeTcvFgQ/exec",
   SPREADSHEET_NAME: "Construyendo Territorio",
   /* Mapeo Tipo de Actividad → Nombre de Hoja */
   SHEET_MAP: {
@@ -2791,6 +2825,55 @@ const PP_INICIATIVAS = {
   ],
 };
 
+// ── MAGNITUD Y VALOR POR INICIATIVA PP 2026 (desde base oficial) ──────────
+const PP_MAGNITUD_2026 = {
+  "55283":{m:"30,00",v:"$ 1.215,00",p:"2251"},"55324":{m:"30,00",v:"$ 1.215,00",p:"2251"},
+  "55300":{m:"30,00",v:"$ 1.215,00",p:"2251"},"55302":{m:"30,00",v:"$ 1.215,00",p:"2251"},
+  "55312":{m:"30,00",v:"$ 1.215,00",p:"2251"},"55351":{m:"30,00",v:"$ 1.215,00",p:"2251"},
+  "53599":{m:"4,25",v:"$ 17.554,00",p:"2252"},"53600":{m:"4,25",v:"$ 17.554,00",p:"2252"},
+  "53601":{m:"1230,00",v:"$ 1.945,00",p:"2254"},"53602":{m:"1230,00",v:"$ 1.945,00",p:"2254"},
+  "54187":{m:"8,00",v:"$ 665,00",p:"2257"},"54188":{m:"8,00",v:"$ 665,00",p:"2257"},
+  "55006":{m:"1500,00",v:"$ 1.824,00",p:"2316"},"54978":{m:"1500,00",v:"$ 1.824,00",p:"2316"},
+  "55599":{m:"1500,00",v:"$ 1.884,00",p:"2385"},"55378":{m:"1500,00",v:"$ 1.884,00",p:"2385"},
+  "55260":{m:"20,00",v:"$ 2.205,00",p:"2405"},"55020":{m:"370,00",v:"$ 722,00",p:"2405"},
+  "55258":{m:"20,00",v:"$ 2.205,00",p:"2405"},"55128":{m:"15,00",v:"$ 331,00",p:"2405"},
+  "55220":{m:"15,00",v:"$ 331,00",p:"2405"},"55256":{m:"20,00",v:"$ 2.205,00",p:"2405"},
+  "55019":{m:"370,00",v:"$ 722,00",p:"2405"},"55136":{m:"15,00",v:"$ 331,00",p:"2405"},
+  "54775":{m:"50,00",v:"$ 1.519,00",p:"2409"},"54838":{m:"650,00",v:"$ 1.519,00",p:"2409"},
+  "55027":{m:"2500,00",v:"$ 702,00",p:"2481"},"55035":{m:"3750,00",v:"$ 912,00",p:"2481"},
+  "55050":{m:"600,00",v:"$ 210,00",p:"2481"},"55084":{m:"30,00",v:"$ 715,00",p:"2495"},
+  "55143":{m:"30,00",v:"$ 715,00",p:"2495"},"55078":{m:"30,00",v:"$ 715,00",p:"2495"},
+  "55070":{m:"30,00",v:"$ 715,00",p:"2495"},"55071":{m:"30,00",v:"$ 715,00",p:"2495"},
+  "47257":{m:"3300,00",v:"$ 1.429,00",p:"2495"},"46966":{m:"3300,00",v:"$ 1.429,00",p:"2495"},
+  "48504":{m:"3300,00",v:"$ 1.429,00",p:"2495"},"55313":{m:"1000,00",v:"$ 929,00",p:"2495"},
+  "55311":{m:"1000,00",v:"$ 929,00",p:"2495"},"55327":{m:"1000,00",v:"$ 929,00",p:"2495"},
+  "55314":{m:"1000,00",v:"$ 929,00",p:"2495"},"55125":{m:"1000,00",v:"$ 929,00",p:"2495"},
+  "55376":{m:"1000,00",v:"$ 929,00",p:"2495"},"55340":{m:"1000,00",v:"$ 929,00",p:"2495"},
+  "55100":{m:"1600,00",v:"$ 1.072,00",p:"2495"},"55350":{m:"1600,00",v:"$ 1.072,00",p:"2495"},
+  "55167":{m:"1600,00",v:"$ 1.072,00",p:"2495"},"45347":{m:"1,00",v:"$ 191,00",p:"2502"},
+  "55041":{m:"1500,00",v:"$ 1.398,00",p:"2502"},"55044":{m:"160,00",v:"$ 410,00",p:"2502"},
+  "55377":{m:"4,00",v:"$ 1.762,00",p:"2601"},"55087":{m:"1,00",v:"$ 373,00",p:"2606"},
+  "55169":{m:"1,00",v:"$ 257,00",p:"2606"},"55109":{m:"1,00",v:"$ 373,00",p:"2606"},
+  "55056":{m:"1,00",v:"$ 257,00",p:"2606"},"55374":{m:"1,00",v:"$ 257,00",p:"2606"},
+  "55352":{m:"200,00",v:"$ 1.215,00",p:"2608"},"47870":{m:"30,00",v:"$ 548,00",p:"2620"},
+  "47273":{m:"30,00",v:"$ 548,00",p:"2620"},"47236":{m:"30,00",v:"$ 548,00",p:"2620"},
+  "47264":{m:"30,00",v:"$ 548,00",p:"2620"},"48206":{m:"25,00",v:"$ 484,00",p:"2620"},
+  "50281":{m:"25,00",v:"$ 484,00",p:"2620"},"55390":{m:"30,00",v:"$ 548,00",p:"2620"},
+  "55393":{m:"30,00",v:"$ 548,00",p:"2620"},"46747":{m:"25,00",v:"$ 484,00",p:"2620"},
+  "55384":{m:"30,00",v:"$ 548,00",p:"2620"},"47114":{m:"30,00",v:"$ 1.459,00",p:"2627"},
+  "44870":{m:"30,00",v:"$ 1.459,00",p:"2627"},"48658":{m:"30,00",v:"$ 1.459,00",p:"2627"},
+  "55183":{m:"30,00",v:"$ 1.459,00",p:"2627"},"55359":{m:"2,00",v:"$ 1.824,00",p:"2627"},
+  "55349":{m:"30,00",v:"$ 1.459,00",p:"2627"},"55033":{m:"30,00",v:"$ 1.459,00",p:"2627"},
+  "55149":{m:"1,00",v:"$ 184,00",p:"2633"},"55385":{m:"6,00",v:"$ 122,00",p:"2633"},
+  "55118":{m:"20,00",v:"$ 416,00",p:"2633"},"55058":{m:"6,00",v:"$ 122,00",p:"2633"},
+  "55388":{m:"170,00",v:"$ 245,00",p:"2633"},"55176":{m:"1,00",v:"$ 184,00",p:"2633"},
+  "55097":{m:"400,00",v:"$ 367,00",p:"2633"},"55179":{m:"1,00",v:"$ 184,00",p:"2633"},
+  "55172":{m:"1,00",v:"$ 184,00",p:"2633"},"49055":{m:"5,00",v:"$ 1.029,00",p:"2694"},
+  "47697":{m:"5,00",v:"$ 490,00",p:"2694"},"55395":{m:"400,00",v:"$ 1.872,00",p:"2802"},
+  "54993":{m:"400,00",v:"$ 1.872,00",p:"2802"},"55387":{m:"1500,00",v:"$ 1.641,00",p:"2802"},
+  "54983":{m:"1000,00",v:"$ 1.215,00",p:"2802"},"55380":{m:"1500,00",v:"$ 1.641,00",p:"2802"},
+};
+
 // ── PRESUPUESTOS PARTICIPATIVOS: cargar iniciativas por año ──
 function cargarIniciativasPP() {
   const yr     = document.getElementById('pp_anio').value;
@@ -2862,7 +2945,17 @@ function _fillPP(id, titulo, contrato) {
   setVal('pp_titulo_display', titulo);
   setVal('pp_contrato',       contrato);
 
+  // Magnitud y valor desde la base 2026
   const yr = document.getElementById('pp_anio').value;
+  if (yr === '2026' && PP_MAGNITUD_2026[id]) {
+    const datos = PP_MAGNITUD_2026[id];
+    setVal('pp_magnitud_programada', datos.m);
+    setVal('pp_valor_iniciativa',    datos.v);
+  } else {
+    setVal('pp_magnitud_programada', '');
+    setVal('pp_valor_iniciativa',    '');
+  }
+
   const estadoSel = document.getElementById('pp_estado_visible');
   if (estadoSel) {
     estadoSel.value = yr === '2026' ? 'EN FORMULACIÓN' : '';
@@ -3005,7 +3098,8 @@ async function enviarFormulario() {
   } else if (tipo.startsWith('CONTRATO')) {
     ['contrato_juridico','inv_mes','inv_avance_fisico','inv_avance_financiero',
      'inv_estado_contrato','inv_descripcion','id_proyecto','proyecto',
-     'meta_proyecto','inv_poblacion_cantidad'].forEach(id => {
+     'meta_proyecto','inv_poblacion_cantidad',
+     'inv_magnitud_programada','inv_magnitud_ejecutada'].forEach(id => {
       const el = document.getElementById(id); if (el) datos[id] = el.value.trim();
     });
     // Multi-select tipo población inversión
@@ -3050,6 +3144,7 @@ async function enviarFormulario() {
     ['pp_anio','pp_mes_reporte','pp_id_iniciativa',
      'pp_id_display','pp_titulo_display','pp_estado_visible',
      'pp_codigo','pp_nombre','pp_contrato','pp_valor_contrato','pp_plazo_display',
+     'pp_valor_iniciativa','pp_magnitud_programada','pp_magnitud_ejecutada',
      'pp_avance_mes','pp_poblacion_beneficiada','pp_lugar_ejecucion',
      'pp_mesa_fecha','pp_mesa_num_reuniones','pp_mesa_acuerdos','pp_mesa_acta',
      'pp_soportes_descripcion','pp_carta_materializacion',
