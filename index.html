@@ -1281,58 +1281,69 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
 
       <!-- Selector de iniciativa -->
       <div class="field span-2" id="pp-campo-iniciativa-wrap" style="display:none;">
-        <label for="pp_id_iniciativa">Iniciativa <span class="req">*</span> <span class="lbl-badge" style="background:#F3E5F5;color:#6A1B9A;">Base PP oficial</span></label>
-        <select id="pp_id_iniciativa" name="pp_id_iniciativa" required onchange="autocompletePP()">
+        <label for="pp_id_iniciativa">Buscar Iniciativa <span class="lbl-badge" style="background:#F3E5F5;color:#6A1B9A;">Base PP oficial</span></label>
+        <select id="pp_id_iniciativa" name="pp_id_iniciativa" onchange="autocompletePP()">
           <option value="">— Seleccione el año primero —</option>
         </select>
-        <div class="hint">🔍 Busque por ID o nombre. Los campos se autocompletan desde la base oficial.</div>
+        <div class="hint">🔍 Seleccione la iniciativa — ID, Título y campos de abajo se autocompletan</div>
       </div>
 
-      <!-- ── BLOQUE B: DATOS AUTOCOMPLETE (solo lectura, editables si es necesario) ── -->
+      <!-- ── ID PROPUESTA + TÍTULO — selección directa por ID ── -->
+      <div class="field">
+        <label for="pp_id_display">ID Propuesta <span class="req">*</span></label>
+        <select id="pp_id_display" name="pp_id_display" required
+          onchange="autocompletePPById()"
+          style="font-weight:700;color:#6A1B9A;font-size:.95rem;">
+          <option value="">— Seleccione el año primero —</option>
+        </select>
+        <div class="hint">🔖 Seleccione el ID de la propuesta — el título y el contrato se autocompletan</div>
+      </div>
+
+      <div class="field">
+        <label for="pp_titulo_display">Título de la Propuesta <span class="req">*</span></label>
+        <input type="text" id="pp_titulo_display" name="pp_titulo_display" required
+          readonly placeholder="Se autocompleta al seleccionar el ID..."
+          style="font-weight:600;background:var(--gris-1);color:#3a3a42;cursor:default;">
+        <div class="hint">📋 Título oficial de la propuesta (se autocompleta al seleccionar el ID)</div>
+      </div>
+
+      <div class="field span-2">
+        <label for="pp_estado_visible">Estado de la Iniciativa <span class="req">*</span></label>
+        <select id="pp_estado_visible" name="pp_estado_visible" required>
+          <option value="">Seleccionar estado actual...</option>
+          <option value="EN FORMULACIÓN">En formulación</option>
+          <option value="EN EJECUCIÓN">En ejecución</option>
+          <option value="MATERIALIZADA">Materializada</option>
+          <option value="INVIABLE">Inviable</option>
+          <option value="PARCIALMENTE MATERIALIZADA">Parcialmente materializada</option>
+        </select>
+        <div class="hint">📊 Estado actual de la iniciativa a la fecha de este reporte</div>
+      </div>
+
+      <!-- ── BLOQUE B: CONTRATO AUTOCOMPLETE ── -->
       <div id="pp-bloque-datos" style="display:none; grid-column:span 2;">
         <div style="background:linear-gradient(90deg,#F3E5F5,#fff);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;font-size:.78rem;font-weight:700;color:#6A1B9A;letter-spacing:.05em;">
-          📊 DATOS DE LA INICIATIVA — Se autocompletan desde la base oficial
+          📊 DATOS DEL CONTRATO — Cargados automáticamente desde la base oficial
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.1rem 1.4rem;">
 
-          <div class="field">
-            <label for="pp_proyecto">Proyecto de Inversión <span class="lbl-badge poai">POAI</span></label>
-            <input type="text" id="pp_proyecto" name="pp_proyecto" readonly style="background:var(--gris-1);color:var(--azul);font-weight:600;" placeholder="Se autocompleta...">
-          </div>
-
-          <div class="field">
-            <label for="pp_codigo">Código / ID Propuesta</label>
-            <input type="text" id="pp_codigo" name="pp_codigo" readonly style="background:var(--gris-1);font-weight:700;color:#6A1B9A;" placeholder="Se autocompleta...">
-          </div>
-
-          <div class="field span-2" style="grid-column:span 2;">
-            <label for="pp_meta">Meta del Cuatrienio</label>
-            <textarea id="pp_meta" name="pp_meta" rows="2" readonly style="background:var(--gris-1);color:var(--gris-5);font-size:.82rem;resize:none;" placeholder="Se autocompleta al seleccionar la iniciativa..."></textarea>
-          </div>
+          <!-- Campos ocultos para compatibilidad con envío -->
+          <input type="hidden" id="pp_codigo"          name="pp_codigo">
+          <input type="hidden" id="pp_proyecto"        name="pp_proyecto">
+          <input type="hidden" id="pp_meta"            name="pp_meta">
+          <input type="hidden" id="pp_nombre"          name="pp_nombre">
+          <input type="hidden" id="pp_proponente"      name="pp_proponente">
+          <input type="hidden" id="pp_contratista"     name="pp_contratista">
+          <input type="hidden" id="pp_valor_iniciativa" name="pp_valor_iniciativa">
+          <input type="hidden" id="pp_plazo"           name="pp_plazo">
+          <input type="hidden" id="pp_estado"          name="pp_estado">
 
           <div class="field span-2" style="grid-column:span 2;">
-            <label for="pp_nombre">Nombre / Título de la Iniciativa</label>
-            <input type="text" id="pp_nombre" name="pp_nombre" readonly style="background:var(--gris-1);font-weight:600;" placeholder="Se autocompleta...">
-          </div>
-
-          <div class="field span-2" style="grid-column:span 2;">
-            <label for="pp_proponente">Proponente / Promotor</label>
-            <input type="text" id="pp_proponente" name="pp_proponente" style="background:var(--gris-1);" placeholder="Se autocompleta (editable si cambió)...">
-          </div>
-
-          <div class="field">
-            <label for="pp_contrato">N° Contrato</label>
-            <input type="text" id="pp_contrato" name="pp_contrato" style="background:var(--gris-1);" placeholder="Se autocompleta...">
-          </div>
-
-          <div class="field">
-            <label for="pp_contratista">Contratista</label>
-            <input type="text" id="pp_contratista" name="pp_contratista" style="background:var(--gris-1);" placeholder="Se autocompleta...">
-          </div>
-
-          <div class="field">
-            <label for="pp_valor_iniciativa">Valor de la Iniciativa (COP)</label>
-            <input type="text" id="pp_valor_iniciativa" name="pp_valor_iniciativa" style="background:var(--gris-1);" placeholder="Se autocompleta...">
+            <label for="pp_contrato">N° Contrato <span class="lbl-badge" style="background:#F3E5F5;color:#6A1B9A;">Base PP oficial</span></label>
+            <input type="text" id="pp_contrato" name="pp_contrato"
+              style="background:#f7f5ff;font-weight:600;color:#6A1B9A;"
+              placeholder="Se autocompleta desde la base PP del año seleccionado...">
+            <div class="hint">📄 Número de contrato según la base oficial. Editable si hay actualización.</div>
           </div>
 
           <div class="field">
@@ -1341,22 +1352,40 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
           </div>
 
           <div class="field">
-            <label for="pp_plazo">Plazo de Ejecución de la Iniciativa <span class="req">*</span></label>
-            <input type="text" id="pp_plazo" name="pp_plazo" style="background:var(--gris-1);" placeholder="Se autocompleta (ej: 6 MESES)...">
+            <label for="pp_plazo_display">Plazo de Ejecución</label>
+            <input type="text" id="pp_plazo_display" name="pp_plazo_display" placeholder="Ej: 6 MESES · 12 MESES">
+            <div class="hint">Plazo de ejecución de la iniciativa</div>
           </div>
 
-          <div class="field">
-            <label for="pp_estado">Estado de la Iniciativa <span class="req">*</span></label>
-            <select id="pp_estado" name="pp_estado" required>
-              <option value="">Seleccionar estado...</option>
-              <option value="EN FORMULACIÓN">En formulación</option>
-              <option value="EN EJECUCIÓN">En ejecución</option>
-              <option value="MATERIALIZADA">Materializada</option>
-              <option value="INVIABLE">Inviable</option>
-              <option value="PARCIALMENTE MATERIALIZADA">Parcialmente materializada</option>
-            </select>
-          </div>
+        </div>
+      </div>
 
+      <!-- ══ AVANCE METAS 1er TRIMESTRE 2026 ══ -->
+      <div class="field span-2" style="grid-column:span 2; margin-top:.5rem;">
+        <div style="background:linear-gradient(90deg,#F3E5F5,#fff);border-radius:8px;padding:.6rem 1rem;margin-bottom:.8rem;font-size:.78rem;font-weight:700;color:#6A1B9A;letter-spacing:.05em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;" onclick="toggleMetasQ1()">
+          <span>📊 AVANCE METAS 1er TRIMESTRE SC 2026 — Seguimiento a la Inversión</span>
+          <span id="metas-q1-toggle-icon" style="font-size:1rem;transition:transform .3s;">&#9660;</span>
+        </div>
+        <div id="metas-q1-panel" style="display:none;">
+          <div style="overflow-x:auto;border-radius:8px;border:1px solid #e1bee7;box-shadow:0 1px 4px rgba(106,27,154,.1);">
+            <table id="tabla-metas-q1" style="width:100%;border-collapse:collapse;font-size:.75rem;font-family:'DM Sans',sans-serif;">
+              <thead>
+                <tr style="background:#6A1B9A;color:#fff;text-align:left;">
+                  <th style="padding:.5rem .6rem;white-space:nowrap;">ID Meta</th>
+                  <th style="padding:.5rem .6rem;min-width:260px;">Meta Proyecto 2025-2028</th>
+                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Prog.<br>Q1</th>
+                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Contrat.<br>Q1</th>
+                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Entregada<br>Q1</th>
+                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">% Avance</th>
+                  <th style="padding:.5rem .6rem;white-space:nowrap;">Condición</th>
+                  <th style="padding:.5rem .6rem;min-width:180px;">Observación</th>
+                </tr>
+              </thead>
+              <tbody id="metas-q1-tbody">
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:.5rem;font-size:.7rem;color:#6A1B9A;opacity:.75;">Fuente: 2. AVANCE METAS 1 TRIM SC 2026 · Solo metas del componente Presupuestos Participativos</div>
         </div>
       </div>
 
@@ -2012,7 +2041,8 @@ function mostrarCamposTipoActividad() {
     mostrar('seccion-pp');
     mostrar('seccion-geo');
     mostrar('seccion-evidencias');
-    ['pp_anio','pp_mes_reporte','pp_avance_mes','pp_estado',
+    ['pp_anio','pp_mes_reporte','pp_id_display','pp_titulo_display',
+     'pp_estado_visible','pp_avance_mes',
      'pp_poblacion_beneficiada','pp_lugar_ejecucion','pp_soportes_descripcion',
      'zona','lugar'].forEach(r);
 
@@ -2225,17 +2255,127 @@ function updateMapsLink() {
   else { document.getElementById('enlace_maps').value = ''; document.getElementById('gps-link').innerHTML = ''; }
 }
 
+/* ══ AVANCE METAS Q1 2026 — PRESUPUESTOS PARTICIPATIVOS ══ */
+const METAS_PP_Q1 = [
+  {id:"22511",meta:"Financiar 120 proyectos del sector cultural y creativo.",prog:30,cont:"—",entr:"—",cond:"NO APLICA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"22521",meta:"Intervenir 17 Km-carril de malla vial urbana (local y/o intermedia).",prog:4.25,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en formulación según necesidades del territorio."},
+  {id:"22541",meta:"Intervenir 4.290 m² del sistema de espacio público peatonal.",prog:1230,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Se avanza en formulación según necesidades del territorio."},
+  {id:"22571",meta:"Construir 880 m² de Parques de la red de proximidad (incluye dotación).",prog:220,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Se avanza en formulación."},
+  {id:"22572",meta:"Intervenir 32 Parques de la red de proximidad.",prog:8,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"23162",meta:"Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental.",prog:1500,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Se realizará proceso de selección que complementará la ejecución."},
+  {id:"23851",meta:"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia contra la mujer.",prog:1500,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"24051",meta:"Otorgar 100 estímulos de apoyo al sector artístico y cultural.",prog:25,cont:"—",entr:"—",cond:"NO APLICA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"24052",meta:"Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregados.",prog:15,cont:"—",entr:"—",cond:"NO APLICA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"24054",meta:"Capacitar 1.480 personas en los campos artísticos, interculturales, culturales y/o patrimoniales.",prog:370,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"24091",meta:"Capacitar 2.600 personas en procesos de formación para la participación.",prog:650,cont:320,entr:320,cond:"INCOMPLETA",obs:"CPS realizan actividades. RP: 623-458-575-576"},
+  {id:"24093",meta:"Fortalecer 200 organizaciones sociales e instancias de participación ciudadana.",prog:50,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"CPS realizan actividades. Avance en formulación paralelamente."},
+  {id:"24811",meta:"Vincular 2.400 personas en acciones educativas en temas de protección y bienestar animal.",prog:600,cont:"—",entr:"—",cond:"NO APLICA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"24812",meta:"Atender 10.000 animales en programas de brigadas médicas, urgencias veterinarias y adopciones.",prog:2500,cont:533,entr:533,cond:"INCOMPLETA",obs:"Contratado % de la meta para OPS; se realizará SAM para brigadas. RP: 706-1809-1810-1811"},
+  {id:"24813",meta:"Esterilizar 15.000 perros y gatos incluyendo los en condición de vulnerabilidad.",prog:3750,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Se realizará SAM para adelantar brigadas médicas con más insumos."},
+  {id:"24951",meta:"Capacitar 6.400 personas en los campos deportivos o recreativos.",prog:1600,cont:214,entr:214,cond:"INCOMPLETA",obs:"OPS contratadas darán cumplimiento según cronograma. RP: 612-614-718-738-1777-1828"},
+  {id:"24952",meta:"Beneficiar 4.000 personas con la entrega de dotaciones deportivas.",prog:1000,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"24953",meta:"Beneficiar 13.200 personas en actividades recreo-deportivas comunitarias.",prog:3300,cont:440,entr:440,cond:"INCOMPLETA",obs:"OPS contratadas darán cumplimiento según cronograma. RP: 737-770-1879-1949 y otros"},
+  {id:"24954",meta:"Beneficiar 120 colectivos u organizaciones recreo-deportivas con apoyos económicos.",prog:30,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"25021",meta:"Mantener 1.000 árboles en zona urbana.",prog:250,cont:"—",entr:"—",cond:"NO APLICA",obs:"Se avanza en la formulación."},
+  {id:"25024",meta:"Capacitar 6.000 personas en separación en la fuente y reciclaje.",prog:1500,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"CPS contratadas darán cumplimiento. En formulación."},
+  {id:"25025",meta:"Implementar 160 huertas urbanas.",prog:160,cont:7,entr:7,cond:"INCOMPLETA",obs:"CPS realizan actividades. RP: 627-1988-1989"},
+  {id:"25027",meta:"Mantener 2.000 m² de jardinería.",prog:2000,cont:487,entr:487,cond:"INCOMPLETA",obs:"CPS realizan actividades conforme a la meta. RP: 579-1987"},
+  {id:"250211",meta:"Implementar 4 procesos comunitarios de educación ambiental (conservación de biodiversidad y agua).",prog:1,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Se realizará proceso de selección que complementará la ejecución."},
+  {id:"25061",meta:"Habilitar 300 cupos para atención de población en inseguridad alimentaria (comedores comunitarios).",prog:75,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"26061",meta:"Realizar 4 procesos pedagógicos o culturales para apropiación social de la memoria y reparación a víctimas.",prog:1,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26062",meta:"Realizar 4 procesos de fortalecimiento de capacidades de población víctima del conflicto armado.",prog:1,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"26063",meta:"Realizar 4 acciones de construcción de paz para tejido social y desarrollo territorial.",prog:1,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26081",meta:"Apoyar 800 Mipymes, emprendimientos y/o actores de economía informal para el tejido empresarial local.",prog:200,cont:28,entr:28,cond:"INCOMPLETA",obs:"Se está realizando la formulación sin ninguna novedad. RP: 1866-1867-1868-1869"},
+  {id:"26151",meta:"Dotar 61 sedes educativas urbanas y rurales con recursos pedagógicos y/o tecnológicos.",prog:15,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"CPS realizan actividades. Se avanza en formulación paralelamente."},
+  {id:"26202",meta:"Implementar 120 iniciativas de convivencia con participación de la ciudadanía.",prog:30,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26203",meta:"Fortalecer 100 organizaciones comunitarias con capacidades para corresponsabilidad en seguridad y convivencia.",prog:25,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26271",meta:"Apoyar 120 Mipymes y/o emprendimientos para el fortalecimiento de capacidades en desarrollo turístico local.",prog:30,cont:10,entr:10,cond:"INCOMPLETA",obs:"Se está realizando la formulación sin ninguna novedad. RP: 1792"},
+  {id:"26272",meta:"Realizar 8 acciones para fortalecer habilidades técnicas y blandas de personas de la localidad.",prog:2,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"CPS realizan actividades. Avanza en formulación paralelamente."},
+  {id:"26331",meta:"Fortalecer 1.600 actores comunitarios con herramientas para enfoque restaurativo para la justicia y convivencia.",prog:400,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26332",meta:"Implementar 24 proyectos comunitarios en apropiación del Código Nacional de Seguridad y Convivencia Ciudadana.",prog:6,cont:"—",entr:"—",cond:"NO APLICA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26333",meta:"Beneficiar 680 ciudadanos con habilidades para gestionar la convivencia constructivamente.",prog:170,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26334",meta:"Implementar 24 proyectos de justicia local para resolución efectiva de conflictividades.",prog:6,cont:"—",entr:"—",cond:"NO APLICA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26335",meta:"Ejecutar 4 programas comunitarios con enfoque restaurativo para cuidado del espacio público y medio ambiente.",prog:1,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26336",meta:"Fortalecer 4 programas de abordaje de conflictividad escolar para la convivencia con enfoque restaurativo.",prog:1,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26337",meta:"Implementar 80 acciones pedagógicas para la gestión de conflictividades y prevención de violencias.",prog:20,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Avance en mesas de co-creación. En formulación."},
+  {id:"26481",meta:"Beneficiar 1.160 jóvenes con transferencias condicionadas y acompañamiento psicosocial.",prog:290,cont:290,entr:290,cond:"INCOMPLETA",obs:"Cumplido con convenio SDIS; entregas mes a mes en el Q1. RP: 7"},
+  {id:"27082",meta:"Concertar e implementar 4 iniciativas de inversión local con comunidades negras, afrocolombianas y palenqueras.",prog:1,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"27912",meta:"Dotar y/o acondicionar 2 unidades operativas de atención especializada (Centros Integrarte, Centros Crecer y Cadis).",prog:1,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"27914",meta:"Dotar y/o acondicionar 2 Centros de Desarrollo Comunitarios para la prestación de servicios sociales.",prog:1,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"27916",meta:"Dotar y/o acondicionar 2 unidades operativas orientadas a la atención de la persona mayor.",prog:1,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"27971",meta:"Fortalecer 1 unidad de innovación pública y social a nivel local.",prog:1,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"28021",meta:"Vincular 4.000 personas en procesos para la prevención de violencias en contexto familiar y/o violencia sexual.",prog:1000,cont:75,entr:75,cond:"INCOMPLETA",obs:"Actividades complementarias y mesas de co-creación. En formulación. RP: 1965-1966-2000-2564"},
+  {id:"28022",meta:"Vincular 6.000 mujeres cuidadoras a estrategias de cuidado.",prog:1500,cont:225,entr:225,cond:"INCOMPLETA",obs:"Actividades complementarias. Mesas de co-creación. En formulación. RP: 783-787-1968"},
+  {id:"28023",meta:"Adecuar y dotar 2 espacios en las manzanas del cuidado.",prog:1,cont:"—",entr:"—",cond:"NO APLICA",obs:"Depende del concepto técnico de la Secretaría de la Mujer y entidad ancla."},
+  {id:"28024",meta:"Vincular 1.600 mujeres para el ejercicio de derechos y fortalecimiento de su autonomía económica.",prog:400,cont:160,entr:160,cond:"INCOMPLETA",obs:"CPS realizan actividades complementarias. En formulación. RP: 594-595-596-616"},
+  {id:"28051",meta:"Intervenir 4 hectáreas de conectores ecosistémicos.",prog:1,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"28052",meta:"Realizar acciones de conservación en 5 ha de la Estructura Ecológica Principal.",prog:1.25,cont:"—",entr:"—",cond:"NO APLICA",obs:"Ejecución avanza conforme a lo programado. En formulación."},
+  {id:"28053",meta:"Generar 4.000 m² de áreas renaturalizadas.",prog:1000,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Se realizará proceso de selección que complementará la ejecución."},
+  {id:"28054",meta:"Lograr 10 hectáreas en proceso de restauración ecológica.",prog:2.5,cont:"—",entr:"—",cond:"INCOMPLETA",obs:"Se avanza en la formulación."}
+];
+
+function renderMetasQ1() {
+  const tbody = document.getElementById('metas-q1-tbody');
+  if (!tbody || tbody.dataset.loaded) return;
+  tbody.dataset.loaded = '1';
+  METAS_PP_Q1.forEach((m, i) => {
+    const prog = typeof m.prog === 'number' ? m.prog : 0;
+    const pct = prog > 0 && typeof m.entr === 'number' ? Math.round((m.entr / m.prog) * 100) : 0;
+    const condColor = m.cond === 'INCOMPLETA' ? '#FFF3E0' : '#E8F5E9';
+    const condText = m.cond === 'INCOMPLETA' ? '#E65C00' : '#1B7E45';
+    const pctColor = pct === 0 ? '#f5f5f5' : pct < 50 ? '#fff3e0' : pct < 100 ? '#e3f2fd' : '#e8f5e9';
+    const pctTxt = pct === 0 ? '—' : pct + '%';
+    const bg = i % 2 === 0 ? '#fff' : '#faf5ff';
+    const tr = document.createElement('tr');
+    tr.style.background = bg;
+    tr.innerHTML = '<td style="padding:.4rem .6rem;font-weight:700;color:#6A1B9A;white-space:nowrap;">' + m.id + '</td>' +
+      '<td style="padding:.4rem .6rem;line-height:1.35;">' + m.meta + '</td>' +
+      '<td style="padding:.4rem .6rem;text-align:center;font-weight:600;">' + m.prog + '</td>' +
+      '<td style="padding:.4rem .6rem;text-align:center;">' + m.cont + '</td>' +
+      '<td style="padding:.4rem .6rem;text-align:center;font-weight:600;">' + (typeof m.entr === 'number' ? m.entr : '—') + '</td>' +
+      '<td style="padding:.4rem .6rem;text-align:center;background:' + pctColor + ';font-weight:700;color:#333;">' + pctTxt + '</td>' +
+      '<td style="padding:.4rem .6rem;background:' + condColor + ';color:' + condText + ';font-weight:700;white-space:nowrap;font-size:.7rem;">' + m.cond + '</td>' +
+      '<td style="padding:.4rem .6rem;color:#555;font-size:.7rem;line-height:1.3;">' + m.obs + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function toggleMetasQ1() {
+  const panel = document.getElementById('metas-q1-panel');
+  const icon = document.getElementById('metas-q1-toggle-icon');
+  if (!panel) return;
+  const open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (icon) icon.style.transform = open ? '' : 'rotate(180deg)';
+  if (!open) renderMetasQ1();
+}
+
 /* CONTEO CARACTERES — mínimo 600 */
+function isImageFile(file) {
+  if (file.type && file.type.startsWith('image/')) return true;
+  const ext = file.name.split('.').pop().toLowerCase();
+  return ['jpg','jpeg','png','gif','webp','bmp'].includes(ext);
+}
+
 function previewFile(input, containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   if (!input.files.length) return;
   const file = input.files[0];
   if (file.size > 10 * 1024 * 1024) { showToast('⚠️ Archivo supera 10 MB', 'error-t'); input.value = ''; return; }
-  if (file.type.startsWith('image/')) {
-    const reader = new FileReader();
-    reader.onload = e => { container.innerHTML = `<div class="file-thumb"><img src="${e.target.result}" alt="preview"></div>`; };
-    reader.readAsDataURL(file);
+  if (isImageFile(file)) {
+    const url = URL.createObjectURL(file);
+    const d = document.createElement('div');
+    d.className = 'file-thumb';
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = 'preview';
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+    img.onerror = () => { d.innerHTML = `<span style="font-size:.65rem;padding:.2rem;word-break:break-all;">✅ ${file.name}</span>`; };
+    img.onload = () => URL.revokeObjectURL(url);
+    d.appendChild(img);
+    container.appendChild(d);
+    container.appendChild(Object.assign(document.createElement('div'),{className:'file-selected-name',textContent:`✅ ${file.name}`}));
   } else {
     container.innerHTML = `<div class="file-selected-name">✅ ${file.name}</div>`;
   }
@@ -2245,16 +2385,26 @@ function previewMultipleFiles(input, containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   if (!input.files.length) return;
-  container.innerHTML = `<div class="file-selected-name">✅ ${input.files.length} foto(s) seleccionada(s)</div>`;
-  Array.from(input.files).slice(0, 6).forEach(file => {
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const d = document.createElement('div'); d.className = 'file-thumb';
-        d.innerHTML = `<img src="${e.target.result}" alt="${file.name}">`;
-        container.appendChild(d);
-      };
-      reader.readAsDataURL(file);
+  const label = document.createElement('div');
+  label.className = 'file-selected-name';
+  label.textContent = `✅ ${input.files.length} foto(s) seleccionada(s)`;
+  container.appendChild(label);
+  const thumbsWrap = document.createElement('div');
+  thumbsWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem;';
+  container.appendChild(thumbsWrap);
+  Array.from(input.files).slice(0, 8).forEach(file => {
+    if (isImageFile(file)) {
+      const url = URL.createObjectURL(file);
+      const d = document.createElement('div');
+      d.className = 'file-thumb';
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = file.name;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+      img.onload = () => URL.revokeObjectURL(url);
+      img.onerror = () => { d.textContent = '📷'; d.style.cssText += 'display:flex;align-items:center;justify-content:center;font-size:1.4rem;'; };
+      d.appendChild(img);
+      thumbsWrap.appendChild(d);
     }
   });
 }
@@ -2330,6 +2480,395 @@ function showToast(msg, tipo = '') {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 document.getElementById('modal-confirm').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModal(); });
+
+
+/* ── PRESUPUESTOS PARTICIPATIVOS — DATOS Y FUNCIONES ── */
+const PP_INICIATIVAS = {
+  "2024": [
+    {i:"27182", t:"curso de guitarra para principiantes", c:""},
+    {i:"27525", t:"Taekwondo mente cuerpo y espíritu", c:"FDLSC-CTOI-1149-2024"},
+    {i:"27834", t:"Formacion comunal asojuntas", c:"FDLSC-CVNI-833-2024"},
+    {i:"28255", t:"Entrega de Dotación al salón Managua", c:"FDLSC-CSU-1151-2024"},
+    {i:"28259", t:"Entrega de dotación al Salón San Pedro Sur Oriental", c:"FDLSC-CSU-1151-2024"},
+    {i:"28261", t:"Seguridad Vial en San Cristóbal", c:"FDLSC-CPS-809-2025"},
+    {i:"28267", t:"Dotar 13 sedes de salones comunales", c:"FDLSC-CSU-1151-2024"},
+    {i:"28273", t:"Dotar la JAC del barrio Amapolas", c:"FDLSC-CSU-1151-2024"},
+    {i:"28279", t:"Bacatá Rumbera Escuela de Bailadores", c:"FDLSC-CVNI-740-2024"},
+    {i:"28282", t:"Dotar la JAC del barrio Primero de Mayo", c:"FDLSC-CSU-1151-2024"},
+    {i:"28283", t:"Donde Florecen las Amapolas Huerta el Palmar", c:"FDLSC-CPS-906-2023"},
+    {i:"29041", t:"San Cristóbal presente en Bogotá", c:"FDLSC-CVNI-869-2024"},
+    {i:"29042", t:"Escalera al éxito", c:"FDLSC-CVNI-869-2024"},
+    {i:"29043", t:"Limpieza de purificación del Río Fucha", c:"FDLSC-CPS-871-2023"},
+    {i:"29059", t:"HUERTA LAS BRISAS", c:"FDLSC-CPS-906-2023"},
+    {i:"29066", t:"El adulto mayor a la huerta", c:"FDLSC-CPS-906-2023"},
+    {i:"29342", t:"Dotación para la Junta de Acción Comunal de Bello Horizonte", c:"FDLSC-CSU-1151-2024"},
+    {i:"29375", t:"PROMOVIENDO LA CULTURA DE LA CONVIVENCIA, LA PAZ Y LA SEGUIRIDAD.", c:"FDLSC-CTOI-1159-2024"},
+    {i:"29601", t:"emprendamos desde casa", c:"FDLSC-CVNI-869-2024"},
+    {i:"30102", t:"Por el rescate de nuestra tradiciones", c:"FDLSC-CVNI-740-2024"},
+    {i:"30367", t:"fortalecimiento comunal", c:"FDLSC-CSU-1151-2024"},
+    {i:"30386", t:"Reciclando ando en Gaviotas", c:"FDLSC-CV-488-2024"},
+    {i:"30430", t:"Entrega de dotación al salón Ayacucho sur oriental", c:"FDLSC-CSU-1151-2024"},
+    {i:"30450", t:"HUERTA COMUNAL", c:"FDLSC-CPS-906-2023"},
+    {i:"30503", t:"ADULTO AMOR (danza y teatro)", c:"FDLSC-CVNI-740-2024"},
+    {i:"30671", t:"San Cristóbal y Consorcio Express comprometidos con espacios artísticos y cultur", c:"FDLSC-CVNI-740-2024"},
+    {i:"31044", t:"dotación salón comunal Jac Macarena los AlpesAlpes", c:"FDLSC-CSU-1151-2024"},
+    {i:"31240", t:"Detección salón comunal barrio La Victoria 5.0", c:"FDLSC-CSU-1151-2024"},
+    {i:"32012", t:"Ecocarriles para el uso de la bici en San Cristobal", c:"FDLSC-CTOI -1011 DE 2024"},
+    {i:"32017", t:"Rio de colores: donde la naturaleza y el arte se entrelazan en una sinfonía visu", c:"FDLSC-CVNI-740-2024"},
+    {i:"32072", t:"Gravity Bike en un espacio publico seguro", c:"FDLSC-CPS-809-2025"},
+    {i:"32100", t:"Dotación al salón comunal barrios San Isidro y San Luis", c:"FDLSC-CSU-1151-2024"},
+    {i:"32121", t:"Dotación al salón comunal barrio las Mercedes", c:"FDLSC-CSU-1151-2024"},
+    {i:"32127", t:"CORAZONES ACTIVAMENTE SALUDABLES", c:"FDLSC-CTOI-1149-2024"},
+    {i:"32152", t:"Las artes audiovisuales para el desarrollo del liderazgo social", c:"FDLSC-CVNI-740-2024"},
+    {i:"32193", t:"Instalemos camaras para la seguridad de nuestro barrio", c:"FDLSC-CTOI-1159-2024"},
+    {i:"33850", t:"camaras por la vida", c:"FDLSC-CTOI-1159-2024"},
+    {i:"33881", t:"Conoce tu Localidad. Recréate y se Feliz", c:"FDLSC-CTOI-1149-2024"},
+    {i:"34071", t:"ARTESC4 - RDN", c:"FDLSC-CVNI-869-2024"},
+    {i:"34840", t:"capacitación incluyente en los campos deportivos", c:"FDLSC-CTOI-1149-2024"},
+    {i:"35021", t:"LUCHANDO POR LA SALUD Y EL AMBIENTE CON LA ASOCIACIÓN DE USUARIOS HOSPITAL LA VI", c:"Pendiente"},
+    {i:"35663", t:"Alfabetización digital", c:"FDLSC-CSU-1151-2024"},
+    {i:"36035", t:"Con el deporte se construye la paz", c:"FDLSC-CTOI-1149-2024"},
+    {i:"36046", t:"Festival de danza urbana all style", c:"FDLSC-CVNI-740-2024"},
+    {i:"36093", t:"ORIENTACIÓN Y PROYECCIÓN DE EMPRENDIMIENTOS PARA LA CREACIÓN DE EMPRESAS", c:"FDLSC-CVNI-870-2024"},
+    {i:"36102", t:"Niñas y niños ciudadanos", c:"FDLSC-CVNI-833-2024"},
+    {i:"36179", t:"Torneo recreo deportivo “diversamente hábiles”", c:"FDLSC-CTOI-1149-2024"},
+    {i:"36756", t:"Lab.Civ Sub-versión Audiovisual", c:"FDLSC-CVNI-740-2024"},
+    {i:"36759", t:"Lab.Civ Compilado músical y literario Z4", c:"FDLSC-CVNI-740-2024"},
+    {i:"36762", t:"Lab.Civ El Territorio y las artes se encuentran", c:"FDLSC-CVNI-740-2024"},
+    {i:"36769", t:"Lab.Civ Mujeres de fé y deportistas libre de violencia.", c:"FDLSC-CTOI-1163-2024"},
+    {i:"36772", t:"Lab.Civ San Cristóbal camina por una vida lbre de violencias contra las mujeres ", c:"FDLSC-CTOI-1163-2024"},
+    {i:"36780", t:"Lab.Civ Me muevo sin miedo.", c:"FDLSC-CTOI-1163-2024"},
+    {i:"36787", t:"Lab.Civ Los Animales tambien Cuentan.", c:"FDLSC-CPS-809-2025"},
+    {i:"36798", t:"Lab.Civ San Cristobal y Sus Animales Cuentan.", c:"FDLSC-CVNI-1161-2024"},
+    {i:"36805", t:"Lab.Civ Transformación para las victimas.", c:"FDLSC-CTOI-1162-2024"},
+    {i:"36810", t:"Lab.Civ Esperanza Local", c:"FDLSC-CVNI-869-2024"},
+    {i:"36814", t:"Lab.Civ Red de sueños", c:"FDLSC-CVNI-869-2024"},
+    {i:"36820", t:"Lab.Civ Reverdecer juntos", c:"FDLSC-CVNI-870-2024"},
+    {i:"36969", t:"Lab.Jov JUVENTUD QUE EMPRENDE Y CREA", c:"FDLSC-CVNI-869-2024"},
+    {i:"36972", t:"Lab.Jov JOVENES A EMPRENDER", c:"FDLSC-CVNI-870-2024"},
+    {i:"36977", t:"Lab.Jov CIRCUITO XL", c:"FDLSC-CTOI-1149-2024"},
+    {i:"36999", t:"Lab.Jov JOVENES AL DEPORTE", c:"FDLSC-CTOI-1149-2024"},
+    {i:"37004", t:"Lab.Jov EMPRENDIMIENTO DE LA CULTURA JOVEN", c:"FDLSC-CVNI-740-2024"},
+    {i:"37008", t:"Lab.Jov CULTURIZANDO LA CUARTA: INTÉGRATE, APRENDE Y CREA.", c:"FDLSC-CVNI-740-2024"},
+    {i:"37023", t:"Lab.Civ Por un mundo mejor, vamos a cambiar", c:"FDLSC-CTOI-1163-2024"},
+    {i:"37208", t:"Lab.Civ Formarnos para cuidarnos y cuidar.", c:"FDLSC-CPS-1150-2024"},
+    {i:"37210", t:"Lab.Civ Mujeres en el poder del autocuidado.", c:"FDLSC-CPS-1150-2024"},
+    {i:"37211", t:"Lab.Civ Cuidadoras delegando para emprender.", c:"FDLSC-CPS-1150-2024"},
+    {i:"37212", t:"Lab.Civ Conmemorando y reflexionando con nuestras mujeres en San Cristóbal.", c:"FDLSC-CTOI-1163-2024"},
+    {i:"37213", t:"Lab.Civ Mujeres formadas par hacer incidencia.", c:"FDLSC-CTOI-1163-2024"},
+    {i:"37214", t:"Lab.Civ Organizando y Movilizando las mujeres.", c:"FDLSC-CTOI-1163-2024"},
+    {i:"37215", t:"Lab.Civ Semillero y poder de las mujeres desde sus derechos.", c:"FDLSC-CTOI-1163-2024"},
+    {i:"37216", t:"Lab.Civ Escribir textos poéticos y narrativos para generar memoria.", c:"FDLSC-CVNI-740-2024"},
+    {i:"37475", t:"Lab.Civ Observatorio de mujeres de San Cristóbal", c:"FDLSC-CTOI-1163-2024"},
+    {i:"`", t:"Fortalecer la agrupación musical Auténtico Sol de Oriente", c:"FDLSC-CVNI-833-2024"},
+    {i:"NOV", t:"nan", c:""},
+    {i:"24", t:"nan", c:""},
+    {i:"0", t:"nan", c:""},
+    {i:"50", t:"nan", c:""},
+    {i:"2", t:"nan", c:""},
+    {i:"76", t:"nan", c:""},
+    {i:"1", t:"nan", c:""},
+    {i:"008403361344537815", t:"nan", c:""},
+  ],
+  "2025": [
+    {i:"37646", t:"noche de antifaces", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"37701", t:"escuela de rock", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"37709", t:"aprende producción musical", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"37875", t:"Mujeres Emprendedoras La Gloria", c:"FDLSC-CPS-848-2025"},
+    {i:"38062", t:"ARTESC4 3.0", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"38863", t:"ALIMENTOS PREPARADOS", c:"FDLSC-CPS-776-2025"},
+    {i:"38888", t:"ACTIVEMOS LA COHESION SOCIAL", c:"FDLSC-CPS-816-2025"},
+    {i:"38899", t:"RESTAUREMOS LA CHIGUAZA", c:"FDLSC-CPS-873-2025"},
+    {i:"38910", t:"E-SPORTS BOXING", c:"FDLSC-CVNI-716-2025"},
+    {i:"38950", t:"festival del folclore  colombiano", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"39038", t:"DIVERSION SEGURA PARA LOS MAS PEQUEÑOS", c:"FDLSC-CPS-816-2025"},
+    {i:"39044", t:"ART 4  FERIA DE ARTE Y DISEÑO DE SAN CRISTOBAL", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"39051", t:"SABOR Y TRADICION UN VIAJE CULINARIO POR SAN CRISTOBAL", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"39336", t:"Red de Emisoras Escolares para la Convivencia y Solución de Conflictos", c:"FDLSC-CPS-885-2025"},
+    {i:"39580", t:"Aterrizando la inteligencia artificial a San Cristóbal", c:"FDLSC-CVNI-819-2025"},
+    {i:"39676", t:"vive el boxeo viva la vida", c:"FDLSC-CVNI-716-2025"},
+    {i:"39718", t:"CPL al territorio", c:"FDLSC-CPS-809-2025"},
+    {i:"39760", t:"Huerta semillas de vida", c:"FDLSC-CPS-873-2025"},
+    {i:"39856", t:"Mujeres en transformación, aguante lucha y corazón", c:"FDLSC-CPS-885-2025"},
+    {i:"40013", t:"La Tienda  San Cristóbal", c:"FDLSC-CPS-776-2025"},
+    {i:"40084", t:"La Leyenda De El Dorado En Marcha", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"40112", t:"fortalecer el consejo local de movilidad y cultura vial de la localidad de San C", c:"FDLSC-CPS-866-2025"},
+    {i:"40143", t:"RAICES Y SABORES - caja de memoria de sabores", c:"FDLSC-CPS-807-2025"},
+    {i:"40226", t:"Sueños con mil colores", c:"FDLSC-CSU-850-2025"},
+    {i:"40239", t:"Feria navideña juntos por un mundo mas verde", c:"FDLSC-CSU-850-2025"},
+    {i:"40255", t:"como integrar a los actores del turismo", c:"FDLSC-CPS-807-2025"},
+    {i:"40263", t:"el turismo en san Cristóbal una oportunidad para todos en el territorio", c:"FDLSC-CPS-807-2025"},
+    {i:"40305", t:"fortalecimiento de capacidades multiplicando saberes en agricultura urbana", c:"FDLSC-CPS-873-2025"},
+    {i:"40385", t:"MANAGUA TE CUIDAD", c:"FDLSC-CVNI-819-2025"},
+    {i:"40437", t:"La Cuarta Estudio", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"40463", t:"ALIMENTANDO A NUESTRAS MASCOTAS DE LA CALLE", c:"FDLSC-CPS-809-2025"},
+    {i:"40469", t:"EL CUIDADO DE NUESTRAS MASCOTAS", c:"FDLSC-CPS-785-2025"},
+    {i:"40490", t:"Por una Niñez empoderada: Mi voz, mis Derechos, mi Política", c:"FDLSC-CPS-866-2025"},
+    {i:"40493", t:"PATITAS UNIDAS", c:"FDLSC-CPS-785-2025"},
+    {i:"40504", t:"RESTAURACION ANIMAL", c:"FDLSC-CPS-785-2025"},
+    {i:"40507", t:"Dohko Sala de ensayo", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"40511", t:"GUARDIANES DEL PLANETA: EL CAMBIO COMIENZA EN MI CASA", c:"FDLSC-CPS-873-2025"},
+    {i:"40535", t:"TEJIENDO CONVIVENCIA ESCOLAR", c:"FDLSC-CPS-885-2025"},
+    {i:"40557", t:"SEMILLERO INFANTIL DE JUSTICIA Y CONVIVENCIA", c:"FDLSC-CPS-816-2025"},
+    {i:"40591", t:"ESFERICA - REALIDAD VIRTUAL", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"40668", t:"Torneo de mini tejo nuestra época dorada", c:"FDLSC-CVNI-716-2025"},
+    {i:"40681", t:"FESTIVAL DE FESTIVALES SANCRISTOBAL", c:"FDLSC-CVNI-716-2025"},
+    {i:"40746", t:"PRIMER FORO LOCAL DE DEPORTE DE BASE", c:"FDLSC-CVNI-716-2025"},
+    {i:"40782", t:"Fortaleciendo el turismo en San Cristóbal", c:"FDLSC-CPS-807-2025"},
+    {i:"40855", t:"Mujeres Creativas que tejen sueños", c:"FDLSC-CVNI-805-2025"},
+    {i:"40900", t:"TransformaTec", c:"FDLSC-CVNI-819-2025"},
+    {i:"40916", t:"RAICES DE SABIDURIA: AGRICULTURA URBANA PARA EL ADULTO MAYOR", c:"FDLSC-CPS-873-2025"},
+    {i:"40951", t:"emprendiendo con deporte y cultura en Gaviotas", c:"FDLSC-CVNI-716-2025"},
+    {i:"41012", t:"Convivencia pacifica local", c:"FDLSC-CPS-816-2025"},
+    {i:"41117", t:"Reactivación comunitaria, fortalecimiento del tejido social a través del emprend", c:"FDLSC-CPS-776-2025"},
+    {i:"41159", t:"Artes marciales mixtas impactando territorio", c:"FDLSC-CVNI-716-2025"},
+    {i:"41236", t:"Convivencia en juego, paz en las calles", c:"FDLSC-CPS-885-2025"},
+    {i:"41263", t:"DESCUBRE SAN CRISTÓBAL \"Tu Guía Turística Digital\"", c:"FDLSC-CPS-807-2025"},
+    {i:"41411", t:"Internet a mi barrio", c:"FDLSC-CVNI-819-2025"},
+    {i:"41463", t:"escuela de formación deportiva la Joyita Jericó", c:"FDLSC-CVNI-716-2025"},
+    {i:"41494", t:"La Joyita", c:"FDLSC-CPS-866-2025"},
+    {i:"41529", t:"Nuevo Bello Horizonte", c:"FDLSC-CPS-816-2025"},
+    {i:"41554", t:"Formándome desde la ancestralidad, participo e incido.", c:"FDLSC-CPS-866-2025"},
+    {i:"41564", t:"EcoInnova", c:"FDLSC-CPS-873-2025"},
+    {i:"41575", t:"DIPLOMADO CON ENFOQUE DIFERENCIAL AFRO JUNTANZA ETNICA", c:"FDLSC-CPS-866-2025"},
+    {i:"41611", t:"Emprendiendo En-Señas", c:"FDLSC-CPS-776-2025"},
+    {i:"41640", t:"HUERTAS CASERAS EN LA LOCALIDAD DE SAN CRISTOBAL", c:"FDLSC-CPS-873-2025"},
+    {i:"41737", t:"Convivencia Sana comunitaria", c:"FDLSC-CPS-816-2025"},
+    {i:"41802", t:"ABRAZO ANCESTRAL A SAN CRISTOBAL", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"42108", t:"IMPLEMENTACIÓN DE HUERTAS URBANAS Y CULTURA AMBIENTAL EN LA LOCALIDAD DE SAN CRI", c:"FDLSC-CPS-873-2025"},
+    {i:"42139", t:"Reactiva: Magazine Cultural", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"42199", t:"Creencias que inspiran e impactan: Fortalecimiento del comite local de libertad ", c:"FDLSC-CPS-866-2025"},
+    {i:"42345", t:"Escuela de deportes - Damawha (Talleres de boxeo, pin pon y voleibol)", c:"FDLSC-CVNI-716-2025"},
+    {i:"42384", t:"ESTRELLITA SIMPATICA", c:"FDLSC-CPS-809-2025"},
+    {i:"42535", t:"Talleres en Derechos Humanos (DDHH) y Paz", c:"FDLSC-CPS-866-2025"},
+    {i:"42615", t:"TENIS PARA TU COMUNIDAD", c:"FDLSC-CVNI-716-2025"},
+    {i:"42677", t:"ESCUELA PRACTICA DE DISEÑO Y CONFECCIONES", c:"FDLSC-CPS-866-2025"},
+    {i:"43197", t:"DDifMujer. Entre todo nos cuidamos", c:"FDLSC-CVNI-805-2025"},
+    {i:"43210", t:"DDifMujer. Mujeres en movimiento", c:"FDLSC-CVNI-716-2025"},
+    {i:"43212", t:"DGral. Cámaras por la seguridad de la comunidad", c:"FDLSC-CPS-816-2025"},
+    {i:"43213", t:"DGral. Construyendo paz y convivencia en San Cristóbal", c:"FDLSC-CPS-816-2025"},
+    {i:"43214", t:"DDifJuv. New Trends Fest", c:"FDLSC-CVNI-716-2025"},
+    {i:"43215", t:"DGral. Escuadrón de Convivencia y Valores", c:"FDLSC-CPS-816-2025"},
+    {i:"43216", t:"DDifMujer. Laboratorio de mujeres", c:"FDLSC-CPS-885-2025"},
+    {i:"43217", t:"DDifMujer. Reconozco, multiplico y transformo: San Cristóbal territorio cuidador", c:"FDLSC-CVNI-805-2025"},
+    {i:"43218", t:"DDifJuv. Festivsal Floor Hunters", c:"FDLSC-CVNI-716-2025"},
+    {i:"43219", t:"DDifMujer. Festival Flor del Alba", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"43220", t:"DDifJuv. New Treds School", c:"FDLSC-CVNI-716-2025"},
+    {i:"43221", t:"DDifLGBTIQ. Festival diverso de San Cristóbal", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"43222", t:"DDifJuv. Red de organizaciones deportivas juveniles", c:"FDLSC-CVNI-716-2025"},
+    {i:"43223", t:"DDifLGBTIQ. Olimpiadas diversas", c:"FDLSC-CVNI-716-2025"},
+    {i:"43224", t:"DDifMujer. Transformando realidades: prevención de violencia.", c:"FDLSC-CVNI-805-2025"},
+    {i:"43225", t:"DDifLGBTIQ. Formando y replicando", c:""},
+    {i:"43226", t:"DDifMujer. Encuentros y acciones pedagógicas para la resolución de conflictos", c:"FDLSC-CPS-885-2025"},
+    {i:"43227", t:"DDifLGBTIQ. Carnaval diverso yo marcho trans San Cristóbal 2025", c:"FDLSC-CPS-694-2025"},
+    {i:"43228", t:"DDifLGBTIQ. Comunidades transformadoras", c:"FDLSC-CVNI-805-2025"},
+    {i:"43229", t:"DDifMujer. Cuadrando mujeres", c:"FDLSC-CVNI-805-2025"},
+    {i:"43230", t:"DDifJuv. Feria Sentipensante", c:""},
+    {i:"43231", t:"DDifLGBTIQ. Arcoiris del cuidado", c:"FDLSC-CVNI-805-2025"},
+    {i:"43232", t:"DDifJuv. Romper la violencia", c:"FDLSC-CVNI-805-2025"},
+    {i:"43234", t:"DDifLGBTIQ. Diversas renaciendo", c:"FDLSC-CVNI-805-2025"},
+    {i:"43235", t:"DDifMujer. Rompiendo estereotipos", c:"FDLSC-CVNI-805-2025"},
+    {i:"43236", t:"DDifMujer. Ruta pedagógica del arte y la mujer", c:"FDLSC-CVNI-805-2025"},
+    {i:"43237", t:"DDifMujer. Ponte en mis ideas", c:"FDLSC-CVNI-805-2025"},
+    {i:"43238", t:"DGral. Escuela de memoria, paz y reconciliacion de conflictos.", c:""},
+    {i:"43239", t:"DDifMujer. Mujeres con el poder del autocuidado", c:"FDLSC-CVNI-805-2025"},
+    {i:"43240", t:"DGral. Contruyendo sueños de paz y reconciliacion para la reactivación económica", c:"FDLSC-CVNI-805-2025"},
+    {i:"43241", t:"DDifMujer. Respira con tranquilidad mientras cuidamos de los tuyos", c:"FDLSC-CVNI-805-2025"},
+    {i:"43242", t:"DDifMujer. MCLE: mujeres cuidadoras, luchadoras y emprendedoras por San Cristóba", c:"FDLSC-CVNI-805-2025"},
+    {i:"43243", t:"DDifMujer. Memorias de vida", c:"FDLSC-CVNI-805-2025"},
+    {i:"43244", t:"DDifMujer. Apropiamiento de mujeres en mi localidad", c:"FDLSC-CVNI-805-2025"},
+    {i:"43245", t:"DDifMujer. Mujeres guerreras y empoderadas por los derechos", c:"FDLSC-CVNI-805-2025"},
+    {i:"43246", t:"DDifMujer. Mujeres emprendedoras del Alto de Fucha", c:"FDLSC-CVNI-805-2025"},
+    {i:"43247", t:"DDifMujer. Agentes y líderes multiplicadores de conocimiento", c:""},
+    {i:"43248", t:"DDifJuv. Escuela de artes, oficios y autocuidado de las mujeres jóvenes cuidador", c:"FDLSC-CVNI-805-2025"},
+    {i:"43249", t:"DDifJuv. Reconociendo al breaking local deportivo", c:"FDLSC-CVNI-716-2025"},
+    {i:"43250", t:"DDifMujer. Taller de resilencia con enfoques diferenciales e inclusión.", c:""},
+    {i:"43257", t:"DDifJuv. Festival de talentos juveniles El Arte Emprende", c:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025"},
+    {i:"43261", t:"DGral. Explorando mentes", c:""},
+    {i:"43264", t:"DGral. Veterinarios junior", c:"FDLSC-CPS-809-2025"},
+    {i:"43350", t:"Fortalecimiento del Consejo de Sabios y Sabias de la localidad cuarta de San Cri", c:"FDLSC-CPS-866-2025"},
+    {i:"43559", t:"DDifJuv. La salud mental de los jovenes no es un juego de locos", c:""},
+    {i:"43566", t:"DGral. Camino de integracion y rencocilacion: Un viaje intercultural y participa", c:""},
+    {i:"43570", t:"DGral. Escuela de paz y liderazgo social para la construccion de paz.", c:""},
+    {i:"05042016806722689", t:"nan", c:""},
+    {i:"1", t:"nan", c:""},
+  ],
+  "2026": [
+    {i:"55283", t:"DGral. Artesca 40", c:"EN FORMULACIÓN"},
+    {i:"55324", t:"DGral. Festival de las artes vivas San Cris 2026", c:"EN FORMULACIÓN"},
+    {i:"55300", t:"DGral. Alto voltaje SIE", c:"EN FORMULACIÓN"},
+    {i:"55302", t:"DGral. Revista literal \"Cronicas de metal y de la calle\"", c:"EN FORMULACIÓN"},
+    {i:"55312", t:"DGral. Sur oriente literario", c:"EN FORMULACIÓN"},
+    {i:"55351", t:"DGral. Mujeres empoderadas", c:"EN FORMULACIÓN"},
+    {i:"53599", t:"TLL. Carrera 8 entre la calle 1 hasta la calle 7 Sur", c:"EN FORMULACIÓN"},
+    {i:"53600", t:"TLL. Carrera 3B entre la calle 36A Sur hasta la calle 36D Sur", c:"EN FORMULACIÓN"},
+    {i:"53601", t:"TLL. Carrera 8 entre la calle 1 hasta la calle 7 Sur", c:"EN FORMULACIÓN"},
+    {i:"53602", t:"TLL. Calle 22A Sur entre la carrera 3Bis hasta la carrera 6", c:"EN FORMULACIÓN"},
+    {i:"54187", t:"TLL. Urbanizacion San Rafael Sur Oriental", c:"EN FORMULACIÓN"},
+    {i:"54188", t:"TLL. Ubanización Las Guacamayas", c:"EN FORMULACIÓN"},
+    {i:"55006", t:"DDifJuv. Manejando tus emociones con alegría", c:"EN FORMULACIÓN"},
+    {i:"54978", t:"DGral. Acciona tu mente con Artedeporte", c:"EN FORMULACIÓN"},
+    {i:"55599", t:"DDifMujer. Circuitos pedagógicos, artísticos y reflexivos para prevención de vio", c:"EN FORMULACIÓN"},
+    {i:"55378", t:"DGral. RED DE MUJERES CONSTRUCTORAS EN PRVEENCION DE FEMINICIDIO COMUNITARIO", c:"EN FORMULACIÓN"},
+    {i:"55260", t:"DGral. Círculo Audiovisual Toma Cuarta", c:"EN FORMULACIÓN"},
+    {i:"55020", t:"DGral. Semillero de danza afrolatina", c:"EN FORMULACIÓN"},
+    {i:"55258", t:"DGral. FESTIVAL DE FESTIVALES", c:"EN FORMULACIÓN"},
+    {i:"55128", t:"DGral. Herramientas para el Arte", c:"EN FORMULACIÓN"},
+    {i:"55220", t:"DGral. Escuela Comunitaria de Musica Integral", c:"EN FORMULACIÓN"},
+    {i:"55256", t:"DGral. Círculo Fusión Z4", c:"EN FORMULACIÓN"},
+    {i:"55019", t:"DGral. Salvaguarda de Oficios y Saberes en San Cristóbal", c:"EN FORMULACIÓN"},
+    {i:"55136", t:"DGral. Escuela de Danzas Yoli", c:"EN FORMULACIÓN"},
+    {i:"54775", t:"DGral. Pasión Barrio y Barra", c:"EN FORMULACIÓN"},
+    {i:"54838", t:"DGral. Escuela de participación juvenil comunitaria (ESPARJUCOM)", c:"EN FORMULACIÓN"},
+    {i:"55027", t:"DGral. Por un mejor mundo para nuestras mascotas en San Cristóbal", c:"EN FORMULACIÓN"},
+    {i:"55035", t:"DGral. Comunicación directa con la comunidad para las esterilizaciones", c:"EN FORMULACIÓN"},
+    {i:"55050", t:"DGral. Educación para los habitantes de San Cristóbal en protección y bienestar ", c:"EN FORMULACIÓN"},
+    {i:"55084", t:"DGral. Imaginando el cachibol para el futuro", c:"EN FORMULACIÓN"},
+    {i:"55143", t:"DGral. Olimpiadas de las persona mayor", c:"EN FORMULACIÓN"},
+    {i:"55078", t:"DGral. Guerreros de Arena", c:"EN FORMULACIÓN"},
+    {i:"55070", t:"DGral. Semilleros deportivos de organizaciones futboleras", c:"EN FORMULACIÓN"},
+    {i:"55071", t:"DGral. Carrera atletica persona mayor", c:"EN FORMULACIÓN"},
+    {i:"47257", t:"dia de los juegos de mesa en familia", c:"EN FORMULACIÓN"},
+    {i:"46966", t:"DIA DEL ABUELO", c:"EN FORMULACIÓN"},
+    {i:"48504", t:"TORNEOS DE JUEGOS TRADICIONALES", c:"EN FORMULACIÓN"},
+    {i:"55313", t:"DGral. San Cristóbal patina", c:"EN FORMULACIÓN"},
+    {i:"55311", t:"DGral. Taekwondo Fuerza y Unión en movimiento", c:"EN FORMULACIÓN"},
+    {i:"55327", t:"DDifMujer. Por un San Cristóbal más incluyente", c:"EN FORMULACIÓN"},
+    {i:"55314", t:"DDifMujer. curvas en bielas", c:"EN FORMULACIÓN"},
+    {i:"55125", t:"DGral. Clubes y escuelas de futbol con dotación con o sin aval deportivo", c:"EN FORMULACIÓN"},
+    {i:"55376", t:"DGral. RECUPERANDO LA JUVENTUD", c:"EN FORMULACIÓN"},
+    {i:"55340", t:"DGral. JUGANDO POR LOS SUEÑOS: FORTALECIMIENTO DEPORTIVO SOCIAL DE SAN CRISTOBAL", c:"EN FORMULACIÓN"},
+    {i:"55100", t:"DGral. Defendiendo mi localidad; chiquitos pero no indefensos", c:"EN FORMULACIÓN"},
+    {i:"55350", t:"DDifMujer. Puños de fuego MMA women", c:"EN FORMULACIÓN"},
+    {i:"55167", t:"DGral. Actividad recreo deportiva y fisica", c:"EN FORMULACIÓN"},
+    {i:"45347", t:"CONCIENIA AL TERRITORIO POR LA CONSERVACION DE LA BIODIVERSIDAD EN SAN CRISTOBAL", c:"EN FORMULACIÓN"},
+    {i:"55041", t:"DGral. Cuidando mi barrio recicl en la fuente y cuido nuestro mundo", c:"EN FORMULACIÓN"},
+    {i:"55044", t:"DGral. Huertas del sur oriente", c:"EN FORMULACIÓN"},
+    {i:"55377", t:"DGral. APRENDIENDO Y EMPRENDIENDO", c:"EN FORMULACIÓN"},
+    {i:"55087", t:"DGral. Fortalecimiento y reconocimiento", c:"EN FORMULACIÓN"},
+    {i:"55169", t:"DDifLGBTIQ. Transformando comunidad", c:"EN FORMULACIÓN"},
+    {i:"55109", t:"DDifJuv. Proyección para la paz muchas víctimas pocas histórias", c:"EN FORMULACIÓN"},
+    {i:"55056", t:"DGral. Los ojos de las víctimas a través del trabajo informal", c:"EN FORMULACIÓN"},
+    {i:"55374", t:"DGral. 5 OLLAS COMUNITARIA - PROCESOS PARTICIPATIVOS", c:"EN FORMULACIÓN"},
+    {i:"55352", t:"DGral. Tejiendo sueños empresariales", c:"EN FORMULACIÓN"},
+    {i:"47870", t:"SAN CRISTOBAL AL VIENTO POR EL FORTALECIMIENTO DE LA CONVIVENCIA TERRITORIAL", c:"EN FORMULACIÓN"},
+    {i:"47273", t:"CARNAVAL FUTBOLERO POR LA PAZ", c:"EN FORMULACIÓN"},
+    {i:"47236", t:"HISTORIAS VIVAS RECONSTRUYENDO TERRITRIO", c:"EN FORMULACIÓN"},
+    {i:"47264", t:"REDES DE JUSTICIA TERRITORIAL SAN CRISTOBAL", c:"EN FORMULACIÓN"},
+    {i:"48206", t:"San Cristóbal Segura y comprometida", c:"EN FORMULACIÓN"},
+    {i:"50281", t:"Barrio y barra unidos por la convivencia", c:"EN FORMULACIÓN"},
+    {i:"55390", t:"DDifLGBTIQ. CONVIVIR DESDE LA DIVERSIDAD", c:"EN FORMULACIÓN"},
+    {i:"55393", t:"DDifJuv. MI ESPACIO, MI BARRIO", c:"EN FORMULACIÓN"},
+    {i:"46747", t:"La Convivencia y la seguridad nuestro Futuro", c:"EN FORMULACIÓN"},
+    {i:"55384", t:"DDifJuv. INTEGRACIÓN AL TERRITORIO PARA LA CONSTRUCCIÓN DE CONVIVENCIA TERRITORI", c:"EN FORMULACIÓN"},
+    {i:"47114", t:"turisteando y comiendo ando", c:"EN FORMULACIÓN"},
+    {i:"44870", t:"Gastronomía Viva San Cristóbal: Estrategia marca, Cultura y Emprendimiento en Ac", c:"EN FORMULACIÓN"},
+    {i:"48658", t:"Los medios apoyan los emprendimientos turísticos.", c:"EN FORMULACIÓN"},
+    {i:"55183", t:"DDifLGBTIQ. El turismo LGBTIQ existe en San Cristobal", c:"EN FORMULACIÓN"},
+    {i:"55359", t:"DGral. Capacitar para la productividad y empleabilidad", c:"EN FORMULACIÓN"},
+    {i:"55349", t:"DDifMujer. Emprendimiento de Mujeres Con futuro.", c:"EN FORMULACIÓN"},
+    {i:"55033", t:"DDifJuv. Festi Tour San Cristobal", c:"EN FORMULACIÓN"},
+    {i:"55149", t:"DGral. Restaurando parques y senderos", c:"EN FORMULACIÓN"},
+    {i:"55385", t:"DGral.  JUNTOS POR LA COMUNIDAD", c:"EN FORMULACIÓN"},
+    {i:"55118", t:"DGral. Sistema de mediación comunitaria", c:"EN FORMULACIÓN"},
+    {i:"55058", t:"DGral. Ojos de barrio", c:"EN FORMULACIÓN"},
+    {i:"55388", t:"DGral. COMUNIDAD CONECTADA SAN CRISTOBAL CONVIVE", c:"EN FORMULACIÓN"},
+    {i:"55176", t:"DDifJuv. Rehabilitación", c:"EN FORMULACIÓN"},
+    {i:"55097", t:"DGral. Puentes de convivencia San Cristóbal restaura", c:"EN FORMULACIÓN"},
+    {i:"55179", t:"DDifJuv. Incentivos para el mañana", c:"EN FORMULACIÓN"},
+    {i:"55172", t:"DDifJuv. Espacios de confianza", c:"EN FORMULACIÓN"},
+    {i:"49055", t:"Aula Digital Managua", c:"EN FORMULACIÓN"},
+    {i:"47697", t:"CENTROS DE EXPERIENCIAS TICS PARA MI BARRIO", c:"EN FORMULACIÓN"},
+    {i:"55395", t:"DDifMujer. POLIFONIA, VOCES VIVAS DE LAS MUJERES DE SAN CRISTÓBAL", c:"EN FORMULACIÓN"},
+    {i:"54993", t:"DGral. Fortalecer a la mujeres en ofimática", c:"EN FORMULACIÓN"},
+    {i:"55387", t:"DGral. TEJIENDO CUIDADO, SABERES QUE DIGNIFICAN LA VIDA", c:"EN FORMULACIÓN"},
+    {i:"54983", t:"DGral. Protagonismo Familiar - Malestar Familiar", c:"EN FORMULACIÓN"},
+    {i:"55380", t:"DDifMujer. CAMINOS DE BIENESTAR PARA LAS CUIDADORAS DE SAN CRISTOBAL", c:"EN FORMULACIÓN"},
+  ],
+};
+
+// ── PRESUPUESTOS PARTICIPATIVOS: cargar iniciativas por año ──
+function cargarIniciativasPP() {
+  const yr     = document.getElementById('pp_anio').value;
+  const wrap   = document.getElementById('pp-campo-iniciativa-wrap');
+  const selBuscar = document.getElementById('pp_id_iniciativa');
+  const selId     = document.getElementById('pp_id_display');
+  const bloque    = document.getElementById('pp-bloque-datos');
+
+  // Reset todo
+  selBuscar.innerHTML = '<option value="">— Seleccionar iniciativa —</option>';
+  selId.innerHTML     = '<option value="">— Seleccione el año primero —</option>';
+  bloque.style.display = 'none';
+  ['pp_titulo_display','pp_contrato','pp_estado_visible'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+
+  if (!yr || !PP_INICIATIVAS[yr]) { wrap.style.display = 'none'; return; }
+
+  // Populate BOTH selects with the same options
+  PP_INICIATIVAS[yr].forEach(item => {
+    // Selector de búsqueda (ID — Título completo)
+    const opt1 = document.createElement('option');
+    opt1.value            = item.i;
+    opt1.textContent      = `${item.i} — ${item.t}`;
+    opt1.dataset.titulo   = item.t;
+    opt1.dataset.contrato = item.c;
+    selBuscar.appendChild(opt1);
+
+    // Selector de ID directo (solo el número)
+    const opt2 = document.createElement('option');
+    opt2.value            = item.i;
+    opt2.textContent      = item.i;
+    opt2.dataset.titulo   = item.t;
+    opt2.dataset.contrato = item.c;
+    selId.appendChild(opt2);
+  });
+
+  wrap.style.display = 'flex';
+  actualizarProgreso();
+}
+
+// Llamado desde el selector de búsqueda (ID — Título)
+function autocompletePP() {
+  const sel  = document.getElementById('pp_id_iniciativa');
+  const opt  = sel.options[sel.selectedIndex];
+  if (!opt || !opt.value) return;
+  // Sync el selector de ID directo
+  const selId = document.getElementById('pp_id_display');
+  if (selId) selId.value = opt.value;
+  _fillPP(opt.value, opt.dataset.titulo, opt.dataset.contrato);
+}
+
+// Llamado desde el selector de ID directo
+function autocompletePPById() {
+  const selId = document.getElementById('pp_id_display');
+  const opt   = selId.options[selId.selectedIndex];
+  if (!opt || !opt.value) return;
+  // Sync el selector de búsqueda
+  const selBuscar = document.getElementById('pp_id_iniciativa');
+  if (selBuscar) selBuscar.value = opt.value;
+  _fillPP(opt.value, opt.dataset.titulo, opt.dataset.contrato);
+}
+
+// Lógica compartida de autocomplete
+function _fillPP(id, titulo, contrato) {
+  const bloque  = document.getElementById('pp-bloque-datos');
+  const setVal  = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+
+  setVal('pp_titulo_display', titulo);
+  setVal('pp_contrato',       contrato);
+
+  const yr = document.getElementById('pp_anio').value;
+  const estadoSel = document.getElementById('pp_estado_visible');
+  if (estadoSel) {
+    estadoSel.value = yr === '2026' ? 'EN FORMULACIÓN' : '';
+  }
+
+  bloque.style.display = 'block';
+  showToast(`✅ Iniciativa ${id} cargada`, 'success');
+  actualizarProgreso();
+}
+
 </script>
 
 <!--
@@ -2367,7 +2906,7 @@ function actualizarProgreso() {
       return ['inst_instancia','inst_tipo_reunion','inst_descripcion','inst_vincula_alcalde']
         .every(id => document.getElementById(id)?.value);
     } else if (tipo === 'PRESUPUESTOS PARTICIPATIVOS') {
-      return ['pp_anio','pp_mes_reporte','pp_avance_mes','pp_estado','pp_poblacion_beneficiada','pp_lugar_ejecucion']
+      return ['pp_anio','pp_mes_reporte','pp_id_display','pp_titulo_display','pp_estado_visible','pp_avance_mes','pp_poblacion_beneficiada','pp_lugar_ejecucion']
         .every(id => document.getElementById(id)?.value);
     } else {
       return true;
@@ -2411,7 +2950,7 @@ function validarFormulario() {
   } else if (tipo === 'INSTANCIAS DE PARTICIPACION') {
     req.push('inst_instancia','inst_tipo_reunion','inst_descripcion','inst_vincula_alcalde','zona','lugar');
   } else if (tipo === 'PRESUPUESTOS PARTICIPATIVOS') {
-    req.push('pp_anio','pp_mes_reporte','pp_id_iniciativa','pp_avance_mes','pp_estado','pp_poblacion_beneficiada','pp_lugar_ejecucion','pp_soportes_descripcion','zona','lugar');
+    req.push('pp_anio','pp_mes_reporte','pp_id_display','pp_titulo_display','pp_estado_visible','pp_avance_mes','pp_poblacion_beneficiada','pp_lugar_ejecucion','pp_soportes_descripcion','zona','lugar');
   } else if (tipo === 'RESPUESTA PROBLEMÁTICA - TRASLADO ENTIDAD EXTERNA') {
     req.push('entidades_externas','zona','lugar');
   } else if (tipo === 'RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO') {
@@ -2505,10 +3044,9 @@ async function enviarFormulario() {
     });
   } else if (tipo === 'PRESUPUESTOS PARTICIPATIVOS') {
     ['pp_anio','pp_mes_reporte','pp_id_iniciativa',
-     'pp_proyecto','pp_codigo','pp_meta','pp_nombre','pp_proponente',
-     'pp_avance_mes','pp_contrato','pp_contratista',
-     'pp_valor_iniciativa','pp_valor_contrato','pp_plazo','pp_estado',
-     'pp_poblacion_beneficiada','pp_lugar_ejecucion',
+     'pp_id_display','pp_titulo_display','pp_estado_visible',
+     'pp_codigo','pp_nombre','pp_contrato','pp_valor_contrato','pp_plazo_display',
+     'pp_avance_mes','pp_poblacion_beneficiada','pp_lugar_ejecucion',
      'pp_mesa_fecha','pp_mesa_num_reuniones','pp_mesa_acuerdos','pp_mesa_acta',
      'pp_soportes_descripcion','pp_carta_materializacion',
      'zona','lugar','lugar_custom','coordenadas','enlace_maps'].forEach(id => {
@@ -2516,6 +3054,7 @@ async function enviarFormulario() {
     });
     const tpPP = document.getElementById('pp_tipo_poblacion');
     if (tpPP) datos['pp_tipo_poblacion'] = Array.from(tpPP.selectedOptions).map(o=>o.value).join(', ');
+    datos['pp_estado'] = datos['pp_estado_visible'];
   } else {
     ['entidades_externas','numero_orfeo','zona','lugar','lugar_custom','coordenadas','enlace_maps'].forEach(id => {
       const el = document.getElementById(id); if (el) datos[id] = el.value.trim();
@@ -2666,384 +3205,6 @@ function limpiarFormulario() {
 })();
 
 
-
-const PP_DATA = {
-  "2024": [
-    {id:"27182", titulo:"curso de guitarra para principiantes", proyecto:"1803", meta:"Capacitar 1200 personas en los campos artísticos, interculturales, culturales y/o patrimon", promotor:"RAFAEL HERNANDO GOMEZ QUINTERO", estado:"Materializada", avance:"1.0", contrato:"No aplica", contratista:"No aplica", valor:"No aplica", plazo:""},
-    {id:"27525", titulo:"Taekwondo mente cuerpo y espíritu", proyecto:"1801", meta:"Capacitar 3200 personas en los campos deportivos.", promotor:"WILMER YESID UYABAN DIAZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1149-2024", contratista:"EMPRESA INMOBILIARIA Y DE SERVICIOS LOGISTICOS DE CUNDINAMARCA", valor:"2229153468", plazo:""},
-    {id:"27834", titulo:"Formacion comunal asojuntas", proyecto:"1872", meta:"Fortalecer 80 Organizaciones, JAC e Instancias de participación ciudadana.", promotor:"ANDRES  CARVAJAL ARIAS", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-833-2024", contratista:"PARTICIPACIÓN CIUDADANA PARA EL DESARROLLO LOCAL", valor:"1622994850", plazo:""},
-    {id:"28255", titulo:"Entrega de Dotación al salón Managua", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"28259", titulo:"Entrega de dotación al Salón San Pedro Sur Oriental", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"28261", titulo:"Seguridad Vial en San Cristóbal", proyecto:"1835", meta:"Realizar 8 acuerdos para la vinculación de la ciudadanía en los programas adelantados por ", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-809-2025", contratista:"UT EVENTOS LOGISTICOS", valor:"$     3.250.000.000", plazo:""},
-    {id:"28267", titulo:"Dotar 13 sedes de salones comunales", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"28273", titulo:"Dotar la JAC del barrio Amapolas", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"28279", titulo:"Bacatá Rumbera Escuela de Bailadores", proyecto:"1803", meta:"Capacitar 1200 personas en los campos artísticos, interculturales, culturales y/o patrimon", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"28282", titulo:"Dotar la JAC del barrio Primero de Mayo", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"28283", titulo:"Donde Florecen las Amapolas Huerta el Palmar", proyecto:"1813", meta:"Implementar 20 acciones de fomento para la agricultura urbana.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-906-2023", contratista:"FUNDACION TIEMPOS DE COLOR/FUNDACIÓN PARA EL DESARROLLO TERRITORIAL", valor:"451645109", plazo:""},
-    {id:"29041", titulo:"San Cristóbal presente en Bogotá", proyecto:"1865", meta:"Apoyar 600 Mipymes y/o emprendimientos culturales y creativos.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-869-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"1049570000", plazo:""},
-    {id:"29042", titulo:"Escalera al éxito", proyecto:"1865", meta:"Apoyar 600 Mipymes y/o emprendimientos culturales y creativos.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-869-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"1049570000", plazo:""},
-    {id:"29043", titulo:"Limpieza de purificación del Río Fucha", proyecto:"1859", meta:"Implementar 8 PROCEDAS.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-871-2023", contratista:"CIDOR CONSULTING ALLIANCE SAS", valor:"968506421", plazo:""},
-    {id:"29059", titulo:"HUERTA LAS BRISAS", proyecto:"1813", meta:"Implementar 20 acciones de fomento para la agricultura urbana.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-906-2023", contratista:"FUNDACION TIEMPOS DE COLOR/FUNDACIÓN PARA EL DESARROLLO TERRITORIAL", valor:"451645109", plazo:""},
-    {id:"29066", titulo:"El adulto mayor a la huerta", proyecto:"1813", meta:"Implementar 20 acciones de fomento para la agricultura urbana.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-906-2023", contratista:"FUNDACION TIEMPOS DE COLOR/FUNDACIÓN PARA EL DESARROLLO TERRITORIAL", valor:"451645109", plazo:""},
-    {id:"29342", titulo:"Dotación para la Junta de Acción Comunal de Bello Horizonte", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"29375", titulo:"PROMOVIENDO LA CULTURA DE LA CONVIVENCIA, LA PAZ Y LA SEGUIRIDAD.", proyecto:"1824", meta:"Incluir 1000 personas en actividades de educación para la resiliencia y la prevención de h", promotor:"No registra", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1159-2024", contratista:"CORPORACIÓN COLOMBIA DIGITAL", valor:"2313090531", plazo:""},
-    {id:"29601", titulo:"emprendamos desde casa", proyecto:"1865", meta:"Apoyar 600 Mipymes y/o emprendimientos culturales y creativos.", promotor:"JOAN MANUEL RODRIGUEZ ALARCON", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-869-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"1049570000", plazo:""},
-    {id:"30102", titulo:"Por el rescate de nuestra tradiciones", proyecto:"1803", meta:"Realizar 48 eventos de promoción de actividades culturales.", promotor:"No registra", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"30367", titulo:"fortalecimiento comunal", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"MIGUEL GILBERTO URBINA JIMENEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"30386", titulo:"Reciclando ando en Gaviotas", proyecto:"1868", meta:"Capacitar 4500 personas en separación en la fuente y reciclaje.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CV-488-2024", contratista:"GENERACIÓN DE TALENTOS S.A.S", valor:"29332310", plazo:""},
-    {id:"30430", titulo:"Entrega de dotación al salón Ayacucho sur oriental", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"30450", titulo:"HUERTA COMUNAL", proyecto:"1813", meta:"Implementar 20 acciones de fomento para la agricultura urbana.", promotor:"MIGUEL GILBERTO URBINA JIMENEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-906-2023", contratista:"FUNDACION TIEMPOS DE COLOR/FUNDACIÓN PARA EL DESARROLLO TERRITORIAL", valor:"451645109", plazo:""},
-    {id:"30503", titulo:"ADULTO AMOR (danza y teatro)", proyecto:"1803", meta:"Capacitar 1200 personas en los campos artísticos, interculturales, culturales y/o patrimon", promotor:"MIGUEL GILBERTO URBINA JIMENEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"30671", titulo:"San Cristóbal y Consorcio Express comprometidos con espacios artísticos y c", proyecto:"1803", meta:"Realizar 48 eventos de promoción de actividades culturales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"31044", titulo:"dotación salón comunal Jac Macarena los Alpes  Alpes", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"31240", titulo:"Detección salón comunal barrio La Victoria 5.0", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"32012", titulo:"Ecocarriles para el uso de la bici en San Cristobal", proyecto:"1835", meta:"Realizar 8 acuerdos para la vinculación de la ciudadanía en los programas adelantados por ", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Inviable", avance:"0.0", contrato:"FDLSC-CTOI -1011 DE 2024", contratista:"INFOTIC S A", valor:"1831669645", plazo:""},
-    {id:"32017", titulo:"Rio de colores: donde la naturaleza y el arte se entrelazan en una sinfonía", proyecto:"1803", meta:"Realizar 48 eventos de promoción de actividades culturales.", promotor:"NICOL ALEJANDRA FORERO RINCON", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"32072", titulo:"Gravity Bike en un espacio publico seguro", proyecto:"1835", meta:"Realizar 8 acuerdos para la vinculación de la ciudadanía en los programas adelantados por ", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-809-2025", contratista:"UT EVENTOS LOGISTICOS", valor:"$     3.250.000.000", plazo:""},
-    {id:"32100", titulo:"Dotación al salón comunal barrios San Isidro y San Luis", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"32121", titulo:"Dotación al salón comunal barrio las Mercedes", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"32127", titulo:"CORAZONES ACTIVAMENTE SALUDABLES", proyecto:"1801", meta:"Vincular 8000 personas en actividades recreo-deportivas comunitarias.", promotor:"RICARDO ARENAS GALINDO", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1149-2024", contratista:"EMPRESA INMOBILIARIA Y DE SERVICIOS LOGISTICOS DE CUNDINAMARCA", valor:"2229153468", plazo:""},
-    {id:"32152", titulo:"Las artes audiovisuales para el desarrollo del liderazgo social", proyecto:"1803", meta:"Capacitar 1200 personas en los campos artísticos, interculturales, culturales y/o patrimon", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"32193", titulo:"Instalemos camaras para la seguridad de nuestro barrio", proyecto:"1824", meta:"Incluir 1000 personas en actividades de educación para la resiliencia y la prevención de h", promotor:"No registra", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1159-2024", contratista:"CORPORACIÓN COLOMBIA DIGITAL", valor:"2313090531", plazo:""},
-    {id:"33850", titulo:"camaras por la vida", proyecto:"1824", meta:"Incluir 1000 personas en actividades de educación para la resiliencia y la prevención de h", promotor:"WENDY TATIANA VILLAMIL GUERRERO", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1159-2024", contratista:"CORPORACIÓN COLOMBIA DIGITAL", valor:"2313090531", plazo:""},
-    {id:"33881", titulo:"Conoce tu Localidad. Recréate y se Feliz", proyecto:"1801", meta:"Vincular 8000 personas en actividades recreo-deportivas comunitarias.", promotor:"LUZ ESPERANZA CHOIS DE AVILA", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1149-2024", contratista:"EMPRESA INMOBILIARIA Y DE SERVICIOS LOGISTICOS DE CUNDINAMARCA", valor:"2229153468", plazo:""},
-    {id:"34071", titulo:"ARTESC4 - RDN", proyecto:"1865", meta:"Apoyar 600 Mipymes y/o emprendimientos culturales y creativos.", promotor:"No registra", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-869-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"1049570000", plazo:""},
-    {id:"34840", titulo:"capacitación incluyente en los campos deportivos", proyecto:"1801", meta:"Capacitar 3200 personas en los campos deportivos.", promotor:"DANIEL CAMILO MARTINEZ CORREA", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1149-2024", contratista:"EMPRESA INMOBILIARIA Y DE SERVICIOS LOGISTICOS DE CUNDINAMARCA", valor:"2229153468", plazo:""},
-    {id:"35021", titulo:"LUCHANDO POR LA SALUD Y EL AMBIENTE CON LA ASOCIACIÓN DE USUARIOS HOSPITAL ", proyecto:"1868", meta:"Capacitar 4500 personas en separación en la fuente y reciclaje.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Inviable", avance:"0.0", contrato:"Pendiente", contratista:"Pendiente", valor:"Pendiente", plazo:""},
-    {id:"35663", titulo:"Alfabetización digital", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"No registra", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"36035", titulo:"Con el deporte se construye la paz", proyecto:"1801", meta:"Capacitar 3200 personas en los campos deportivos.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1149-2024", contratista:"EMPRESA INMOBILIARIA Y DE SERVICIOS LOGISTICOS DE CUNDINAMARCA", valor:"2229153468", plazo:""},
-    {id:"36046", titulo:"Festival de danza urbana all style", proyecto:"1803", meta:"Realizar 48 eventos de promoción de actividades culturales.", promotor:"No registra", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"36093", titulo:"ORIENTACIÓN Y PROYECCIÓN DE EMPRENDIMIENTOS PARA LA CREACIÓN DE EMPRESAS", proyecto:"1865", meta:"Promover en 800 Mipymes y/o emprendimientos la transformación empresarial y/o productiva.", promotor:"JHOHAN STEEVEN MORENO JIMENEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-870-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"2002320000", plazo:""},
-    {id:"36102", titulo:"Niñas y niños ciudadanos", proyecto:"1872", meta:"Capacitar 2500 personas a través de procesos de formación para la participación de manera ", promotor:"No registra", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-833-2024", contratista:"PARTICIPACIÓN CIUDADANA PARA EL DESARROLLO LOCAL", valor:"1622994850", plazo:""},
-    {id:"36179", titulo:"Torneo recreo deportivo “diversamente hábiles”", proyecto:"1801", meta:"Vincular 8000 personas en actividades recreo-deportivas comunitarias.", promotor:"No registra", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1149-2024", contratista:"EMPRESA INMOBILIARIA Y DE SERVICIOS LOGISTICOS DE CUNDINAMARCA", valor:"2229153468", plazo:""},
-    {id:"36756", titulo:"Lab.Civ Sub-versión Audiovisual", proyecto:"1858", meta:"Financiar 100 proyectos del sector cultural y creativo.", promotor:"Henry Motta Contreras", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"36759", titulo:"Lab.Civ Compilado músical y literario Z4", proyecto:"1858", meta:"Financiar 100 proyectos del sector cultural y creativo.", promotor:"German Arturo Luna Morales", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"36762", titulo:"Lab.Civ El Territorio y las artes se encuentran", proyecto:"1858", meta:"Financiar 100 proyectos del sector cultural y creativo.", promotor:"Kevins Castillo Tenorio", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"36769", titulo:"Lab.Civ Mujeres de fé y deportistas libre de violencia.", proyecto:"1870", meta:"Vincular 4300 personas en acciones para la prevención del feminicidio y la violencia contr", promotor:"ALICIA JIMÉNEZ SANABRIA", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"36772", titulo:"Lab.Civ San Cristóbal camina por una vida lbre de violencias contra las muj", proyecto:"1870", meta:"Vincular 4300 personas en acciones para la prevención del feminicidio y la violencia contr", promotor:"Liliana Patricia Puerto", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"36780", titulo:"Lab.Civ Me muevo sin miedo.", proyecto:"1870", meta:"Vincular 4300 personas en acciones para la prevención del feminicidio y la violencia contr", promotor:"ALICIA JIMÉNEZ SANABRIA", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"36787", titulo:"Lab.Civ Los Animales tambien Cuentan.", proyecto:"1826", meta:"Atender 12000 animales en urgencias, brigadas médico veterinarias, acciones de esterilizac", promotor:"CINDY LUCIA CALDERON MUÑOZ", estado:"En ejecución", avance:"0.5", contrato:"FDLSC-CPS-809-2025", contratista:"UT EVENTOS LOGISTICOS", valor:"$     3.250.000.000", plazo:""},
-    {id:"36798", titulo:"Lab.Civ San Cristobal y Sus Animales Cuentan.", proyecto:"1826", meta:"Atender 12000 animales en urgencias, brigadas médico veterinarias, acciones de esterilizac", promotor:"CINDY LUCIA CALDERON MUÑOZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-1161-2024", contratista:"UNIVERSIDAD DISTRITAL FRANCISCO JOSE DE CALDAS", valor:"2206796261", plazo:""},
-    {id:"36805", titulo:"Lab.Civ Transformación para las victimas.", proyecto:"1869", meta:"Vincular 2000 personas a procesos de construcción de memoria, verdad, reparación integral ", promotor:"ALFONSO VARGAS", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1162-2024", contratista:"COMUNIDAD INDÍGENA PASTOS DE BOGOTA", valor:"188125250", plazo:""},
-    {id:"36810", titulo:"Lab.Civ Esperanza Local", proyecto:"1865", meta:"Revitalizar 500 Mipymes y/o emprendimientos potencializadas dentro de las aglomeraciones e", promotor:"Ginna Paola Bautista Caballero", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-869-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"1049570000", plazo:""},
-    {id:"36814", titulo:"Lab.Civ Red de sueños", proyecto:"1865", meta:"Revitalizar 500 Mipymes y/o emprendimientos potencializadas dentro de las aglomeraciones e", promotor:"Óscar Rojas / Ana Rozo", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-869-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"1049570000", plazo:""},
-    {id:"36820", titulo:"Lab.Civ Reverdecer juntos", proyecto:"1865", meta:"Promover en 400 Mipymes y/o emprendimientos procesos de reconversión hacia actividades sos", promotor:"William Ortíz  / Edithzabeth Rodríguez Felacio", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-870-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"2002320000", plazo:""},
-    {id:"36969", titulo:"Lab.Jov JUVENTUD QUE EMPRENDE Y CREA", proyecto:"1865", meta:"Apoyar 600 Mipymes y/o emprendimientos culturales y creativos.", promotor:"JHOHAN STEVEN MORENO JIMENEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-869-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"1049570000", plazo:""},
-    {id:"36972", titulo:"Lab.Jov JOVENES A EMPRENDER", proyecto:"1865", meta:"Promover en 800 Mipymes y/o emprendimientos la transformación empresarial y/o productiva.", promotor:"KATHERIN SANTAMAIA", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-870-2024", contratista:"CORPORACION PARA EL DESARROLLO DE LAS MICROEMPRESAS PROPAIS", valor:"2002320000", plazo:""},
-    {id:"36977", titulo:"Lab.Jov CIRCUITO XL", proyecto:"1801", meta:"Vincular 8000 personas en actividades recreo-deportivas comunitarias.", promotor:"DIANA MARCELA BUSTOS", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1149-2024", contratista:"EMPRESA INMOBILIARIA Y DE SERVICIOS LOGISTICOS DE CUNDINAMARCA", valor:"2229153468", plazo:""},
-    {id:"36999", titulo:"Lab.Jov JOVENES AL DEPORTE", proyecto:"1801", meta:"Capacitar 3200 personas en los campos deportivos.", promotor:"KAREN TATIANA SANCHEZ M", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1149-2024", contratista:"EMPRESA INMOBILIARIA Y DE SERVICIOS LOGISTICOS DE CUNDINAMARCA", valor:"2229153468", plazo:""},
-    {id:"37004", titulo:"Lab.Jov EMPRENDIMIENTO DE LA CULTURA JOVEN", proyecto:"1858", meta:"Financiar 100 proyectos del sector cultural y creativo.", promotor:"JUAN CAMILO HERRERA", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"37008", titulo:"Lab.Jov CULTURIZANDO LA CUARTA: INTÉGRATE, APRENDE Y CREA.", proyecto:"1803", meta:"Capacitar 1200 personas en los campos artísticos, interculturales, culturales y/o patrimon", promotor:"JAIRO ANDRES USECHE ROCHA", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"37023", titulo:"Lab.Civ Por un mundo mejor, vamos a cambiar", proyecto:"1811", meta:"Formar 4000 personas en prevención de violencia intrafamiliar y/o violencia sexual.", promotor:"ANTÓNIO RUIZ / MARIA EUGENIA VAZQUEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"37208", titulo:"Lab.Civ Formarnos para cuidarnos y cuidar.", proyecto:"1811", meta:"Vincular 3600 mujeres cuidadoras a estrategias de cuidado.", promotor:"CLAUDIA VILLAMARIA LARA/ PAULA DANIELA AYALA RUIZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-1150-2024", contratista:"CARLOS ALBERTO PINZÓN MOLINA", valor:"555179822", plazo:""},
-    {id:"37210", titulo:"Lab.Civ Mujeres en el poder del autocuidado.", proyecto:"1811", meta:"Vincular 3600 mujeres cuidadoras a estrategias de cuidado.", promotor:"ROSA MARIA GONZALES VELAZCO", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-1150-2024", contratista:"CARLOS ALBERTO PINZÓN MOLINA", valor:"555179822", plazo:""},
-    {id:"37211", titulo:"Lab.Civ Cuidadoras delegando para emprender.", proyecto:"1811", meta:"Vincular 3600 mujeres cuidadoras a estrategias de cuidado.", promotor:"JOHANNA MAGERLY VACA CARRILLO", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-1150-2024", contratista:"CARLOS ALBERTO PINZÓN MOLINA", valor:"555179822", plazo:""},
-    {id:"37212", titulo:"Lab.Civ Conmemorando y reflexionando con nuestras mujeres en San Cristóbal.", proyecto:"1870", meta:"Capacitar 3000 personas para la construcción de ciudadanía y desarrollo de capacidades par", promotor:"TAIS PULGAR", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"37213", titulo:"Lab.Civ Mujeres formadas par hacer incidencia.", proyecto:"1870", meta:"Capacitar 3000 personas para la construcción de ciudadanía y desarrollo de capacidades par", promotor:"LUZ TORRES", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"37214", titulo:"Lab.Civ Organizando y Movilizando las mujeres.", proyecto:"1870", meta:"Capacitar 3000 personas para la construcción de ciudadanía y desarrollo de capacidades par", promotor:"MARIA EUGENIA VASQUEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"37215", titulo:"Lab.Civ Semillero y poder de las mujeres desde sus derechos.", proyecto:"1870", meta:"Capacitar 3000 personas para la construcción de ciudadanía y desarrollo de capacidades par", promotor:"ANDREA CRUZ TUNEZUK", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"37216", titulo:"Lab.Civ Escribir textos poéticos y narrativos para generar memoria.", proyecto:"1858", meta:"Financiar 100 proyectos del sector cultural y creativo.", promotor:"Carmen Liliana Lopez Ruiz", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-740-2024", contratista:"SECRETARÍA DISTRITAL DE CULTURA, RECREACIÓN Y DEPORTE - IDARTES", valor:"2496601120", plazo:""},
-    {id:"37475", titulo:"Lab.Civ Observatorio de mujeres de San Cristóbal", proyecto:"1870", meta:"Vincular 4300 personas en acciones para la prevención del feminicidio y la violencia contr", promotor:"GILMA SILVA PUENTES", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CTOI-1163-2024", contratista:"INSTITUTO DE DESARROLLO Y ECONOMIA PARA AMERICA LATINA", valor:"1194754448", plazo:""},
-    {id:"`", titulo:"Fortalecer la agrupación musical Auténtico Sol de Oriente", proyecto:"1872", meta:"Fortalecer 80 Organizaciones, JAC e Instancias de participación ciudadana.", promotor:"ALCALDIA  SAN CRISTOBAL", estado:"En ejecución", avance:"0.0", contrato:"FDLSC-CVNI-833-2024", contratista:"PARTICIPACIÓN CIUDADANA PARA EL DESARROLLO LOCAL", valor:"1622994850", plazo:""},
-    {id:"31044", titulo:"dotación salón comunal Jac Macarena los Alpes  Alpes", proyecto:"1872", meta:"Dotar 55 sedes de salones comunales.", promotor:"nan", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-1151-2024", contratista:"LPX GROUP SAS", valor:"3559957572", plazo:""},
-    {id:"NOV", titulo:"nan", proyecto:"nan", meta:"2025-10-21 00:00:00", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"24", titulo:"nan", proyecto:"36", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"0", titulo:"nan", proyecto:"2", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"50", titulo:"nan", proyecto:"34", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"0", titulo:"nan", proyecto:"3", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"2", titulo:"nan", proyecto:"1", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"0", titulo:"nan", proyecto:"0", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"76", titulo:"nan", proyecto:"76", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"1", titulo:"nan", proyecto:"3 infra", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-    {id:"0.008403361344537815", titulo:"nan", proyecto:"nan", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:""},
-  ],
-  "2025": [
-    {id:"37646.0", titulo:"noche de antifaces", proyecto:"2405.0", meta:"Realizar 80 eventos de promoción, circulación y apropiación de actividades artísticas, cul", promotor:"RAFAEL HERNANDO GOMEZ QUINTERO", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"37701.0", titulo:"escuela de rock", proyecto:"2405.0", meta:"Capacitar 1.480 personas en los campos artísticos, interculturales, culturales y/o patrimo", promotor:"RAFAEL HERNANDO GOMEZ QUINTERO", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"37709.0", titulo:"aprende producción musical", proyecto:"2405.0", meta:"Capacitar 1.480 personas en los campos artísticos, interculturales, culturales y/o patrimo", promotor:"RAFAEL HERNANDO GOMEZ QUINTERO", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"37875.0", titulo:"Mujeres Emprendedoras La Gloria", proyecto:"2608.0", meta:"Apoyar 800 Mipymes, emprendimientos y/o actores de la economia informal para el fortalecim", promotor:"ROCIO YAMILE RODRIGUEZ FORERO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-848-2025", contratista:"FUNDACIÓN WR TEJIDO SOCIAL", valor:"nan", plazo:"nan"},
-    {id:"38062.0", titulo:"ARTESC4 3.0", proyecto:"2251.0", meta:"Financiar 120 proyectos del sector cultural y creativo.", promotor:"CARLOS ALBERTO CARDOZO MORALES}", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"38863.0", titulo:"ALIMENTOS PREPARADOS", proyecto:"2608.0", meta:"Apoyar 800 Mipymes, emprendimientos y/o actores de la economia informal para el fortalecim", promotor:"CLOVIS  QUINTERO DE HERRERA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-776-2025", contratista:"UNION TEMPORAL CRISALIS", valor:"$     2.516.136.400", plazo:"nan"},
-    {id:"38888.0", titulo:"ACTIVEMOS LA COHESION SOCIAL", proyecto:"2633.0", meta:"Implementar 80 acciones pedagógicas para la gestión de conflictividades y prevención de vi", promotor:"JUAN DAVID  LADINO ALFONSO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"38899.0", titulo:"RESTAUREMOS LA CHIGUAZA", proyecto:"2502.0", meta:"Implementar 4 procesos comunitarios de educación ambiental que promueven la conservación d", promotor:"JUAN DAVID  LADINO ALFONSO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-873-2025", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"38910.0", titulo:"E-SPORTS BOXING", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"JUAN DAVID  LADINO ALFONSO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"38950.0", titulo:"festival del folclore  colombiano", proyecto:"2405.0", meta:"Realizar 80 eventos de promoción, circulación y apropiación de actividades artísticas, cul", promotor:"RAFAEL  GOMEZ MARTINEZ", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"39038.0", titulo:"DIVERSION SEGURA PARA LOS MAS PEQUEÑOS", proyecto:"2620.0", meta:"Implementar 120 iniciativas de convivencia con participación de la ciudadanía", promotor:"DIANA MARCELA RUBIO BERIGUES", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"39044.0", titulo:"ART 4  FERIA DE ARTE Y DISEÑO DE SAN CRISTOBAL", proyecto:"2251.0", meta:"Financiar 120 proyectos del sector cultural y creativo.", promotor:"ADRIANA  SALAZAR CACERES", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"39051.0", titulo:"SABOR Y TRADICION UN VIAJE CULINARIO POR SAN CRISTOBAL", proyecto:"2251.0", meta:"Financiar 120 proyectos del sector cultural y creativo.", promotor:"ADRIANA  SALAZAR CACERES", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"39336.0", titulo:"Red de Emisoras Escolares para la Convivencia y Solución de Conflictos", proyecto:"2633.0", meta:"Implementar 80 acciones pedagógicas para la gestión de conflictividades y prevención de vi", promotor:"LUIS GABRIEL PRADO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-885-2025", contratista:"DISTRINDUSTRIAL COMERCIAL COLOMBIA S.A.S.", valor:"557820933", plazo:"5 MESES"},
-    {id:"39580.0", titulo:"Aterrizando la inteligencia artificial a San Cristóbal", proyecto:"2627.0", meta:"Realizar 8 acciones para fortalecer las capacidades y/o habilidades, técnicas y blandas de", promotor:"DENIS  MIRANDA MIRANDA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-819-2025", contratista:"CORPORACIÓN AGENCIA NACIONAL DE DESARROLLO DIGITAL AND", valor:"$     4.623.543.052", plazo:"8 MESES"},
-    {id:"39676.0", titulo:"vive el boxeo viva la vida", proyecto:"2495.0", meta:"Capacitar 6.400 personas en los campos deportivos o recreativos", promotor:"BRIGITH LINYIRED MORALES COY", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"39718.0", titulo:"CPL al territorio", proyecto:"2409.0", meta:"Fortalecer 200 Organizaciones sociales e Instancias de participación ciudadana.", promotor:"GERMAN RICARDO NIETO ESPEJO", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-809-2025", contratista:"UT EVENTOS LOGISTICOS", valor:"$     3.250.000.000", plazo:"nan"},
-    {id:"39760.0", titulo:"Huerta semillas de vida", proyecto:"2502.0", meta:"Implementar 160 huertas urbanas", promotor:"GEOVANNY ARVEY RUIZ ROMERO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-873-2025", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"39856.0", titulo:"Mujeres en transformación, aguante lucha y corazón", proyecto:"2633.0", meta:"Beneficiar 680 ciudadanos con habilidades y capacidades para gestionar la convivencia cons", promotor:"SAIRA GINET URUEÑA GOMEZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-885-2025", contratista:"DISTRINDUSTRIAL COMERCIAL COLOMBIA S.A.S.", valor:"557820933", plazo:"5 MESES"},
-    {id:"40013.0", titulo:"La Tienda  San Cristóbal", proyecto:"2608.0", meta:"Apoyar 800 Mipymes, emprendimientos y/o actores de la economia informal para el fortalecim", promotor:"ALEXANDER DEJESUS MONTOYA SUAREZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-776-2025", contratista:"UNION TEMPORAL CRISALIS", valor:"$     2.516.136.400", plazo:"nan"},
-    {id:"40084.0", titulo:"La Leyenda De El Dorado En Marcha", proyecto:"2405.0", meta:"Capacitar 1.480 personas en los campos artísticos, interculturales, culturales y/o patrimo", promotor:"ANDRES PARMENIO GARZON URBINA", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"40112.0", titulo:"fortalecer el consejo local de movilidad y cultura vial de la localidad de ", proyecto:"2409.0", meta:"Fortalecer 200 Organizaciones sociales e Instancias de participación ciudadana.", promotor:"ANDRES FELIPE GALVIS FANDIÑO", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"40143.0", titulo:"RAICES Y SABORES - caja de memoria de sabores", proyecto:"2627.0", meta:"Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades lo", promotor:"ADRIANA  SALAZAR CACERES", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-807-2025", contratista:"Unión Temporal UT CONECTA", valor:"$         879.909.226", plazo:"8 MESES"},
-    {id:"40226.0", titulo:"Sueños con mil colores", proyecto:"2601.0", meta:"Realizar 16 acuerdos para la organización, la recuperación, el cuidado, el embellecimiento", promotor:"EDITHZABETH  RODRIGUEZ FELACIO", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-850-2025", contratista:"INTEGRA DE COLOMBIA SAS", valor:"237468913", plazo:"3 MESES"},
-    {id:"40239.0", titulo:"Feria navideña juntos por un mundo mas verde", proyecto:"2633.0", meta:"Ejecutar 4 programas comunitarios con enfoque restaurativo para el cuidado del espacio púb", promotor:"EDITHZABETH  RODRIGUEZ FELACIO", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CSU-850-2025", contratista:"INTEGRA DE COLOMBIA SAS", valor:"237468913", plazo:"3 MESES"},
-    {id:"40255.0", titulo:"como integrar a los actores del turismo", proyecto:"2627.0", meta:"Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades lo", promotor:"JUAN CARLOS MORENO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-807-2025", contratista:"Unión Temporal UT CONECTA", valor:"$         879.909.226", plazo:"8 MESES"},
-    {id:"40263.0", titulo:"el turismo en san Cristóbal una oportunidad para todos en el territorio", proyecto:"2627.0", meta:"Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades lo", promotor:"JUAN CARLOS MORENO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-807-2025", contratista:"Unión Temporal UT CONECTA", valor:"$         879.909.226", plazo:"8 MESES"},
-    {id:"40305.0", titulo:"fortalecimiento de capacidades multiplicando saberes en agricultura urbana", proyecto:"2502.0", meta:"Implementar 160 huertas urbanas", promotor:"EMERITA  LOPEZ BARRERA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-873-2025", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"40385.0", titulo:"MANAGUA TE CUIDAD", proyecto:"2620.0", meta:"Fortalecer 100 organizaciones comunitarias a través de capacidades para promover acciones ", promotor:"JOHN RICARDO PUERTO RIVERA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-819-2025", contratista:"CORPORACIÓN AGENCIA NACIONAL DE DESARROLLO DIGITAL AND", valor:"4623543052", plazo:"8 MESES"},
-    {id:"40437.0", titulo:"La Cuarta Estudio", proyecto:"2251.0", meta:"Financiar 120 proyectos del sector cultural y creativo.", promotor:"JESUS DAVID BOLIVAR DAZA", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"40463.0", titulo:"ALIMENTANDO A NUESTRAS MASCOTAS DE LA CALLE", proyecto:"2481.0", meta:"Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y ado", promotor:"ANGELA XIMENA CONTO MUÑOZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-809-2025", contratista:"UT EVENTOS LOGISTICOS", valor:"3250000000", plazo:"8 MESES"},
-    {id:"40469.0", titulo:"EL CUIDADO DE NUESTRAS MASCOTAS", proyecto:"2481.0", meta:"Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y ado", promotor:"ANGELA XIMENA CONTO MUÑOZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-785-2025", contratista:"CLÍNICA VETERINARIA VISIÓN DE COLOMBIA S.A.S.", valor:"914834250", plazo:"6 MESES"},
-    {id:"40490.0", titulo:"Por una Niñez empoderada: Mi voz, mis Derechos, mi Política", proyecto:"2409.0", meta:"Capacitar 2.600 personas a través de procesos de formación para la participación de manera", promotor:"ANETH DAYAN YARA TAPIERO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"40493.0", titulo:"PATITAS UNIDAS", proyecto:"2481.0", meta:"Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y ado", promotor:"ANGELA XIMENA CONTO MUÑOZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-785-2025", contratista:"CLÍNICA VETERINARIA VISIÓN DE COLOMBIA S.A.S.", valor:"914834250", plazo:"6 MESES"},
-    {id:"40504.0", titulo:"RESTAURACION ANIMAL", proyecto:"2481.0", meta:"Esterilizar 15.000 perros y gatos incluyendo los que está en condición de vulnerabilidad", promotor:"ANGELA XIMENA CONTO MUÑOZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-785-2025", contratista:"CLÍNICA VETERINARIA VISIÓN DE COLOMBIA S.A.S.", valor:"914834250", plazo:"6 MESES"},
-    {id:"40507.0", titulo:"Dohko Sala de ensayo", proyecto:"2405.0", meta:"Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregad", promotor:"JESUS DAVID BOLIVAR DAZA", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"40511.0", titulo:"GUARDIANES DEL PLANETA: EL CAMBIO COMIENZA EN MI CASA", proyecto:"2502.0", meta:"Capacitar 6.000 personas en separación en la fuente y reciclaje.", promotor:"ANETH DAYAN YARA TAPIERO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-873-2025", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"40535.0", titulo:"TEJIENDO CONVIVENCIA ESCOLAR", proyecto:"2633.0", meta:"Fortalecer 4 programas de abordaje de conflictividad escolar para la convivencia con enfoq", promotor:"MARTHA LILIANA LOPEZ ROCHA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-885-2025", contratista:"DISTRINDUSTRIAL COMERCIAL COLOMBIA S.A.S.", valor:"557820933", plazo:"5 MESES"},
-    {id:"40557.0", titulo:"SEMILLERO INFANTIL DE JUSTICIA Y CONVIVENCIA", proyecto:"2633.0", meta:"Fortalecer 1.600 actores comunitarios con herramientas y capacidades para la implementació", promotor:"ANETH DAYAN YARA TAPIERO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"40591.0", titulo:"ESFERICA - REALIDAD VIRTUAL", proyecto:"2405.0", meta:"Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregad", promotor:"ADRIANA  SALAZAR CACERES", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"40668.0", titulo:"Torneo de mini tejo nuestra época dorada", proyecto:"2495.0", meta:"Beneficiar  13.200 personas en actividades recreo-deportivas comunitarias.", promotor:"CAMILO  DAVILA", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"40681.0", titulo:"FESTIVAL DE FESTIVALES SANCRISTOBAL", proyecto:"2495.0", meta:"Beneficiar  13.200 personas en actividades recreo-deportivas comunitarias.", promotor:"RAFAEL  LOPEZ MELENDEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"40746.0", titulo:"PRIMER FORO LOCAL DE DEPORTE DE BASE", proyecto:"2495.0", meta:"Capacitar 6.400 personas en los campos deportivos o recreativos", promotor:"LUIS FERNANDO PARAMO PEREZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"40782.0", titulo:"Fortaleciendo el turismo en San Cristóbal", proyecto:"2627.0", meta:"Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades lo", promotor:"ROBINSON  BUITRAGO PAEZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-807-2025", contratista:"Unión Temporal UT CONECTA", valor:"$         879.909.226", plazo:"8 MESES"},
-    {id:"40855.0", titulo:"Mujeres Creativas que tejen sueños", proyecto:"2385.0", meta:"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia cont", promotor:"REYNA YANETH CUBILLOS RODRIGUEZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"40900.0", titulo:"TransformaTec", proyecto:"2694.0", meta:"Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas, ", promotor:"OMAR ARLEY ORTIZ LANCHEROS", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-819-2025", contratista:"CORPORACIÓN AGENCIA NACIONAL DE DESARROLLO DIGITAL AND", valor:"4623543052", plazo:"8 MESES"},
-    {id:"40916.0", titulo:"RAICES DE SABIDURIA: AGRICULTURA URBANA PARA EL ADULTO MAYOR", proyecto:"2502.0", meta:"Implementar 160 huertas urbanas", promotor:"ROSALBA  PARRA LINARES", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-873-2025", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"40951.0", titulo:"emprendiendo con deporte y cultura en Gaviotas", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"EDITH LEONOR VARGAS ANAYA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"41012.0", titulo:"Convivencia pacifica local", proyecto:"2633.0", meta:"Fortalecer 1.600 actores comunitarios con herramientas y capacidades para la implementació", promotor:"ALFONSO  VARGAS MORENO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"41117.0", titulo:"Reactivación comunitaria, fortalecimiento del tejido social a través del em", proyecto:"2608.0", meta:"Apoyar 800 Mipymes, emprendimientos y/o actores de la economia informal para el fortalecim", promotor:"ELBIA LILI GUARNIZO CASTRO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-776-2025", contratista:"UNION TEMPORAL CRISALIS", valor:"$     2.516.136.400", plazo:"nan"},
-    {id:"41159.0", titulo:"Artes marciales mixtas impactando territorio", proyecto:"2495.0", meta:"Capacitar 6.400 personas en los campos deportivos o recreativos", promotor:"MIKE ALEXANDER GARAVITO ZULUAGA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"41236.0", titulo:"Convivencia en juego, paz en las calles", proyecto:"2633.0", meta:"Fortalecer 1.600 actores comunitarios con herramientas y capacidades para la implementació", promotor:"MIKE ALEXANDER GARAVITO ZULUAGA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-885-2025", contratista:"DISTRINDUSTRIAL COMERCIAL COLOMBIA S.A.S.", valor:"557820933", plazo:"5 MESES"},
-    {id:"41263.0", titulo:"DESCUBRE SAN CRISTÓBAL \"Tu Guía Turística Digital\"", proyecto:"2627.0", meta:"Apoyar 120 Mipymes y/o emprendimientos orientados al fortalecimiento de las capacidades lo", promotor:"LAURA NATALIA SILVA CETINA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-807-2025", contratista:"Unión Temporal UT CONECTA", valor:"$         879.909.226", plazo:"8 MESES"},
-    {id:"41411.0", titulo:"Internet a mi barrio", proyecto:"2694.0", meta:"Operativizar 20 Centros de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas, ", promotor:"CARLOS ALEXANDER CASTILLO MUÑOZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-819-2025", contratista:"CORPORACIÓN AGENCIA NACIONAL DE DESARROLLO DIGITAL AND", valor:"4623543052", plazo:"8 MESES"},
-    {id:"41463.0", titulo:"escuela de formación deportiva la Joyita Jericó", proyecto:"2495.0", meta:"Beneficiar 4.000 Personas con la entrega de dotaciones deportivas.", promotor:"CARLOS ALEXANDER CASTILLO MUÑOZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"41494.0", titulo:"La Joyita", proyecto:"2409.0", meta:"Fortalecer 200 Organizaciones sociales e Instancias de participación ciudadana.", promotor:"CARLOS ALEXANDER CASTILLO MUÑOZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"41529.0", titulo:"Nuevo Bello Horizonte", proyecto:"2620.0", meta:"Implementar 120 iniciativas de convivencia con participación de la ciudadanía", promotor:"ANGELICA MARIA SALCEDO VARGAS", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"41554.0", titulo:"Formándome desde la ancestralidad, participo e incido.", proyecto:"2409.0", meta:"Capacitar 2.600 personas a través de procesos de formación para la participación de manera", promotor:"DORIS ELENA JACANAMIJOY JACANAMIJOY", estado:"En ejecución", avance:"0.0", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"41564.0", titulo:"EcoInnova", proyecto:"2502.0", meta:"Capacitar 6.000 personas en separación en la fuente y reciclaje.", promotor:"SONIA  GAMA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-873-2025", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"41575.0", titulo:"DIPLOMADO CON ENFOQUE DIFERENCIAL AFRO JUNTANZA ETNICA", proyecto:"2409.0", meta:"Capacitar 2.600 personas a través de procesos de formación para la participación de manera", promotor:"MARLENY  PEREA MORENO", estado:"En ejecución", avance:"0.0", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"41611.0", titulo:"Emprendiendo En-Señas", proyecto:"2608.0", meta:"Apoyar 800 Mipymes, emprendimientos y/o actores de la economia informal para el fortalecim", promotor:"PAOLA FERNANDA FORERO GONZALEZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-776-2025", contratista:"UNION TEMPORAL CRISALIS", valor:"$     2.516.136.400", plazo:"nan"},
-    {id:"41640.0", titulo:"HUERTAS CASERAS EN LA LOCALIDAD DE SAN CRISTOBAL", proyecto:"2502.0", meta:"Implementar 160 huertas urbanas", promotor:"ESTEBAN DIAZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-873-2025", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"41737.0", titulo:"Convivencia Sana comunitaria", proyecto:"2633.0", meta:"Beneficiar 680 ciudadanos con habilidades y capacidades para gestionar la convivencia cons", promotor:"IVAN RODRIGO ARDILA VARGAS", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"41802.0", titulo:"ABRAZO ANCESTRAL A SAN CRISTOBAL", proyecto:"2405.0", meta:"Beneficiar 60 organizaciones artísticas, culturales y patrimoniales con elementos entregad", promotor:"ROIBER LUIS BARRIOS GALARCIO", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"42108.0", titulo:"IMPLEMENTACIÓN DE HUERTAS URBANAS Y CULTURA AMBIENTAL EN LA LOCALIDAD DE SA", proyecto:"2502.0", meta:"Implementar 160 huertas urbanas", promotor:"EDWIN ALBERTO SALCEDO CRISTIANO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-873-2025", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"42139.0", titulo:"Reactiva: Magazine Cultural", proyecto:"2251.0", meta:"Financiar 120 proyectos del sector cultural y creativo.", promotor:"FABER  PEREZ ROMERO", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"42199.0", titulo:"Creencias que inspiran e impactan: Fortalecimiento del comite local de libe", proyecto:"2409.0", meta:"Fortalecer 200 Organizaciones sociales e Instancias de participación ciudadana.", promotor:"JULIETH DANIELA MARTINEZ MARTINEZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"42345.0", titulo:"Escuela de deportes - Damawha (Talleres de boxeo, pin pon y voleibol)", proyecto:"2495.0", meta:"Capacitar 6.400 personas en los campos deportivos o recreativos", promotor:"KEVINS  CASTILLO TENORIO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"42384.0", titulo:"ESTRELLITA SIMPATICA", proyecto:"2481.0", meta:"Atender 10.000 animales en los programas de brigadas médicas, urgencias veterinarias y ado", promotor:"ANGELA XIMENA CONTO MUÑOZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-809-2025", contratista:"UT EVENTOS LOGISTICOS", valor:"3250000000", plazo:"8 MESES"},
-    {id:"42535.0", titulo:"Talleres en Derechos Humanos (DDHH) y Paz", proyecto:"2409.0", meta:"Capacitar 2.600 personas a través de procesos de formación para la participación de manera", promotor:"JOVAN  CORDOBA CORDOBA", estado:"En ejecución", avance:"0.0", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"42615.0", titulo:"TENIS PARA TU COMUNIDAD", proyecto:"2495.0", meta:"Capacitar 6.400 personas en los campos deportivos o recreativos", promotor:"BRAIAM ORLANDO AYALA GARCIA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"42677.0", titulo:"ESCUELA PRACTICA DE DISEÑO Y CONFECCIONES", proyecto:"2409.0", meta:"Capacitar 2.600 personas a través de procesos de formación para la participación de manera", promotor:"JOVAN  CORDOBA CORDOBA", estado:"En ejecución", avance:"0.0", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"43197.0", titulo:"DDifMujer. Entre todo nos cuidamos", proyecto:"2802.0", meta:"Vincular 4.000 personas en procesos para la prevención de violencias en el contexto famili", promotor:"Cristhian Camilo Rivera", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43210.0", titulo:"DDifMujer. Mujeres en movimiento", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"Diana Rubio", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"43212.0", titulo:"DGral. Cámaras por la seguridad de la comunidad", proyecto:"2633.0", meta:"Implementar 24 proyectos de justicia local para la resolución efectiva de conflictividades", promotor:"CONTANZA ACEVEDO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"43213.0", titulo:"DGral. Construyendo paz y convivencia en San Cristóbal", proyecto:"2633.0", meta:"Implementar 24 proyectos comunitarios en la localidad, para la apropiación del Código Naci", promotor:"MAYERLY ALBARRACIN", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"43214.0", titulo:"DDifJuv. New Trends Fest", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"CRISTIAN DAVID MARTINEZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"43215.0", titulo:"DGral. Escuadrón de Convivencia y Valores", proyecto:"2620.0", meta:"Implementar 120 acciones formativas diferenciales para la promoción de la convivencia ciud", promotor:"MANUELA LOAIZA PATIÑO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-816-2025", contratista:"CORPORACION ENCAMINADA AL DESARROLLO INTEGRAL DE LA COMUNIDAD", valor:"890918567", plazo:"5 MESES"},
-    {id:"43216.0", titulo:"DDifMujer. Laboratorio de mujeres", proyecto:"2633.0", meta:"Implementar 80 acciones pedagógicas para la gestión de conflictividades y prevención de vi", promotor:"GILMA SILVA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-885-2025", contratista:"DISTRINDUSTRIAL COMERCIAL COLOMBIA S.A.S.", valor:"557820933", plazo:"5 MESES"},
-    {id:"43217.0", titulo:"DDifMujer. Reconozco, multiplico y transformo: San Cristóbal territorio cui", proyecto:"2802.0", meta:"Vincular 4.000 personas en procesos para la prevención de violencias en el contexto famili", promotor:"Carmen Alicia Albarracín", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43218.0", titulo:"DDifJuv. Festivsal Floor Hunters", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"LUIS MIGUEL REY CRUZ", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"43219.0", titulo:"DDifMujer. Festival Flor del Alba", proyecto:"2405.0", meta:"Realizar 80 eventos de promoción, circulación y apropiación de actividades artísticas, cul", promotor:"ANGEE PAOLA CARDOZO", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"43220.0", titulo:"DDifJuv. New Treds School", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"CRISTAN DAVID MARTINEZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"43221.0", titulo:"DDifLGBTIQ. Festival diverso de San Cristóbal", proyecto:"2405.0", meta:"Realizar 80 eventos de promoción, circulación y apropiación de actividades artísticas, cul", promotor:"JAIRO ANIBAL VILLALBA", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"43222.0", titulo:"DDifJuv. Red de organizaciones deportivas juveniles", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"MAICOL STIVEN BABATIVA PATIÑO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"43223.0", titulo:"DDifLGBTIQ. Olimpiadas diversas", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"CARLOS BULLA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"43224.0", titulo:"DDifMujer. Transformando realidades: prevención de violencia.", proyecto:"2802.0", meta:"Vincular 4.000 personas en procesos para la prevención de violencias en el contexto famili", promotor:"Astrid Emely Rodriquez Angarita", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43225.0", titulo:"DDifLGBTIQ. Formando y replicando", proyecto:"2316.0", meta:"Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental", promotor:"Koral  Snish Cordoba", estado:"En ejecución", avance:"0.0", contrato:"nan", contratista:"nan", valor:"nan", plazo:"PRESTAR SERVICIOS PARA LA IMPLEMENTACIÓN DE ESTRATEGIAS INTEGRALES EN SALUD, EN EL MARCO DEL PROYECTO 2316 DEL PLAN DE DESARROLLO LOCAL “TERRITORIO DE OPORTUNIDADES, CAMINA SEGURA” DE LA LOCALIDAD DE SAN CRISTÓBAL, ORIENTADAS A LA REDUCCIÓN DE RIESGOS POR CONSUMO DE SUSTANCIAS PSICOACTIVAS, APOYO A PERSONAS CON DISCAPACIDAD Y CUIDADORES, SALUD FÍSICA Y NUTRICIONAL, SALUD SEXUAL Y REPRODUCTIVA EN LOS DIFERENTES CICLOS DE VIDA, Y PROMOCIÓN DE LA SALUD MENTAL."},
-    {id:"43226.0", titulo:"DDifMujer. Encuentros y acciones pedagógicas para la resolución de conflict", proyecto:"2633.0", meta:"Implementar 80 acciones pedagógicas para la gestión de conflictividades y prevención de vi", promotor:"JENNYFER PAEZ ROMERO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-885-2025", contratista:"DISTRINDUSTRIAL COMERCIAL COLOMBIA S.A.S.", valor:"557820933", plazo:"5 MESES"},
-    {id:"43227.0", titulo:"DDifLGBTIQ. Carnaval diverso yo marcho trans San Cristóbal 2025", proyecto:"2620.0", meta:"Implementar 120 iniciativas de convivencia con participación de la ciudadanía", promotor:"JUAN DAVID CARDENAS", estado:"Materializada", avance:"1.0", contrato:"FDLSC-CPS-694-2025", contratista:"CENTRO PARA EL PROGRESO Y ORIENTACIÓN AL FUTURO (CEPOF)", valor:"61467473", plazo:"1 MES"},
-    {id:"43228.0", titulo:"DDifLGBTIQ. Comunidades transformadoras", proyecto:"2385.0", meta:"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia cont", promotor:"NARSLY JINETH RIVERA A", estado:"En ejecución", avance:"0.2", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43229.0", titulo:"DDifMujer. Cuadrando mujeres", proyecto:"2385.0", meta:"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia cont", promotor:"ANDREA LEMUS", estado:"En ejecución", avance:"0.2", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43230.0", titulo:"DDifJuv. Feria Sentipensante", proyecto:"2316.0", meta:"Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental", promotor:"Ana Julieth Lopez", estado:"En ejecución", avance:"0.0", contrato:"nan", contratista:"nan", valor:"nan", plazo:"PRESTAR SERVICIOS PARA LA IMPLEMENTACIÓN DE ESTRATEGIAS INTEGRALES EN SALUD, EN EL MARCO DEL PROYECTO 2316 DEL PLAN DE DESARROLLO LOCAL “TERRITORIO DE OPORTUNIDADES, CAMINA SEGURA” DE LA LOCALIDAD DE SAN CRISTÓBAL, ORIENTADAS A LA REDUCCIÓN DE RIESGOS POR CONSUMO DE SUSTANCIAS PSICOACTIVAS, APOYO A PERSONAS CON DISCAPACIDAD Y CUIDADORES, SALUD FÍSICA Y NUTRICIONAL, SALUD SEXUAL Y REPRODUCTIVA EN LOS DIFERENTES CICLOS DE VIDA, Y PROMOCIÓN DE LA SALUD MENTAL."},
-    {id:"43231.0", titulo:"DDifLGBTIQ. Arcoiris del cuidado", proyecto:"2802.0", meta:"Vincular 6.000 mujeres cuidadoras a estrategias de cuidado.", promotor:"LUIS CARLOS MAHECHA.", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43232.0", titulo:"DDifJuv. Romper la violencia", proyecto:"2385.0", meta:"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia cont", promotor:"SOL ANGIE MANTILLA CORDOBA", estado:"En ejecución", avance:"0.2", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43234.0", titulo:"DDifLGBTIQ. Diversas renaciendo", proyecto:"2802.0", meta:"Vincular 1.600 mujeres para el ejercicio de derechos y el fortalecimiento de su autonomía ", promotor:"VALENTINA ROJAS", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43235.0", titulo:"DDifMujer. Rompiendo estereotipos", proyecto:"2802.0", meta:"Vincular 1.600 mujeres para el ejercicio de derechos y el fortalecimiento de su autonomía ", promotor:"VALENTINA CARO", estado:"En ejecución", avance:"0.2", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43236.0", titulo:"DDifMujer. Ruta pedagógica del arte y la mujer", proyecto:"2385.0", meta:"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia cont", promotor:"LAURA CARDINA LOZADA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43237.0", titulo:"DDifMujer. Ponte en mis ideas", proyecto:"2385.0", meta:"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia cont", promotor:"ALEJANDRA LIZETH OCHOA CUY", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43238.0", titulo:"DGral. Escuela de memoria, paz y reconciliacion de conflictos.", proyecto:"2606.0", meta:"Realizar 4 procesos pedagógicos, artísticos, culturales, formativos o para el fortalecimie", promotor:"Ana Beatriz", estado:"En ejecución", avance:"0.1", contrato:"nan", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"43239.0", titulo:"DDifMujer. Mujeres con el poder del autocuidado", proyecto:"2802.0", meta:"Vincular 6.000 mujeres cuidadoras a estrategias de cuidado.", promotor:"ROSA MARIA GONZALEZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43240.0", titulo:"DGral. Contruyendo sueños de paz y reconciliacion para la reactivación econ", proyecto:"2802.0", meta:"Vincular 4.000 personas en procesos para la prevención de violencias en el contexto famili", promotor:"Alfonso Vargas", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43241.0", titulo:"DDifMujer. Respira con tranquilidad mientras cuidamos de los tuyos", proyecto:"2802.0", meta:"Vincular 6.000 mujeres cuidadoras a estrategias de cuidado.", promotor:"GILMA SILVA PUENTES", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43242.0", titulo:"DDifMujer. MCLE: mujeres cuidadoras, luchadoras y emprendedoras por San Cri", proyecto:"2802.0", meta:"Vincular 6.000 mujeres cuidadoras a estrategias de cuidado.", promotor:"ALBA NURY ROLDAN TRIANA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43243.0", titulo:"DDifMujer. Memorias de vida", proyecto:"2385.0", meta:"Vincular 6.000 personas en acciones para la prevención del feminicidio y la violencia cont", promotor:"Carolina Romero", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43244.0", titulo:"DDifMujer. Apropiamiento de mujeres en mi localidad", proyecto:"2802.0", meta:"Vincular 1.600 mujeres para el ejercicio de derechos y el fortalecimiento de su autonomía ", promotor:"YOLAIDY ALEXANDRA DELGADO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43245.0", titulo:"DDifMujer. Mujeres guerreras y empoderadas por los derechos", proyecto:"2802.0", meta:"Vincular 1.600 mujeres para el ejercicio de derechos y el fortalecimiento de su autonomía ", promotor:"LUZ TORRES", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43246.0", titulo:"DDifMujer. Mujeres emprendedoras del Alto de Fucha", proyecto:"2802.0", meta:"Vincular 1.600 mujeres para el ejercicio de derechos y el fortalecimiento de su autonomía ", promotor:"MERCEDES DIAZ PINTO", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43247.0", titulo:"DDifMujer. Agentes y líderes multiplicadores de conocimiento", proyecto:"2316.0", meta:"Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental", promotor:"Clara Guerrero", estado:"En ejecución", avance:"0.0", contrato:"nan", contratista:"nan", valor:"nan", plazo:"PRESTAR SERVICIOS PARA LA IMPLEMENTACIÓN DE ESTRATEGIAS INTEGRALES EN SALUD, EN EL MARCO DEL PROYECTO 2316 DEL PLAN DE DESARROLLO LOCAL “TERRITORIO DE OPORTUNIDADES, CAMINA SEGURA” DE LA LOCALIDAD DE SAN CRISTÓBAL, ORIENTADAS A LA REDUCCIÓN DE RIESGOS POR CONSUMO DE SUSTANCIAS PSICOACTIVAS, APOYO A PERSONAS CON DISCAPACIDAD Y CUIDADORES, SALUD FÍSICA Y NUTRICIONAL, SALUD SEXUAL Y REPRODUCTIVA EN LOS DIFERENTES CICLOS DE VIDA, Y PROMOCIÓN DE LA SALUD MENTAL."},
-    {id:"43248.0", titulo:"DDifJuv. Escuela de artes, oficios y autocuidado de las mujeres jóvenes cui", proyecto:"2802.0", meta:"Vincular 6.000 mujeres cuidadoras a estrategias de cuidado.", promotor:"ANGIE LORENA SALDAÑA", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-805-2025", contratista:"Corporación Rotorr–Motor de Innovación", valor:"3479197659", plazo:"7 MESES"},
-    {id:"43249.0", titulo:"DDifJuv. Reconociendo al breaking local deportivo", proyecto:"2495.0", meta:"Beneficiar 120 colectivos u organizaciones recreo deportivas  inscritas en el Banco que im", promotor:"LUIS MIGUEL REY CRUZ", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CVNI-716-2025", contratista:"Universidad distrital francisco Jose de Caldas", valor:"4387411014", plazo:"6 MESES"},
-    {id:"43250.0", titulo:"DDifMujer. Taller de resilencia con enfoques diferenciales e inclusión.", proyecto:"2316.0", meta:"Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental", promotor:"Myriam Ruth Vera Espitia", estado:"En ejecución", avance:"0.0", contrato:"nan", contratista:"nan", valor:"nan", plazo:"PRESTAR SERVICIOS PARA LA IMPLEMENTACIÓN DE ESTRATEGIAS INTEGRALES EN SALUD, EN EL MARCO DEL PROYECTO 2316 DEL PLAN DE DESARROLLO LOCAL “TERRITORIO DE OPORTUNIDADES, CAMINA SEGURA” DE LA LOCALIDAD DE SAN CRISTÓBAL, ORIENTADAS A LA REDUCCIÓN DE RIESGOS POR CONSUMO DE SUSTANCIAS PSICOACTIVAS, APOYO A PERSONAS CON DISCAPACIDAD Y CUIDADORES, SALUD FÍSICA Y NUTRICIONAL, SALUD SEXUAL Y REPRODUCTIVA EN LOS DIFERENTES CICLOS DE VIDA, Y PROMOCIÓN DE LA SALUD MENTAL."},
-    {id:"43257.0", titulo:"DDifJuv. Festival de talentos juveniles El Arte Emprende", proyecto:"2405.0", meta:"Realizar 80 eventos de promoción, circulación y apropiación de actividades artísticas, cul", promotor:"CAMILO SANCHEZ MUÑOZ", estado:"En ejecución", avance:"0.3", contrato:"FDLSC-CVNI-700-2025 (CONVENIO INTERADMINISTRATIVO - 679 2025)", contratista:"SECRETARIA DISTRITAL DE CULTURA, RECREACION Y DEPORTE E INSTITUTO DISTRITAL DE LAS ARTES-IDEARTES", valor:"2956500000", plazo:"12 MESES Y 20 DIAS"},
-    {id:"43261.0", titulo:"DGral. Explorando mentes", proyecto:"2316.0", meta:"Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental", promotor:"YON HERNANDO REYES JIMENEZ", estado:"En ejecución", avance:"0.0", contrato:"nan", contratista:"nan", valor:"nan", plazo:"PRESTAR SERVICIOS PARA LA IMPLEMENTACIÓN DE ESTRATEGIAS INTEGRALES EN SALUD, EN EL MARCO DEL PROYECTO 2316 DEL PLAN DE DESARROLLO LOCAL “TERRITORIO DE OPORTUNIDADES, CAMINA SEGURA” DE LA LOCALIDAD DE SAN CRISTÓBAL, ORIENTADAS A LA REDUCCIÓN DE RIESGOS POR CONSUMO DE SUSTANCIAS PSICOACTIVAS, APOYO A PERSONAS CON DISCAPACIDAD Y CUIDADORES, SALUD FÍSICA Y NUTRICIONAL, SALUD SEXUAL Y REPRODUCTIVA EN LOS DIFERENTES CICLOS DE VIDA, Y PROMOCIÓN DE LA SALUD MENTAL."},
-    {id:"43264.0", titulo:"DGral. Veterinarios junior", proyecto:"2481.0", meta:"Vincular 2.400 personas en acciones educativas en temas de protección y bienestar animal", promotor:"LEIDY VIVIANA LAVERDE", estado:"En ejecución", avance:"0.1", contrato:"FDLSC-CPS-809-2025", contratista:"UT EVENTOS LOGISTICOS", valor:"3250000000", plazo:"8 MESES"},
-    {id:"43350.0", titulo:"Fortalecimiento del Consejo de Sabios y Sabias de la localidad cuarta de Sa", proyecto:"2409.0", meta:"Fortalecer 200 Organizaciones sociales e Instancias de participación ciudadana.", promotor:"Yudy Umbarila", estado:"En ejecución", avance:"0.9", contrato:"FDLSC-CPS-866-2025", contratista:"CONSORCIO CIVI 02 SAN CRISTOBAL", valor:"nan", plazo:"8 MESES"},
-    {id:"43559.0", titulo:"DDifJuv. La salud mental de los jovenes no es un juego de locos", proyecto:"2316.0", meta:"Beneficiar 6.000 personas con acciones para la promoción y atención de la salud mental", promotor:"Santiago Lozano", estado:"En ejecución", avance:"0.0", contrato:"nan", contratista:"nan", valor:"nan", plazo:"PRESTAR SERVICIOS PARA LA IMPLEMENTACIÓN DE ESTRATEGIAS INTEGRALES EN SALUD, EN EL MARCO DEL PROYECTO 2316 DEL PLAN DE DESARROLLO LOCAL “TERRITORIO DE OPORTUNIDADES, CAMINA SEGURA” DE LA LOCALIDAD DE SAN CRISTÓBAL, ORIENTADAS A LA REDUCCIÓN DE RIESGOS POR CONSUMO DE SUSTANCIAS PSICOACTIVAS, APOYO A PERSONAS CON DISCAPACIDAD Y CUIDADORES, SALUD FÍSICA Y NUTRICIONAL, SALUD SEXUAL Y REPRODUCTIVA EN LOS DIFERENTES CICLOS DE VIDA, Y PROMOCIÓN DE LA SALUD MENTAL."},
-    {id:"43566.0", titulo:"DGral. Camino de integracion y rencocilacion: Un viaje intercultural y part", proyecto:"2606.0", meta:"Realizar 4 procesos de fortalecimiento de habilidades y capacidades de la población víctim", promotor:"Oralis Valbuena", estado:"En ejecución", avance:"0.1", contrato:"nan", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"43570.0", titulo:"DGral. Escuela de paz y liderazgo social para la construccion de paz.", proyecto:"2606.0", meta:"Realizar 4 acciones de construcción de paz que contribuyan al tejido social, la integració", promotor:"Cristian Garay", estado:"En ejecución", avance:"0.1", contrato:"nan", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"0.05042016806722689", titulo:"nan", proyecto:"nan", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:"nan"},
-    {id:"1.0", titulo:"nan", proyecto:"nan", meta:"nan", promotor:"nan", estado:"nan", avance:"nan", contrato:"nan", contratista:"nan", valor:"nan", plazo:"nan"},
-  ],
-  "2026": [
-    {id:"55283.0", titulo:"DGral. Artesca 40", proyecto:"2251.0", meta:"Financiar 120 Proyecto(s) del sector cultural y creativo", promotor:"CARLOS CARDOZO", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.215,00", plazo:""},
-    {id:"55324.0", titulo:"DGral. Festival de las artes vivas San Cris 2026", proyecto:"2251.0", meta:"Financiar 120 Proyecto(s) del sector cultural y creativo", promotor:"Roman Calderon Cardozo", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.215,00", plazo:""},
-    {id:"55300.0", titulo:"DGral. Alto voltaje SIE", proyecto:"2251.0", meta:"Financiar 120 Proyecto(s) del sector cultural y creativo", promotor:"Jhonatan Simith Casas", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.215,00", plazo:""},
-    {id:"55302.0", titulo:"DGral. Revista literal \"Cronicas de metal y de la calle\"", proyecto:"2251.0", meta:"Financiar 120 Proyecto(s) del sector cultural y creativo", promotor:"KEVIN LEONARDO GONZALES SANTA CRUZ", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.215,00", plazo:""},
-    {id:"55312.0", titulo:"DGral. Sur oriente literario", proyecto:"2251.0", meta:"Financiar 120 Proyecto(s) del sector cultural y creativo", promotor:"CARMEN LILIANA LOPEZ RUIZ", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.215,00", plazo:""},
-    {id:"55351.0", titulo:"DGral. Mujeres empoderadas", proyecto:"2251.0", meta:"Financiar 120 Proyecto(s) del sector cultural y creativo", promotor:"Elkin Morales", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.215,00", plazo:""},
-    {id:"53599.0", titulo:"TLL. Carrera 8 entre la calle 1 hasta la calle 7 Sur", proyecto:"2252.0", meta:"Intervenir 17 Kilómetro(s)-carril de malla vial urbana (local y/o intermedia) con acciones", promotor:"Secretaría Distrital de Planeación", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 17.554,00", plazo:""},
-    {id:"53600.0", titulo:"TLL. Carrera 3B entre la calle 36A Sur hasta la calle 36D Sur", proyecto:"2252.0", meta:"Intervenir 17 Kilómetro(s)-carril de malla vial urbana (local y/o intermedia) con acciones", promotor:"Secretaría Distrital de Planeación", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 17.554,00", plazo:""},
-    {id:"53601.0", titulo:"TLL. Carrera 8 entre la calle 1 hasta la calle 7 Sur", proyecto:"2254.0", meta:"Intervenir 4290 Metro(s) cuadrado(s) de elementos del sistema de espacio público peatonal ", promotor:"Secretaría Distrital de Planeación", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.945,00", plazo:""},
-    {id:"53602.0", titulo:"TLL. Calle 22A Sur entre la carrera 3Bis hasta la carrera 6", proyecto:"2254.0", meta:"Intervenir 4290 Metro(s) cuadrado(s) de elementos del sistema de espacio público peatonal ", promotor:"Secretaría Distrital de Planeación", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.945,00", plazo:""},
-    {id:"54187.0", titulo:"TLL. Urbanizacion San Rafael Sur Oriental", proyecto:"2257.0", meta:"Intervenir 32 Parque(s) de la red de proximidad con acciones de mejoramiento, mantenimient", promotor:"Secretaría Distrital de Planeación", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 665,00", plazo:""},
-    {id:"54188.0", titulo:"TLL. Ubanización Las Guacamayas", proyecto:"2257.0", meta:"Intervenir 32 Parque(s) de la red de proximidad con acciones de mejoramiento, mantenimient", promotor:"Secretaría Distrital de Planeación", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 665,00", plazo:""},
-    {id:"55006.0", titulo:"DDifJuv. Manejando tus emociones con alegría", proyecto:"2316.0", meta:"Beneficiar 6000 Persona(s) con acciones para la promoción y atención de la salud mental", promotor:"Haslin Aracelly Giraldo Galeano", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.824,00", plazo:""},
-    {id:"54978.0", titulo:"DGral. Acciona tu mente con Artedeporte", proyecto:"2316.0", meta:"Beneficiar 6000 Persona(s) con acciones para la promoción y atención de la salud mental", promotor:"July Esperanza Celis Fernández", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.824,00", plazo:""},
-    {id:"55599.0", titulo:"DDifMujer. Circuitos pedagógicos, artísticos y reflexivos para prevención d", proyecto:"2385.0", meta:"Vincular 6000 Persona(s) en acciones para la prevención del feminicidio y la violencia con", promotor:"ALEJANDRA MOLINA", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.884,00", plazo:""},
-    {id:"55378.0", titulo:"DGral. RED DE MUJERES CONSTRUCTORAS EN PRVEENCION DE FEMINICIDIO COMUNITARI", proyecto:"2385.0", meta:"Vincular 6000 Persona(s) en acciones para la prevención del feminicidio y la violencia con", promotor:"Luz Marina Torres", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.884,00", plazo:""},
-    {id:"55260.0", titulo:"DGral. Círculo Audiovisual Toma Cuarta", proyecto:"2405.0", meta:"Realizar 80 Evento(s) de promoción, circulación y apropiación de actividades artísticas, c", promotor:"ARMANDO DE JESUS MOLANO", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 2.205,00", plazo:""},
-    {id:"55020.0", titulo:"DGral. Semillero de danza afrolatina", proyecto:"2405.0", meta:"Capacitar 1480 Persona(s) en los campos artísticos, interculturales, culturales y/o patrim", promotor:"Elliott Muñoz Garzón", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 722,00", plazo:""},
-    {id:"55258.0", titulo:"DGral. FESTIVAL DE FESTIVALES", proyecto:"2405.0", meta:"Realizar 80 Evento(s) de promoción, circulación y apropiación de actividades artísticas, c", promotor:"MARTHA LILIANA LOPEZ", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 2.205,00", plazo:""},
-    {id:"55128.0", titulo:"DGral. Herramientas para el Arte", proyecto:"2405.0", meta:"Beneficiar 60 Organización(es) artísticas, culturales y patrimoniales con elementos entreg", promotor:"arnelis rauro a", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 331,00", plazo:""},
-    {id:"55220.0", titulo:"DGral. Escuela Comunitaria de Musica Integral", proyecto:"2405.0", meta:"Beneficiar 60 Organización(es) artísticas, culturales y patrimoniales con elementos entreg", promotor:"jhon mario castillo hernandez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 331,00", plazo:""},
-    {id:"55256.0", titulo:"DGral. Círculo Fusión Z4", proyecto:"2405.0", meta:"Realizar 80 Evento(s) de promoción, circulación y apropiación de actividades artísticas, c", promotor:"JOSE EDUARDO PAEZ", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 2.205,00", plazo:""},
-    {id:"55019.0", titulo:"DGral. Salvaguarda de Oficios y Saberes en San Cristóbal", proyecto:"2405.0", meta:"Capacitar 1480 Persona(s) en los campos artísticos, interculturales, culturales y/o patrim", promotor:"Yonh Caicedo", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 722,00", plazo:""},
-    {id:"55136.0", titulo:"DGral. Escuela de Danzas Yoli", proyecto:"2405.0", meta:"Beneficiar 60 Organización(es) artísticas, culturales y patrimoniales con elementos entreg", promotor:"yolanda barrera fernandez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 331,00", plazo:""},
-    {id:"54775.0", titulo:"DGral. Pasión Barrio y Barra", proyecto:"2409.0", meta:"Fortalecer 200 Organización(es) e instancias de participación ciudadana", promotor:"John Rodríguez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.519,00", plazo:""},
-    {id:"54838.0", titulo:"DGral. Escuela de participación juvenil comunitaria (ESPARJUCOM)", proyecto:"2409.0", meta:"Capacitar 2600 Persona(s) a través de procesos de formación para la participación de maner", promotor:"Kevin Leonardo González Santacruz", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.519,00", plazo:""},
-    {id:"55027.0", titulo:"DGral. Por un mejor mundo para nuestras mascotas en San Cristóbal", proyecto:"2481.0", meta:"Atender 10000 Animales en los programas de brigadas médicas, urgencias veterinarias y adop", promotor:"Luz Marina Chaparro", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 702,00", plazo:""},
-    {id:"55035.0", titulo:"DGral. Comunicación directa con la comunidad para las esterilizaciones", proyecto:"2481.0", meta:"Esterilizar 15000 Perros y gatos incluyendo los que está en condición de vulnerabilidad", promotor:"Luz Marina Parra Vanegas", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 912,00", plazo:""},
-    {id:"55050.0", titulo:"DGral. Educación para los habitantes de San Cristóbal en protección y biene", proyecto:"2481.0", meta:"Vincular 2400 Persona(s) en acciones educativas en temas de protección y bienestar animal", promotor:"Héctor Antonio Forero", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 210,00", plazo:""},
-    {id:"55084.0", titulo:"DGral. Imaginando el cachibol para el futuro", proyecto:"2495.0", meta:"Beneficiar 120 Colectivo(s) u organizaciones recreo deportivas inscritas en el Banco que i", promotor:"Dalia Yepez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 715,00", plazo:""},
-    {id:"55143.0", titulo:"DGral. Olimpiadas de las persona mayor", proyecto:"2495.0", meta:"Beneficiar 120 Colectivo(s) u organizaciones recreo deportivas inscritas en el Banco que i", promotor:"Raul Avila", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 715,00", plazo:""},
-    {id:"55078.0", titulo:"DGral. Guerreros de Arena", proyecto:"2495.0", meta:"Beneficiar 120 Colectivo(s) u organizaciones recreo deportivas inscritas en el Banco que i", promotor:"Danny Barajas", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 715,00", plazo:""},
-    {id:"55070.0", titulo:"DGral. Semilleros deportivos de organizaciones futboleras", proyecto:"2495.0", meta:"Beneficiar 120 Colectivo(s) u organizaciones recreo deportivas inscritas en el Banco que i", promotor:"Edward Fabian Medina", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 715,00", plazo:""},
-    {id:"55071.0", titulo:"DGral. Carrera atletica persona mayor", proyecto:"2495.0", meta:"Beneficiar 120 Colectivo(s) u organizaciones recreo deportivas inscritas en el Banco que i", promotor:"Jesus Orlando Bueno Perez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 715,00", plazo:""},
-    {id:"47257.0", titulo:"dia de los juegos de mesa en familia", proyecto:"2495.0", meta:"Beneficiar 13200 Persona(s) en actividades recreo-deportivas comunitarias.", promotor:"nan", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.429,00", plazo:""},
-    {id:"46966.0", titulo:"DIA DEL ABUELO", proyecto:"2495.0", meta:"Beneficiar 13200 Persona(s) en actividades recreo-deportivas comunitarias.", promotor:"nan", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.429,00", plazo:""},
-    {id:"48504.0", titulo:"TORNEOS DE JUEGOS TRADICIONALES", proyecto:"2495.0", meta:"Beneficiar 13200 Persona(s) en actividades recreo-deportivas comunitarias.", promotor:"nan", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.429,00", plazo:""},
-    {id:"55313.0", titulo:"DGral. San Cristóbal patina", proyecto:"2495.0", meta:"Beneficiar 4000 Persona(s) con la entrega de dotaciones deportivas.", promotor:"Briam Steven González", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 929,00", plazo:""},
-    {id:"55311.0", titulo:"DGral. Taekwondo Fuerza y Unión en movimiento", proyecto:"2495.0", meta:"Beneficiar 4000 Persona(s) con la entrega de dotaciones deportivas.", promotor:"Pablo Enrique Molina", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 929,00", plazo:""},
-    {id:"55327.0", titulo:"DDifMujer. Por un San Cristóbal más incluyente", proyecto:"2495.0", meta:"Beneficiar 4000 Persona(s) con la entrega de dotaciones deportivas.", promotor:"Alba Nury Giraldo Clavijo", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 929,00", plazo:""},
-    {id:"55314.0", titulo:"DDifMujer. curvas en bielas", proyecto:"2495.0", meta:"Beneficiar 4000 Persona(s) con la entrega de dotaciones deportivas.", promotor:"lorena pardo martinez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 929,00", plazo:""},
-    {id:"55125.0", titulo:"DGral. Clubes y escuelas de futbol con dotación con o sin aval deportivo", proyecto:"2495.0", meta:"Beneficiar 4000 Persona(s) con la entrega de dotaciones deportivas.", promotor:"JOSE ROLANDO RUBIO", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 929,00", plazo:""},
-    {id:"55376.0", titulo:"DGral. RECUPERANDO LA JUVENTUD", proyecto:"2495.0", meta:"Beneficiar 4000 Persona(s) con la entrega de dotaciones deportivas.", promotor:"iniluda casani", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 929,00", plazo:""},
-    {id:"55340.0", titulo:"DGral. JUGANDO POR LOS SUEÑOS: FORTALECIMIENTO DEPORTIVO SOCIAL DE SAN CRIS", proyecto:"2495.0", meta:"Beneficiar 4000 Persona(s) con la entrega de dotaciones deportivas.", promotor:"RUTH GONZALEZ", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 929,00", plazo:""},
-    {id:"55100.0", titulo:"DGral. Defendiendo mi localidad; chiquitos pero no indefensos", proyecto:"2495.0", meta:"Capacitar 6400 Persona(s) en los campos deportivos o recreativos", promotor:"CAMILO EDUARDO PRIETO RODRIGUEZ", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.072,00", plazo:""},
-    {id:"55350.0", titulo:"DDifMujer. Puños de fuego MMA women", proyecto:"2495.0", meta:"Capacitar 6400 Persona(s) en los campos deportivos o recreativos", promotor:"YINETH ROMERO", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.072,00", plazo:""},
-    {id:"55167.0", titulo:"DGral. Actividad recreo deportiva y fisica", proyecto:"2495.0", meta:"Capacitar 6400 Persona(s) en los campos deportivos o recreativos", promotor:"Raul Avila", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.072,00", plazo:""},
-    {id:"45347.0", titulo:"CONCIENIA AL TERRITORIO POR LA CONSERVACION DE LA BIODIVERSIDAD EN SAN CRIS", proyecto:"2502.0", meta:"Implementar 4 Proceso(s) comunitarios de educación ambiental que promueven la conservación", promotor:"COMANDOS AZULES Z4 3123680261 IVAN MAURICIO BECERRA", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 191,00", plazo:""},
-    {id:"55041.0", titulo:"DGral. Cuidando mi barrio recicl en la fuente y cuido nuestro mundo", proyecto:"2502.0", meta:"Capacitar 6000 Persona(s) en separación en la fuente y reciclaje.", promotor:"Rosalbina Orjuela Cruz", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.398,00", plazo:""},
-    {id:"55044.0", titulo:"DGral. Huertas del sur oriente", proyecto:"2502.0", meta:"Implementar 160 Huerta(s) urbanas", promotor:"Jhonatan Camacho", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 410,00", plazo:""},
-    {id:"55377.0", titulo:"DGral. APRENDIENDO Y EMPRENDIENDO", proyecto:"2601.0", meta:"Realizar 16 Acuerdo(s) para la organización, la recuperación, el cuidado, el embellecimien", promotor:"Yamir Sanchez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.762,00", plazo:""},
-    {id:"55087.0", titulo:"DGral. Fortalecimiento y reconocimiento", proyecto:"2606.0", meta:"Realizar 4 Acción(es) de construcción de paz que contribuyan al tejido social, la integrac", promotor:"LUIS CARLOS FUENTES", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 373,00", plazo:""},
-    {id:"55169.0", titulo:"DDifLGBTIQ. Transformando comunidad", proyecto:"2606.0", meta:"Realizar 4 Proceso(s) pedagógicos, artísticos, culturales, formativos o para el fortalecim", promotor:"Narly Jiseth Rivera", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 257,00", plazo:""},
-    {id:"55109.0", titulo:"DDifJuv. Proyección para la paz muchas víctimas pocas histórias", proyecto:"2606.0", meta:"Realizar 4 Acción(es) de construcción de paz que contribuyan al tejido social, la integrac", promotor:"Sebastián Camilo Teortúa Rodríguez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 373,00", plazo:""},
-    {id:"55056.0", titulo:"DGral. Los ojos de las víctimas a través del trabajo informal", proyecto:"2606.0", meta:"Realizar 4 Proceso(s) pedagógicos, artísticos, culturales, formativos o para el fortalecim", promotor:"EDITHZABETH RODRÍGUEZ", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 257,00", plazo:""},
-    {id:"55374.0", titulo:"DGral. 5 OLLAS COMUNITARIA - PROCESOS PARTICIPATIVOS", proyecto:"2606.0", meta:"Realizar 4 Proceso(s) de fortalecimiento de habilidades y capacidades de la población víct", promotor:"Karol Cordoba", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 257,00", plazo:""},
-    {id:"55352.0", titulo:"DGral. Tejiendo sueños empresariales", proyecto:"2608.0", meta:"Apoyar 800 Mipyme(s) emprendimientos y/o actores de la economía informal para el fortaleci", promotor:"Anderson Estiwar Moreno Moreno", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.215,00", plazo:""},
-    {id:"47870.0", titulo:"SAN CRISTOBAL AL VIENTO POR EL FORTALECIMIENTO DE LA CONVIVENCIA TERRITORIA", proyecto:"2620.0", meta:"Implementar 120 Iniciativa(s) de convivencia con participación de la ciudadanía.", promotor:"JULIAN CASTIBLANCO CEL 3014095308 juliansantiago2910@gmail.com DAVID MORALES CEL 3134807634 stivensm1941@gmail.com", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 548,00", plazo:""},
-    {id:"47273.0", titulo:"CARNAVAL FUTBOLERO POR LA PAZ", proyecto:"2620.0", meta:"Implementar 120 Iniciativa(s) de convivencia con participación de la ciudadanía.", promotor:"SAIRA URUEÑA CEL 3125280932 sairis21@gmail.com ALEJANDRO PEREZ CEL 3229521039 dilanperez260116@hotmail.com", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 548,00", plazo:""},
-    {id:"47236.0", titulo:"HISTORIAS VIVAS RECONSTRUYENDO TERRITRIO", proyecto:"2620.0", meta:"Implementar 120 Iniciativa(s) de convivencia con participación de la ciudadanía.", promotor:"EYMAR LEON CEL 3212430417 eymarleon02@hotmail.com Diana Gonzales Cel 3153517285 dianagmartina@gmail.com", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 548,00", plazo:""},
-    {id:"47264.0", titulo:"REDES DE JUSTICIA TERRITORIAL SAN CRISTOBAL", proyecto:"2620.0", meta:"Implementar 120 Acción(es) formativas diferenciales para la promoción de la convivencia ci", promotor:"DAYAN GARZON CEL 3212708734 juanestebannatlia@gmail.com SANTIAGO PEDRAZA CEL 3138119186 Santiagopedraza903@gmail.com", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 548,00", plazo:""},
-    {id:"48206.0", titulo:"San Cristóbal Segura y comprometida", proyecto:"2620.0", meta:"Fortalecer 100 Organización(es) comunitarias a través de capacidades para promover accione", promotor:"Julio César Romero Gómez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 484,00", plazo:""},
-    {id:"50281.0", titulo:"Barrio y barra unidos por la convivencia", proyecto:"2620.0", meta:"Fortalecer 100 Organización(es) comunitarias a través de capacidades para promover accione", promotor:"Barrio y barra unidos por la convivencia (consejo local de barras)", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 484,00", plazo:""},
-    {id:"55390.0", titulo:"DDifLGBTIQ. CONVIVIR DESDE LA DIVERSIDAD", proyecto:"2620.0", meta:"Implementar 120 Acción(es) formativas diferenciales para la promoción de la convivencia ci", promotor:"chistian chapeton gama", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 548,00", plazo:""},
-    {id:"55393.0", titulo:"DDifJuv. MI ESPACIO, MI BARRIO", proyecto:"2620.0", meta:"Implementar 120 Acción(es) formativas diferenciales para la promoción de la convivencia ci", promotor:"Daniel Tomas Castillo Baon", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 548,00", plazo:""},
-    {id:"46747.0", titulo:"La Convivencia y la seguridad nuestro Futuro", proyecto:"2620.0", meta:"Fortalecer 100 Organización(es) comunitarias a través de capacidades para promover accione", promotor:"JAC SAN MARTIN DE LOBA", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 484,00", plazo:""},
-    {id:"55384.0", titulo:"DDifJuv. INTEGRACIÓN AL TERRITORIO PARA LA CONSTRUCCIÓN DE CONVIVENCIA TERR", proyecto:"2620.0", meta:"Implementar 120 Acción(es) formativas diferenciales para la promoción de la convivencia ci", promotor:"juan pablo vargas", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 548,00", plazo:""},
-    {id:"47114.0", titulo:"turisteando y comiendo ando", proyecto:"2627.0", meta:"Apoyar 120 Mipyme(s) y/o emprendimientos orientados al fortalecimiento de las capacidades ", promotor:"carlos castillo", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.459,00", plazo:""},
-    {id:"44870.0", titulo:"Gastronomía Viva San Cristóbal: Estrategia marca, Cultura y Emprendimiento ", proyecto:"2627.0", meta:"Apoyar 120 Mipyme(s) y/o emprendimientos orientados al fortalecimiento de las capacidades ", promotor:"GastroRed San Cristóbal - Donde los sabores cuentan historias", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.459,00", plazo:""},
-    {id:"48658.0", titulo:"Los medios apoyan los emprendimientos turísticos.", proyecto:"2627.0", meta:"Apoyar 120 Mipyme(s) y/o emprendimientos orientados al fortalecimiento de las capacidades ", promotor:"Flor Encarnación Padilla Castañeda", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.459,00", plazo:""},
-    {id:"55183.0", titulo:"DDifLGBTIQ. El turismo LGBTIQ existe en San Cristobal", proyecto:"2627.0", meta:"Apoyar 120 Mipyme(s) y/o emprendimientos orientados al fortalecimiento de las capacidades ", promotor:"Jairo Anibal Villalba", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.459,00", plazo:""},
-    {id:"55359.0", titulo:"DGral. Capacitar para la productividad y empleabilidad", proyecto:"2627.0", meta:"Realizar 8 Acción(es) para fortalecer las capacidades y/o habilidades, técnicas y blandas ", promotor:"Maria Roselina Catillo", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.824,00", plazo:""},
-    {id:"55349.0", titulo:"DDifMujer. Emprendimiento de Mujeres Con futuro.", proyecto:"2627.0", meta:"Apoyar 120 Mipyme(s) y/o emprendimientos orientados al fortalecimiento de las capacidades ", promotor:"Carolina Catalina López Polo", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.459,00", plazo:""},
-    {id:"55033.0", titulo:"DDifJuv. Festi Tour San Cristobal", proyecto:"2627.0", meta:"Apoyar 120 Mipyme(s) y/o emprendimientos orientados al fortalecimiento de las capacidades ", promotor:"Miller L Rodriguez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.459,00", plazo:""},
-    {id:"55149.0", titulo:"DGral. Restaurando parques y senderos", proyecto:"2633.0", meta:"Ejecutar 4 Programa(s) comunitarios con enfoque restaurativo para el cuidado del espacio p", promotor:"ANDREA LEMUS", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 184,00", plazo:""},
-    {id:"55385.0", titulo:"DGral.  JUNTOS POR LA COMUNIDAD", proyecto:"2633.0", meta:"Implementar 24 Proyecto(s) de justicia local para la resolución efectiva de conflictividad", promotor:"Edith leonor vargas", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 122,00", plazo:""},
-    {id:"55118.0", titulo:"DGral. Sistema de mediación comunitaria", proyecto:"2633.0", meta:"Implementar 80 Acción(es) pedagógicas para la gestión de conflictividades y prevención de ", promotor:"FRANSLY MOSQUERA", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 416,00", plazo:""},
-    {id:"55058.0", titulo:"DGral. Ojos de barrio", proyecto:"2633.0", meta:"Implementar 24 Proyecto(s) comunitarios en la localidad, para la apropiación del Código Na", promotor:"MYRIAM LÓPEZ PABÓN", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 122,00", plazo:""},
-    {id:"55388.0", titulo:"DGral. COMUNIDAD CONECTADA SAN CRISTOBAL CONVIVE", proyecto:"2633.0", meta:"Beneficiar 680 Ciudadanos con habilidades y capacidades para gestionar la convivencia cons", promotor:"arnulfo monsalve rincon", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 245,00", plazo:""},
-    {id:"55176.0", titulo:"DDifJuv. Rehabilitación", proyecto:"2633.0", meta:"Fortalecer 4 Programa(s) de abordaje de conflictividad escolar para la convivencia con enf", promotor:"Sara Barrera", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 184,00", plazo:""},
-    {id:"55097.0", titulo:"DGral. Puentes de convivencia San Cristóbal restaura", proyecto:"2633.0", meta:"Fortalecer 1600 Actor(es) comunitarios con herramientas y capacidades para la implementaci", promotor:"GERMAN ZAPATA BARRETO", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 367,00", plazo:""},
-    {id:"55179.0", titulo:"DDifJuv. Incentivos para el mañana", proyecto:"2633.0", meta:"Fortalecer 4 Programa(s) de abordaje de conflictividad escolar para la convivencia con enf", promotor:"Tomás Daniel Martínez", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 184,00", plazo:""},
-    {id:"55172.0", titulo:"DDifJuv. Espacios de confianza", proyecto:"2633.0", meta:"Fortalecer 4 Programa(s) de abordaje de conflictividad escolar para la convivencia con enf", promotor:"Valery Alejandra Joya Triana", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 184,00", plazo:""},
-    {id:"49055.0", titulo:"Aula Digital Managua", proyecto:"2694.0", meta:"Operativizar 20 Centro(s) de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas", promotor:"JUNTA DE ACCION COMUNAL BARRIO MANAGUA", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.029,00", plazo:""},
-    {id:"47697.0", titulo:"CENTROS DE EXPERIENCIAS TICS PARA MI BARRIO", proyecto:"2694.0", meta:"Operativizar 20 Centro(s) de Acceso Comunitario en zonas rurales y/o apartadas y/o urbanas", promotor:"NEYDA CUZVA", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 490,00", plazo:""},
-    {id:"55395.0", titulo:"DDifMujer. POLIFONIA, VOCES VIVAS DE LAS MUJERES DE SAN CRISTÓBAL", proyecto:"2802.0", meta:"Vincular 1600 Mujer(es) para el ejercicio de derechos y el fortalecimiento de su autonomía", promotor:"iniluda casani", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.872,00", plazo:""},
-    {id:"54993.0", titulo:"DGral. Fortalecer a la mujeres en ofimática", proyecto:"2802.0", meta:"Vincular 1600 Mujer(es) para el ejercicio de derechos y el fortalecimiento de su autonomía", promotor:"Luz M. Torres S.", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.872,00", plazo:""},
-    {id:"55387.0", titulo:"DGral. TEJIENDO CUIDADO, SABERES QUE DIGNIFICAN LA VIDA", proyecto:"2802.0", meta:"Vincular 6000 Mujer(es) cuidadora(s) a estrategias de cuidado.", promotor:"Luz torres", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.641,00", plazo:""},
-    {id:"54983.0", titulo:"DGral. Protagonismo Familiar - Malestar Familiar", proyecto:"2802.0", meta:"Vincular 4000 Persona(s) en procesos para la prevención de violencias en el contexto famil", promotor:"Claudia Milena Barrera", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.215,00", plazo:""},
-    {id:"55380.0", titulo:"DDifMujer. CAMINOS DE BIENESTAR PARA LAS CUIDADORAS DE SAN CRISTOBAL", proyecto:"2802.0", meta:"Vincular 6000 Mujer(es) cuidadora(s) a estrategias de cuidado.", promotor:"YOLANDA BARRERA", estado:"", avance:"", contrato:"", contratista:"", valor:"$ 1.641,00", plazo:""},
-  ],
-};
-
-// ── PRESUPUESTOS PARTICIPATIVOS: cargar iniciativas por año ──
-function cargarIniciativasPP() {
-  const yr = document.getElementById('pp_anio').value;
-  const wrap = document.getElementById('pp-campo-iniciativa-wrap');
-  const sel  = document.getElementById('pp_id_iniciativa');
-  const bloque = document.getElementById('pp-bloque-datos');
-  
-  // Reset
-  sel.innerHTML = '<option value="">Seleccionar iniciativa...</option>';
-  bloque.style.display = 'none';
-  ['pp_proyecto','pp_codigo','pp_meta','pp_nombre','pp_proponente',
-   'pp_contrato','pp_contratista','pp_valor_iniciativa','pp_plazo'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
-
-  if (!yr || !PP_DATA[yr]) { wrap.style.display = 'none'; return; }
-
-  const items = PP_DATA[yr];
-  items.forEach(item => {
-    const opt = document.createElement('option');
-    opt.value = item.id;
-    opt.textContent = `[${item.id}] ${item.titulo}`;
-    opt.dataset.proyecto  = item.proyecto;
-    opt.dataset.meta      = item.meta;
-    opt.dataset.nombre    = item.titulo;
-    opt.dataset.promotor  = item.promotor;
-    opt.dataset.estado    = item.estado;
-    opt.dataset.contrato  = item.contrato;
-    opt.dataset.contratista = item.contratista;
-    opt.dataset.valor     = item.valor;
-    opt.dataset.plazo     = item.plazo;
-    sel.appendChild(opt);
-  });
-
-  wrap.style.display = 'flex';
-  actualizarProgreso();
-}
-
-function autocompletePP() {
-  const sel   = document.getElementById('pp_id_iniciativa');
-  const opt   = sel.options[sel.selectedIndex];
-  const bloque = document.getElementById('pp-bloque-datos');
-  if (!opt || !opt.value) { bloque.style.display = 'none'; return; }
-
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
-  set('pp_codigo',          opt.value);
-  set('pp_proyecto',        opt.dataset.proyecto);
-  set('pp_meta',            opt.dataset.meta);
-  set('pp_nombre',          opt.dataset.nombre);
-  set('pp_proponente',      opt.dataset.promotor);
-  set('pp_contrato',        opt.dataset.contrato);
-  set('pp_contratista',     opt.dataset.contratista);
-  set('pp_valor_iniciativa',opt.dataset.valor);
-  set('pp_plazo',           opt.dataset.plazo);
-
-  // Preselect estado from base if exists
-  const estadoSel = document.getElementById('pp_estado');
-  if (estadoSel && opt.dataset.estado && opt.dataset.estado !== 'nan') {
-    const est = opt.dataset.estado.toUpperCase();
-    for (let i=0; i<estadoSel.options.length; i++) {
-      if (estadoSel.options[i].value.toUpperCase().includes(est.split(' ')[0])) {
-        estadoSel.selectedIndex = i; break;
-      }
-    }
-  }
-
-  bloque.style.display = 'block';
-  showToast('✅ Datos de la iniciativa cargados desde base oficial', 'success');
-  actualizarProgreso();
-}
 
 
 let toastTimer;
