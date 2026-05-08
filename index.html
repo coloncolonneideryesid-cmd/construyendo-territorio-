@@ -1665,7 +1665,11 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
 <!-- Loading -->
 <div class="loading-overlay" id="loading">
   <div class="loading-spinner"></div>
-  <div class="loading-text">Enviando registro y notificaciones...</div>
+  <div class="loading-text" id="loading-text">Preparando archivos...</div>
+  <div style="width:280px;background:#eee;border-radius:8px;height:8px;overflow:hidden;margin-top:.3rem;">
+    <div id="loading-bar" style="height:100%;width:0%;background:var(--rojo);border-radius:8px;transition:width .4s ease;"></div>
+  </div>
+  <div id="loading-sub" style="font-size:.75rem;color:var(--gris-4);margin-top:.2rem;text-align:center;max-width:300px;"></div>
 </div>
 
 <!-- Toast -->
@@ -3063,12 +3067,63 @@ async function enviarFormulario() {
 
   if (datos.lugar === 'OTRO' && datos.lugar_custom) datos.lugar = datos.lugar_custom;
 
-  const archivos = [];
-  ['acta_actividad','registro_firmas','registro_fotos'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el && el.files && el.files.length) Array.from(el.files).forEach(f => archivos.push(f.name));
-  });
-  datos.archivos = archivos.join(', ') || 'Sin adjuntos';
+  // ── RECOPILACIÓN DE ARCHIVOS (base64) ────────────────────────────────────
+  setLoadingStep('Leyendo archivos adjuntos...', 10);
+  const archivosNombres = [];
+
+  async function b64(file) {
+    return new Promise((res, rej) => {
+      if (!file || file.size === 0) return res(null);
+      const r = new FileReader();
+      r.onload  = e => res(e.target.result.split(',')[1]);
+      r.onerror = () => rej(new Error('No se pudo leer: ' + file.name));
+      r.readAsDataURL(file);
+    });
+  }
+
+  // Acta de Actividad
+  const actaInput = document.getElementById('acta_actividad');
+  if (actaInput && actaInput.files[0]) {
+    const f = actaInput.files[0];
+    if (f.size > 10 * 1024 * 1024) { alertaSizeError(f.name, '10 MB'); return; }
+    setLoadingStep('Leyendo Acta de Actividad...', 20, f.name);
+    datos.archivo_acta_b64    = await b64(f);
+    datos.archivo_acta_nombre = f.name;
+    datos.archivo_acta_tipo   = f.type || 'application/octet-stream';
+    archivosNombres.push(f.name);
+  }
+
+  // Registro de Firmas
+  const firmasInput = document.getElementById('registro_firmas');
+  if (firmasInput && firmasInput.files[0]) {
+    const f = firmasInput.files[0];
+    if (f.size > 5 * 1024 * 1024) { alertaSizeError(f.name, '5 MB'); return; }
+    setLoadingStep('Leyendo Registro de Firmas...', 35, f.name);
+    datos.archivo_firmas_b64    = await b64(f);
+    datos.archivo_firmas_nombre = f.name;
+    datos.archivo_firmas_tipo   = f.type || 'application/octet-stream';
+    archivosNombres.push(f.name);
+  }
+
+  // Fotos (hasta 5)
+  const fotosInput = document.getElementById('registro_fotos');
+  if (fotosInput && fotosInput.files.length) {
+    const fotos = Array.from(fotosInput.files).slice(0, 5);
+    for (let i = 0; i < fotos.length; i++) {
+      const f = fotos[i];
+      if (f.size > 4 * 1024 * 1024) { alertaSizeError(f.name, '4 MB'); return; }
+      setLoadingStep('Leyendo foto ' + (i+1) + ' de ' + fotos.length + '...', 40 + i * 8, f.name);
+      datos['archivo_foto_' + (i+1) + '_b64']    = await b64(f);
+      datos['archivo_foto_' + (i+1) + '_nombre'] = f.name;
+      datos['archivo_foto_' + (i+1) + '_tipo']   = f.type || 'image/jpeg';
+      archivosNombres.push(f.name);
+    }
+    datos.archivo_fotos_total = String(fotos.length);
+  }
+
+  datos.archivos = archivosNombres.join(', ') || 'Sin adjuntos';
+  // ─────────────────────────────────────────────────────────────────────────
+
   datos.timestamp = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
   const area = datos.area;
@@ -3081,35 +3136,28 @@ async function enviarFormulario() {
   datos.id_registro = regId;
 
   // ── ENRUTAMIENTO A HOJA POR TIPO DE ACTIVIDAD ──────────────────
-  // Determina la hoja destino según el tipo_actividad seleccionado
   const tipoActual = datos.tipo_actividad || tipo;
   let hojaDestino = CONFIG.SHEET_MAP[tipoActual];
-
-  // Si el tipo empieza por "MISIONAL" y no hay match exacto, usar hoja misional
-  if (!hojaDestino && tipoActual && tipoActual.startsWith('MISIONAL')) {
-    hojaDestino = 'ACTIVIDADES MISIONALES';
-  }
-  // Si el tipo empieza por "CONTRATO" y no hay match exacto, usar inversión
-  if (!hojaDestino && tipoActual && tipoActual.startsWith('CONTRATO')) {
-    hojaDestino = 'SEGUIMIENTO A LA INVERSION';
-  }
-  // Fallback: TERRITORIO para tipos no reconocidos
+  if (!hojaDestino && tipoActual && tipoActual.startsWith('MISIONAL'))  hojaDestino = 'ACTIVIDADES MISIONALES';
+  if (!hojaDestino && tipoActual && tipoActual.startsWith('CONTRATO'))  hojaDestino = 'SEGUIMIENTO A LA INVERSION';
   if (!hojaDestino) hojaDestino = 'TERRITORIO';
 
-  datos.target_sheet    = hojaDestino;
+  datos.target_sheet     = hojaDestino;
   datos.spreadsheet_name = CONFIG.SPREADSHEET_NAME;
   // ────────────────────────────────────────────────────────────────
 
   try {
     if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxQvhOrKkebCpxzNIcKHrykO-8DQg5FGrnKG4h91u9a-Y_Me6vrBbN9b0WJn7hf/exec") {
-      // MODO DEMO: simula el envío y muestra en consola los datos que se enviarían
       console.table({ ...datos, target_sheet: hojaDestino });
       await new Promise(res => setTimeout(res, 1500));
       mostrarExito(regId, hojaDestino);
     } else {
+      setLoadingStep('Subiendo archivos a Drive y guardando registro...', 80);
       const fd = new FormData();
       Object.keys(datos).forEach(k => fd.append(k, datos[k]));
       await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+      setLoadingStep('¡Registro guardado exitosamente!', 100);
+      await new Promise(res => setTimeout(res, 500));
       mostrarExito(regId, hojaDestino);
     }
   } catch(e) {
@@ -3117,6 +3165,21 @@ async function enviarFormulario() {
     document.getElementById('btn-submit').disabled = false;
     showToast('❌ Error al enviar. Verifique la conexión.', 'error-t');
   }
+}
+
+function setLoadingStep(texto, pct, sub) {
+  const t = document.getElementById('loading-text');
+  const b = document.getElementById('loading-bar');
+  const s = document.getElementById('loading-sub');
+  if (t) t.textContent = texto;
+  if (b) b.style.width = pct + '%';
+  if (s) s.textContent = sub || '';
+}
+
+function alertaSizeError(nombre, limite) {
+  document.getElementById('loading').classList.remove('show');
+  document.getElementById('btn-submit').disabled = false;
+  showToast('⚠️ "' + nombre + '" supera el límite de ' + limite, 'error-t');
 }
 
 function mostrarExito(regId, hojaDestino) {
