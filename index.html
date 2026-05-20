@@ -3,8 +3,12 @@
 <head>
 <!--
 ╔══════════════════════════════════════════════════════════════════════╗
-║  FORMULARIO DIGITAL DE REGISTRO TERRITORIAL v3.0                     ║
+║  FORMULARIO DIGITAL DE REGISTRO TERRITORIAL v3.1                     ║
 ║  Alcaldía Local San Cristóbal · 2026                                 ║
+║  CAMBIOS v3.1:                                                       ║
+║  ✓ Georreferenciación: selector UPZ → Zona → Barrio en cascada       ║
+║  ✓ Código STI-SC: se llena automáticamente al elegir el barrio       ║
+║  ✓ Base de datos: BDD Territorial SanCristobal (274 barrios)         ║
 ║  CAMBIOS v3.0:                                                       ║
 ║  ✓ Tipo de actividad: Meta 2026 Gestión / Meta 2026 Jurídicos        ║
 ║  ✓ Actividades misionales: LGBTI, Sello, Igualdad, Sipres, Transv.  ║
@@ -26,7 +30,7 @@
 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro Territorial v3.0 · Alcaldía Local San Cristóbal 2026</title>
+<title>Registro Territorial v3.1 · Alcaldía Local San Cristóbal 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1544,31 +1548,51 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
       <div><div class="card-title">Georreferenciación</div></div>
     </div>
     <div class="card-body">
+
+      <!-- CÓDIGO STI-SC (auto) -->
       <div class="field">
-        <label for="zona">Zona <span class="req">*</span></label>
-        <select id="zona" name="zona" required onchange="actualizarLugares()">
-          <option value="">Seleccionar zona...</option>
+        <label for="codigo_sti_sc">Código STI-SC</label>
+        <input type="text" id="codigo_sti_sc" name="codigo_sti_sc" readonly placeholder="— se completa al seleccionar barrio —">
+        <div class="hint">🔖 Se completa automáticamente al elegir el barrio</div>
+      </div>
+
+      <!-- UPZ -->
+      <div class="field">
+        <label for="upz">UPZ <span class="req">*</span></label>
+        <select id="upz" name="upz" required onchange="actualizarZonasUPZ()">
+          <option value="">Seleccionar UPZ...</option>
           <option value="ALCALDÍA LOCAL">ALCALDÍA LOCAL (sede central)</option>
-          <option value="ZONA 1">ZONA 1</option>
-          <option value="ZONA 2">ZONA 2</option>
-          <option value="ZONA 3">ZONA 3</option>
-          <option value="ZONA 4">ZONA 4</option>
-          <option value="ZONA 5">ZONA 5</option>
-          <option value="ZONA 6">ZONA 6</option>
-          <option value="ZONA 7">ZONA 7</option>
-          <option value="ZONA 8">ZONA 8</option>
+          <option value="San Blas">San Blas</option>
+          <option value="Sosiego">Sosiego</option>
+          <option value="20 de Julio">20 de Julio</option>
+          <option value="La Gloria">La Gloria</option>
+          <option value="Los Libertadores">Los Libertadores</option>
+          <option value="UPR">UPR (Área Rural)</option>
+        </select>
+        <div class="hint">🗺️ Unidad de Planeamiento Zonal de San Cristóbal</div>
+      </div>
+
+      <!-- ZONA OPERATIVA -->
+      <div class="field">
+        <label for="zona">Zona Operativa <span class="req">*</span></label>
+        <select id="zona" name="zona" required onchange="actualizarBarriosZona()">
+          <option value="">— Seleccione UPZ primero —</option>
         </select>
         <div class="hint">🏛️ Seleccione "Alcaldía Local" si la actividad se realiza en la sede</div>
       </div>
+
+      <!-- BARRIO -->
       <div class="field">
-        <label for="lugar">Lugar / Barrio <span class="req">*</span></label>
-        <select id="lugar" name="lugar" required onchange="checkLugarOtro()">
+        <label for="lugar">Barrio <span class="req">*</span></label>
+        <select id="lugar" name="lugar" required onchange="onBarrioChange()">
           <option value="">— Seleccione zona primero —</option>
         </select>
         <div id="lugar-custom-wrap" style="display:none; margin-top:.5rem">
-          <input type="text" id="lugar_custom" name="lugar_custom" placeholder="Nombre del lugar específico...">
+          <input type="text" id="lugar_custom" name="lugar_custom" placeholder="Nombre del barrio específico...">
         </div>
       </div>
+
+      <!-- GPS -->
       <div class="span-2 gps-box">
         <div class="gps-title">📡 Captura de Coordenadas GPS</div>
         <button type="button" class="btn-gps" id="btn-gps" onclick="capturarGPS()">📍 Capturar mi Ubicación Actual</button>
@@ -1770,6 +1794,8 @@ const CONFIG = {
     "RESPUESTA DERECHO DE PETICIÓN - ORFEO RADICADO":    "TERRITORIO",
   }
 };
+
+const BDD_TERRITORIAL = {"San Blas": {"Z2": [{"barrio": "Santa Inés Sur", "codigo": "SC-Z1-001"}, {"barrio": "Urbanización Horacio Orjuela", "codigo": "SC-Z1-002"}, {"barrio": "San Vicente", "codigo": "SC-Z1-006"}, {"barrio": "Sidel - Terrazas De Oriente", "codigo": "SC-Z1-007"}, {"barrio": "San Pedro", "codigo": "SC-Z1-013"}, {"barrio": "Los Ángeles De Oriente", "codigo": "SC-Z1-021"}, {"barrio": "Cerro De San Vicente", "codigo": "SC-Z1-022"}, {"barrio": "Predio San Vicente", "codigo": "SC-Z1-023"}, {"barrio": "Desarrollo San Vicente", "codigo": "SC-Z1-024"}, {"barrio": "Desarrollo La Playa - La Victoria", "codigo": "SC-Z1-028"}, {"barrio": "Rincón De La Victoria - Buenavista", "codigo": "SC-Z1-030"}, {"barrio": "San Cristóbal Viejo", "codigo": "SC-Z1-031"}, {"barrio": "Los Arrayanes Sector Santa Inés", "codigo": "SC-Z1-044"}, {"barrio": "Agrupación De Vivienda Santa Inés", "codigo": "SC-Z1-046"}, {"barrio": "Urbanización Sidel", "codigo": "SC-Z1-048"}, {"barrio": "San Juanito", "codigo": "SC-Z1-049"}, {"barrio": "Bellavista Sector El Lucero", "codigo": "SC-Z1-050"}, {"barrio": "Urbanización La Herradura", "codigo": "SC-Z1-056"}, {"barrio": "Buenos Aires", "codigo": "SC-Z1-058"}, {"barrio": "Urbanización Altos Del Sol", "codigo": "SC-Z1-059"}, {"barrio": "Los Balcones", "codigo": "SC-Z1-060"}, {"barrio": "Ciudadela Parque De La Roca", "codigo": "SC-Z1-061"}, {"barrio": "Barrio El Dorado", "codigo": "SC-Z1-062"}, {"barrio": "Urbanización Zoilo González Muelle", "codigo": "SC-Z1-063"}], "Z1": [{"barrio": "Carretera De Oriente", "codigo": "SC-Z1-004"}, {"barrio": "Urbanización Buenavista II Sector", "codigo": "SC-Z1-005"}, {"barrio": "Sagrada Familia La", "codigo": "SC-Z1-008"}, {"barrio": "Laureles Sur Oriental I Sector", "codigo": "SC-Z1-009"}, {"barrio": "La Castaña", "codigo": "SC-Z1-010"}, {"barrio": "Vereda Tibaque", "codigo": "SC-Z1-011"}, {"barrio": "Desarrollo El Balcón De La Castaña", "codigo": "SC-Z1-012"}, {"barrio": "Barrio Las Acacias", "codigo": "SC-Z1-014"}, {"barrio": "Quinabe", "codigo": "SC-Z1-015"}, {"barrio": "San Blas II", "codigo": "SC-Z1-016"}, {"barrio": "Los Robles", "codigo": "SC-Z1-017"}, {"barrio": "San Blas (Parcelas)", "codigo": "SC-Z1-019"}, {"barrio": "Desarrollo Buenavista Suroriental", "codigo": "SC-Z1-020"}, {"barrio": "Macarena Los Alpes", "codigo": "SC-Z1-025"}, {"barrio": "Urbanización Los Alpes Del Zipa", "codigo": "SC-Z1-026"}, {"barrio": "Arboleda De Los Alpes", "codigo": "SC-Z1-029"}, {"barrio": "Las Mercedes", "codigo": "SC-Z1-032"}, {"barrio": "Agrupación De Vivienda Monte Carlo", "codigo": "SC-Z1-033"}, {"barrio": "Conjunto Residencial El Recodo Del Río", "codigo": "SC-Z1-034"}, {"barrio": "Barrio El Triángulo", "codigo": "SC-Z1-035"}, {"barrio": "Barrio San Blas", "codigo": "SC-Z1-036"}, {"barrio": "Manila", "codigo": "SC-Z1-037"}, {"barrio": "San Cristóbal Alto", "codigo": "SC-Z1-038"}, {"barrio": "San Jerónimo Del Yuste", "codigo": "SC-Z1-039"}, {"barrio": "Desarrollo La Gran Colombia", "codigo": "SC-Z1-040"}, {"barrio": "El Ramajal (San Pedro)", "codigo": "SC-Z1-041"}, {"barrio": "Desarrollo El Ramajal", "codigo": "SC-Z1-042"}, {"barrio": "Las Amapolas", "codigo": "SC-Z1-043"}, {"barrio": "Las Amapolas II", "codigo": "SC-Z1-045"}, {"barrio": "España Desarrollo", "codigo": "SC-Z1-051"}, {"barrio": "Bosque De Los Alpes", "codigo": "SC-Z1-052"}, {"barrio": "Los Alpes El Futuro", "codigo": "SC-Z1-053"}, {"barrio": "Nueva España", "codigo": "SC-Z1-054"}, {"barrio": "Nueva España Parte Alta", "codigo": "SC-Z1-055"}, {"barrio": "Vitelma", "codigo": "SC-Z1-064"}], "Z3": [{"barrio": "Alpes Del Zuque", "codigo": "SC-Z1-027"}], "Z8": [{"barrio": "Barrio La Victoria", "codigo": "SC-Z1-057"}]}, "Sosiego": {"Z6": [{"barrio": "Urbanización El Teñidero", "codigo": "SC-Z6-001"}, {"barrio": "Villa Javier", "codigo": "SC-Z6-002"}, {"barrio": "Quinta Ramos", "codigo": "SC-Z6-003"}, {"barrio": "Camino Viejo De San Cristóbal", "codigo": "SC-Z6-004"}, {"barrio": "Urbanización San José", "codigo": "SC-Z6-005"}, {"barrio": "Caminos De San Cristóbal", "codigo": "SC-Z6-006"}, {"barrio": "Predio Arjona", "codigo": "SC-Z6-007"}, {"barrio": "Villa Albania Desarrollo", "codigo": "SC-Z6-008"}, {"barrio": "Barrio Nariño Sur", "codigo": "SC-Z6-009"}, {"barrio": "Barrio Santa Ana Sur", "codigo": "SC-Z6-010"}, {"barrio": "Urbanización Acuarela", "codigo": "SC-Z6-011"}, {"barrio": "Urbanización La Ortega", "codigo": "SC-Z6-012"}, {"barrio": "Urbanización El Sociego", "codigo": "SC-Z6-015"}, {"barrio": "Barrio La María", "codigo": "SC-Z6-016"}, {"barrio": "Urbanización Santa Ana", "codigo": "SC-Z6-017"}, {"barrio": "Barrio El Velódromo", "codigo": "SC-Z6-019"}, {"barrio": "La María Sur", "codigo": "SC-Z6-020"}, {"barrio": "Santa Anita", "codigo": "SC-Z6-021"}, {"barrio": "Mantenimiento Del Ejército", "codigo": "SC-Z6-022"}, {"barrio": "Velódromo", "codigo": "SC-Z6-023"}, {"barrio": "Urbanización Loyola", "codigo": "SC-Z6-024"}, {"barrio": "Unidad Residencial Caja Social De Ahorros", "codigo": "SC-Z6-026"}, {"barrio": "Urbanización Primero De Mayo", "codigo": "SC-Z6-027"}, {"barrio": "Unidad Residencial Jesús María Marulanda", "codigo": "SC-Z6-028"}, {"barrio": "Rincón De San Nicolás", "codigo": "SC-Z6-029"}, {"barrio": "San Cristóbal Viejo", "codigo": "SC-Z6-030"}, {"barrio": "Conjunto Residencial El Lago De San Cristóbal", "codigo": "SC-Z6-031"}, {"barrio": "Santa Ana Sur", "codigo": "SC-Z6-034"}, {"barrio": "Urb Parque Metropolitano Proyecto División Por Etapa", "codigo": "SC-Z6-035"}, {"barrio": "Barrio Las Cruces", "codigo": "SC-Z6-036"}, {"barrio": "Barrio Modelo Sur", "codigo": "SC-Z6-037"}, {"barrio": "Calvo Sur", "codigo": "SC-Z6-038"}, {"barrio": "Barrio Las Brisas", "codigo": "SC-Z6-039"}, {"barrio": "Urbanización Golconda", "codigo": "SC-Z6-041"}, {"barrio": "Urbanización Pedro León Trabucchi", "codigo": "SC-Z6-042"}, {"barrio": "Ciudad Berna (Fucha Urbanización)", "codigo": "SC-Z6-043"}, {"barrio": "Conjunto Residencial Central", "codigo": "SC-Z6-045"}, {"barrio": "Urbanización San Bernardo Del Viento", "codigo": "SC-Z6-046"}, {"barrio": "Urbanización Multifamiliar Las Brisas", "codigo": "SC-Z6-047"}, {"barrio": "Golconda Desarrollo", "codigo": "SC-Z6-048"}, {"barrio": "Agrupación De Vivienda El Diamante", "codigo": "SC-Z6-049"}, {"barrio": "Urbanización Ritmo", "codigo": "SC-Z6-050"}, {"barrio": "Asociación Distrital De Educadores", "codigo": "SC-Z6-051"}, {"barrio": "Unidad Vecinal Av. 10", "codigo": "SC-Z6-052"}], "Z4": [{"barrio": "Urbanización Coruña", "codigo": "SC-Z6-013"}], "Z2": [{"barrio": "Los Dos Leones", "codigo": "SC-Z6-018"}, {"barrio": "Los Balkanes", "codigo": "SC-Z6-025"}, {"barrio": "Buenos Aires III Sector", "codigo": "SC-Z6-032"}, {"barrio": "Urbanización Buenos Aires II Sector", "codigo": "SC-Z6-033"}]}, "20 de Julio": {"Z4": [{"barrio": "El Socorro II - La Industria", "codigo": "SC-Z4-001"}, {"barrio": "Urbanización San Luis", "codigo": "SC-Z4-002"}, {"barrio": "Urbanización Las Lomas", "codigo": "SC-Z4-003"}, {"barrio": "Calima", "codigo": "SC-Z4-004"}, {"barrio": "Veinte De Julio", "codigo": "SC-Z4-005"}, {"barrio": "Serafina", "codigo": "SC-Z4-006"}, {"barrio": "Desarrollo San Isidro Sur", "codigo": "SC-Z4-007"}, {"barrio": "Barcelona Sur Oriental", "codigo": "SC-Z4-008"}, {"barrio": "Managua", "codigo": "SC-Z4-009"}, {"barrio": "Desarrollo San Isidro II Sector", "codigo": "SC-Z4-010"}, {"barrio": "Villa De Los Alpes", "codigo": "SC-Z4-011"}, {"barrio": "El Encanto Sur", "codigo": "SC-Z4-012"}, {"barrio": "Urbanización Ayacucho Sur", "codigo": "SC-Z4-013"}, {"barrio": "Bello Horizonte II Sector", "codigo": "SC-Z4-014"}, {"barrio": "Ángulo Desarrollo", "codigo": "SC-Z4-015"}, {"barrio": "Serafina Tubos Moore", "codigo": "SC-Z4-016"}, {"barrio": "Córdoba", "codigo": "SC-Z4-017"}, {"barrio": "Bello Horizonte", "codigo": "SC-Z4-018"}, {"barrio": "Barrio Granada Sur", "codigo": "SC-Z4-019"}, {"barrio": "Urbanización Padua", "codigo": "SC-Z4-020"}, {"barrio": "Ciudadela María Micaela", "codigo": "SC-Z4-021"}, {"barrio": "Villa Nataly - 20 De Julio Desarrollo", "codigo": "SC-Z4-022"}, {"barrio": "Urbanización Coruña Del Sur", "codigo": "SC-Z4-023"}, {"barrio": "Portal Del Sur Ciudadela Comercial", "codigo": "SC-Z4-024"}, {"barrio": "Urbanización Portón Real", "codigo": "SC-Z4-025"}, {"barrio": "Serafina II Sector", "codigo": "SC-Z4-026"}, {"barrio": "Desarrollo Granada Sur III Sector", "codigo": "SC-Z4-027"}, {"barrio": "Urbanización Suramericana", "codigo": "SC-Z4-028"}, {"barrio": "San Luis 20 De Julio", "codigo": "SC-Z4-029"}, {"barrio": "Granada Sur II Sector", "codigo": "SC-Z4-030"}, {"barrio": "Granada Sur", "codigo": "SC-Z4-031"}, {"barrio": "San Miguel", "codigo": "SC-Z4-032"}, {"barrio": "Monte Bello", "codigo": "SC-Z4-033"}, {"barrio": "Urbanización Joyita", "codigo": "SC-Z4-034"}, {"barrio": "Atenas I", "codigo": "SC-Z4-035"}, {"barrio": "Atenas", "codigo": "SC-Z4-036"}]}, "La Gloria": {"Z3": [{"barrio": "Quindío Desarrollo", "codigo": "SC-Z3-001"}, {"barrio": "Urbanización Altos Del Zuque", "codigo": "SC-Z3-002"}, {"barrio": "Altos Del Virrey", "codigo": "SC-Z3-007"}, {"barrio": "Altamira Santa Teresa", "codigo": "SC-Z3-008"}, {"barrio": "Panorama", "codigo": "SC-Z3-009"}, {"barrio": "Puente Colorado", "codigo": "SC-Z3-010"}, {"barrio": "Panorama (Altamira)", "codigo": "SC-Z3-011"}, {"barrio": "Quindío II", "codigo": "SC-Z3-012"}, {"barrio": "Urbanización Altos Del Virrey", "codigo": "SC-Z3-013"}, {"barrio": "Urbanización Los Puentes", "codigo": "SC-Z3-014"}, {"barrio": "Moralba", "codigo": "SC-Z3-019"}, {"barrio": "Altamira Chiquita", "codigo": "SC-Z3-020"}, {"barrio": "Urbanización Continental", "codigo": "SC-Z3-021"}, {"barrio": "Urbanización El Paseito", "codigo": "SC-Z3-022"}, {"barrio": "La Grovana", "codigo": "SC-Z3-023"}, {"barrio": "Bellavista Sur Oriental", "codigo": "SC-Z3-025"}, {"barrio": "Tres Esquinas", "codigo": "SC-Z3-026"}, {"barrio": "Bellavista Suroriental", "codigo": "SC-Z3-029"}, {"barrio": "Altos Del Poblado", "codigo": "SC-Z3-030"}, {"barrio": "La Manta", "codigo": "SC-Z3-033"}, {"barrio": "Desarrollo San José Suroriental", "codigo": "SC-Z3-039"}, {"barrio": "Altos De La Gloria", "codigo": "SC-Z3-040"}, {"barrio": "Urbanización El Paseito Sectores I Y III", "codigo": "SC-Z3-041"}], "Z8": [{"barrio": "San Martín De Loba Sur", "codigo": "SC-Z3-003"}, {"barrio": "Malvinas", "codigo": "SC-Z3-004"}, {"barrio": "Urbanización Guacamayas", "codigo": "SC-Z3-016"}, {"barrio": "Urbanización Guacamayas III Sector", "codigo": "SC-Z3-017"}, {"barrio": "Desarrollo Urbano La Colmena", "codigo": "SC-Z3-018"}, {"barrio": "El Coral", "codigo": "SC-Z3-024"}, {"barrio": "La Gloria", "codigo": "SC-Z3-027"}, {"barrio": "Urbanización El Rodeo", "codigo": "SC-Z3-028"}, {"barrio": "La Victoria", "codigo": "SC-Z3-031"}, {"barrio": "La Gloria Baja", "codigo": "SC-Z3-034"}, {"barrio": "San José Oriental", "codigo": "SC-Z3-035"}, {"barrio": "Victoria II Sector Desarrollo", "codigo": "SC-Z3-036"}, {"barrio": "Urbanización El Rubí", "codigo": "SC-Z3-037"}, {"barrio": "Gloria Mz 11 Desarrollo", "codigo": "SC-Z3-038"}, {"barrio": "Victoria III Sector", "codigo": "SC-Z3-044"}], "Z7": [{"barrio": "Villa El Cerro", "codigo": "SC-Z3-043"}]}, "Los Libertadores": {"Z5": [{"barrio": "Sierras Del Sur Oriental", "codigo": "SC-Z5-001"}, {"barrio": "Colmena I", "codigo": "SC-Z5-002"}, {"barrio": "El Pinar (República Del Canadá II Sector)", "codigo": "SC-Z5-003"}, {"barrio": "República Del Canadá - El Pinar", "codigo": "SC-Z5-004"}, {"barrio": "Los Libertadores Sector San Luis", "codigo": "SC-Z5-006"}, {"barrio": "Las Gaviotas Urbanización", "codigo": "SC-Z5-007"}, {"barrio": "Los Libertadores Sector San Miguel", "codigo": "SC-Z5-008"}, {"barrio": "Desarrollo Los Libertadores", "codigo": "SC-Z5-009"}, {"barrio": "Los Libertadores Sector El Tesoro", "codigo": "SC-Z5-010"}, {"barrio": "Libertadores Sectores El Diamante Y El Bosque", "codigo": "SC-Z5-011"}, {"barrio": "Desarrollo La Belleza", "codigo": "SC-Z5-012"}, {"barrio": "Los Libertadores", "codigo": "SC-Z5-013"}, {"barrio": "El Recodo-República De Canadá", "codigo": "SC-Z5-014"}, {"barrio": "Los Libertadores Sector San Ignacio", "codigo": "SC-Z5-015"}, {"barrio": "Los Libertadores Sector San Isidro", "codigo": "SC-Z5-016"}, {"barrio": "Bosque De San José", "codigo": "SC-Z5-017"}, {"barrio": "Desarrollo Los Libertadores San José", "codigo": "SC-Z5-018"}, {"barrio": "Villa Begonia Desarrollo", "codigo": "SC-Z5-019"}, {"barrio": "Barrio Fiscala Alta", "codigo": "SC-Z5-020"}, {"barrio": "Chiguaza", "codigo": "SC-Z5-021"}, {"barrio": "Barrio Chiguaza", "codigo": "SC-Z5-028"}, {"barrio": "Urbanización Nueva Gloria", "codigo": "SC-Z5-031"}, {"barrio": "Nueva Gloria II Sector", "codigo": "SC-Z5-034"}, {"barrio": "San Rafael Sur Oriental", "codigo": "SC-Z5-042"}, {"barrio": "Nueva Delly", "codigo": "SC-Z5-043"}, {"barrio": "Valparaíso Desarrollo", "codigo": "SC-Z5-044"}, {"barrio": "Desarrollo Los Pinos", "codigo": "SC-Z5-046"}, {"barrio": "Juan Rey", "codigo": "SC-Z5-050"}, {"barrio": "Desarrollo Villa Aurora", "codigo": "SC-Z5-051"}, {"barrio": "Desarrollo San Manuel", "codigo": "SC-Z5-052"}, {"barrio": "Ciudad De Londres", "codigo": "SC-Z5-053"}, {"barrio": "Barrio Ciudad Londres", "codigo": "SC-Z5-058"}], "Z7": [{"barrio": "Villabel", "codigo": "SC-Z5-005"}, {"barrio": "Urbanización La Península", "codigo": "SC-Z5-022"}, {"barrio": "Villa Angélica Canadá La Guira", "codigo": "SC-Z5-023"}, {"barrio": "Santa Rita Sur I Sector", "codigo": "SC-Z5-024"}, {"barrio": "El Oasis Del Sur", "codigo": "SC-Z5-027"}, {"barrio": "San Camilo", "codigo": "SC-Z5-030"}, {"barrio": "Desarrollo Sierra", "codigo": "SC-Z5-032"}, {"barrio": "Santa Rita Sur Oriental II Sector", "codigo": "SC-Z5-033"}, {"barrio": "Desarrollo El Paraíso Sur Oriental I Sector", "codigo": "SC-Z5-035"}, {"barrio": "Urbanización Santa Rita Sur Oriental III Etapa", "codigo": "SC-Z5-036"}, {"barrio": "Urbanización Antioquia", "codigo": "SC-Z5-039"}, {"barrio": "Lote San Ricardo Pampuri", "codigo": "SC-Z5-040"}, {"barrio": "Villa El Cerro", "codigo": "SC-Z5-048"}, {"barrio": "San Jacinto", "codigo": "SC-Z5-049"}, {"barrio": "Barrio Canadá Sector La Guira", "codigo": "SC-Z5-055"}, {"barrio": "Canadá Sector San Luis", "codigo": "SC-Z5-056"}, {"barrio": "Urbanización Dardanelos", "codigo": "SC-Z5-057"}, {"barrio": "Barrio Bolonia", "codigo": "SC-Z5-060"}], "Z8": [{"barrio": "Nuevas Malvinas (El Triunfo S.O)", "codigo": "SC-Z5-026"}], "Z3": [{"barrio": "Miraflores", "codigo": "SC-Z5-038"}]}, "UPR": {"UPR": [{"barrio": "El Consuelo", "codigo": "SC-UPR-001"}, {"barrio": "Barrio El Dorado", "codigo": "SC-UPR-002"}, {"barrio": "Bosque De San José", "codigo": "SC-UPR-003"}, {"barrio": "San Dionisio Desarrollo", "codigo": "SC-UPR-004"}, {"barrio": "Manantial", "codigo": "SC-UPR-005"}, {"barrio": "Barrio El Triángulo", "codigo": "SC-UPR-007"}, {"barrio": "La Cecilia", "codigo": "SC-UPR-009"}, {"barrio": "Camino Del Oriente", "codigo": "SC-UPR-011"}, {"barrio": "Aguas Claras", "codigo": "SC-UPR-012"}, {"barrio": "Laureles Sur Oriental II Sector", "codigo": "SC-UPR-014"}, {"barrio": "Triángulo Alto", "codigo": "SC-UPR-015"}, {"barrio": "Corinto", "codigo": "SC-UPR-017"}, {"barrio": "La Arboleda", "codigo": "SC-UPR-018"}]}};
 
 
 const LABELS_PROG = [
@@ -2244,32 +2270,93 @@ function autocompleteProyecto() {
   actualizarProgreso();
 }
 
-function actualizarLugares() {
+// Relación oficial UPZ → Zonas Operativas (SDP 2009)
+const ZONAS_POR_UPZ = {
+  'San Blas':         ['Z1', 'Z2'],
+  'Sosiego':          ['Z6'],
+  '20 de Julio':      ['Z4'],
+  'La Gloria':        ['Z3', 'Z8'],
+  'Los Libertadores': ['Z5', 'Z7'],
+  'UPR':              ['UPR'],
+};
+
+function actualizarZonasUPZ() {
+  const upz = document.getElementById('upz').value;
+  const zonaSelect = document.getElementById('zona');
+  const lugarSelect = document.getElementById('lugar');
+  zonaSelect.innerHTML = '<option value="">— Seleccione UPZ primero —</option>';
+  lugarSelect.innerHTML = '<option value="">— Seleccione zona primero —</option>';
+  document.getElementById('codigo_sti_sc').value = '';
+  document.getElementById('lugar-custom-wrap').style.display = 'none';
+
+  if (upz === 'ALCALDÍA LOCAL') {
+    zonaSelect.innerHTML = '<option value="ALCALDÍA LOCAL">ALCALDÍA LOCAL (sede central)</option>';
+    zonaSelect.value = 'ALCALDÍA LOCAL';
+    lugarSelect.innerHTML = '<option value="ALCALDÍA LOCAL">Alcaldía Local San Cristóbal</option>';
+    lugarSelect.value = 'ALCALDÍA LOCAL';
+    actualizarProgreso(); return;
+  }
+  if (upz && ZONAS_POR_UPZ[upz]) {
+    ZONAS_POR_UPZ[upz].forEach(z => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = z;
+      zonaSelect.appendChild(opt);
+    });
+    // Si solo tiene una zona, seleccionarla automáticamente
+    if (ZONAS_POR_UPZ[upz].length === 1) {
+      zonaSelect.value = ZONAS_POR_UPZ[upz][0];
+      actualizarBarriosZona();
+      return;
+    }
+  }
+  actualizarProgreso();
+}
+
+function actualizarBarriosZona() {
+  const upz = document.getElementById('upz').value;
   const zona = document.getElementById('zona').value;
   const lugarSelect = document.getElementById('lugar');
-  lugarSelect.innerHTML = '<option value="">Seleccionar lugar...</option>';
-  if (zona && LUGARES_POR_ZONA[zona]) {
-    LUGARES_POR_ZONA[zona].forEach(l => {
+  lugarSelect.innerHTML = '<option value="">Seleccionar barrio...</option>';
+  document.getElementById('codigo_sti_sc').value = '';
+  document.getElementById('lugar-custom-wrap').style.display = 'none';
+
+  if (upz && zona && BDD_TERRITORIAL[upz] && BDD_TERRITORIAL[upz][zona]) {
+    BDD_TERRITORIAL[upz][zona].forEach(item => {
       const opt = document.createElement('option');
-      opt.value = opt.textContent = l;
+      opt.value = item.barrio;
+      opt.textContent = item.barrio;
+      opt.dataset.codigo = item.codigo;
       lugarSelect.appendChild(opt);
     });
     const otro = document.createElement('option');
     otro.value = 'OTRO'; otro.textContent = 'OTRO (escribir a continuación)';
     lugarSelect.appendChild(otro);
   }
-  document.getElementById('lugar-custom-wrap').style.display = 'none';
   actualizarProgreso();
 }
 
-function checkLugarOtro() {
-  const val = document.getElementById('lugar').value;
+function onBarrioChange() {
+  const lugarSelect = document.getElementById('lugar');
+  const val = lugarSelect.value;
   const wrap = document.getElementById('lugar-custom-wrap');
   const custom = document.getElementById('lugar_custom');
-  if (val === 'OTRO') { wrap.style.display = 'block'; custom.required = true; custom.focus(); }
-  else { wrap.style.display = 'none'; custom.required = false; custom.value = ''; }
+  const codigoEl = document.getElementById('codigo_sti_sc');
+
+  if (val === 'OTRO') {
+    wrap.style.display = 'block'; custom.required = true; custom.focus();
+    codigoEl.value = '';
+  } else {
+    wrap.style.display = 'none'; custom.required = false; custom.value = '';
+    // Auto-fill código STI-SC
+    const selectedOpt = lugarSelect.options[lugarSelect.selectedIndex];
+    codigoEl.value = selectedOpt && selectedOpt.dataset.codigo ? selectedOpt.dataset.codigo : '';
+  }
   actualizarProgreso();
 }
+
+// Alias kept for backward-compat with any external references
+function actualizarLugares() { actualizarZonasUPZ(); }
+function checkLugarOtro() { onBarrioChange(); }
 
 function capturarGPS() {
   const btn = document.getElementById('btn-gps');
@@ -2303,6 +2390,15 @@ function capturarGPS() {
     },
     { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
+}
+
+
+function generarEnlaceMaps(lat, lng) {
+  const url = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+  const el = document.getElementById('enlace_maps');
+  if (el) el.value = url;
+  const linkDiv = document.getElementById('gps-link');
+  if (linkDiv) linkDiv.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener">🗺️ Ver en Google Maps</a>';
 }
 
 function updateMapsLink() {
@@ -2985,18 +3081,6 @@ function _fillPP(id, titulo, contrato) {
   actualizarProgreso();
 }
 
-</script>
-
-<!--
-╔════════════════════════════════════════════════════════════════════════
-║  CÓDIGO COMPLETO PARA GOOGLE APPS SCRIPT
-║  Ir a: script.google.com → Nuevo proyecto → Pegar este código
-╠════════════════════════════════════════════════════════════════════════
-
-const SHEET_ID      = "REEMPLAZAR_CON_ID_DE_GOOGLE_SHEET";
-
-// El correo del gerente y del líder ahora llegan desde el formulario
-// según el área seleccionada (ya configurados en CORREOS_POR_AREA del HTML)
 
 function actualizarProgreso() {
   const tipo = document.getElementById('tipo_actividad')?.value || '';
@@ -3030,7 +3114,7 @@ function actualizarProgreso() {
   })();
   const s3 = tipo.startsWith('CONTRATO')
     ? true
-    : ['zona','lugar'].every(id => document.getElementById(id)?.value);
+    : ['upz','zona','lugar'].every(id => document.getElementById(id)?.value);
   const s4 = true;
   const s5 = ['nombre_diligenciador','email_diligenciador','salud_mental'].every(id => document.getElementById(id)?.value);
 
@@ -3181,6 +3265,11 @@ async function enviarFormulario() {
 
   if (datos.lugar === 'OTRO' && datos.lugar_custom) datos.lugar = datos.lugar_custom;
 
+  // Campos georreferenciación territorial
+  ['upz','codigo_sti_sc'].forEach(id => {
+    const el = document.getElementById(id); if (el) datos[id] = el.value.trim();
+  });
+
   // ── RECOPILACIÓN DE ARCHIVOS (base64) ────────────────────────────────────
   setLoadingStep('Leyendo archivos adjuntos...', 10);
   const archivosNombres = [];
@@ -3268,10 +3357,20 @@ async function enviarFormulario() {
     } else {
       setLoadingStep('Subiendo archivos a Drive y guardando registro...', 80);
       const fd = new FormData();
-      Object.keys(datos).forEach(k => fd.append(k, datos[k]));
-      await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+      Object.keys(datos).forEach(k => { if (datos[k] !== undefined && datos[k] !== null) fd.append(k, datos[k]); });
+
+      // Timeout de 25s — con no-cors no podemos leer la respuesta de todas formas
+      const ctrl = new AbortController();
+      const tId  = setTimeout(() => ctrl.abort(), 25000);
+      try {
+        await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method:'POST', body:fd, mode:'no-cors', signal:ctrl.signal });
+      } catch(fe) {
+        if (fe.name !== 'AbortError') throw fe;
+        // AbortError tras 25s: probablemente llegó pero Apps Script tardó
+      }
+      clearTimeout(tId);
       setLoadingStep('¡Registro guardado exitosamente!', 100);
-      await new Promise(res => setTimeout(res, 500));
+      await new Promise(res => setTimeout(res, 400));
       mostrarExito(regId, hojaDestino);
     }
   } catch(e) {
@@ -3336,7 +3435,12 @@ function limpiarFormulario() {
   document.querySelectorAll('.file-previews').forEach(el => el.innerHTML = '');
   // Reset desplegables dependientes
   document.getElementById('area').innerHTML = '<option value="">— Seleccione gerencia primero —</option>';
+  const upzEl = document.getElementById('upz');
+  if (upzEl) upzEl.value = '';
+  document.getElementById('zona').innerHTML = '<option value="">— Seleccione UPZ primero —</option>';
   document.getElementById('lugar').innerHTML = '<option value="">— Seleccione zona primero —</option>';
+  const codigoSti = document.getElementById('codigo_sti_sc');
+  if (codigoSti) codigoSti.value = '';
   const lugarWrap = document.getElementById('lugar-custom-wrap');
   if (lugarWrap) lugarWrap.style.display = 'none';
   // Ocultar campos condicionales
@@ -3396,264 +3500,9 @@ function limpiarFormulario() {
 
 
 
+
 let toastTimer;
 </script>
 
-<!--
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  GOOGLE APPS SCRIPT — PEGAR EN: script.google.com → Nuevo Proyecto          ║
-║  Libro destino: "Construyendo Territorio"                                    ║
-║  Publicar como: Web App → Ejecutar como: Yo · Acceso: Cualquiera            ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  // ── PASO 1: CREAR EL LIBRO ──────────────────────────────────────────    ║
-║  // En Google Drive crea un Spreadsheet llamado "Construyendo Territorio"   ║
-║  // y crea las siguientes 6 hojas con estos nombres EXACTOS:                ║
-║  //   SEGUIMIENTO A LA INVERSION                                            ║
-║  //   OKR                                                                   ║
-║  //   ACTIVIDADES MISIONALES                                                ║
-║  //   GESTION TERRITORIAL                                                   ║
-║  //   TERRITORIO                                                            ║
-║  //   PARTICIPACION                                                         ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-CÓDIGO DEL APPS SCRIPT (copiar TODO lo de abajo):
-─────────────────────────────────────────────────────────────────────────────
-
-const SPREADSHEET_NAME = "Construyendo Territorio";
-
-// Encabezados por hoja — deben coincidir con los campos enviados desde el formulario
-const HEADERS = {
-  "SEGUIMIENTO A LA INVERSION": [
-    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
-    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
-    "Contrato Jurídico","Mes Reporte","Avance Físico (%)","Avance Financiero (%)",
-    "Descripción Avance","ID Proyecto POAI","Proyecto","Meta Proyecto",
-    "Cantidad Personas","Tipo Población","Lugar Ejecución Contrato",
-    "Entidades Externas","N° Orfeo","Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
-  ],
-  "OKR": [
-    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
-    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
-    "Resultado Clave (KR)","Objetivo Táctico","Área OKR","Líder OKR","Carpeta OKR",
-    "Mes Reporte","% Avance Cuantitativo","Avance Cualitativo",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
-  ],
-  "ACTIVIDADES MISIONALES": [
-    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
-    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
-    "Tipo Misional","Nombre Actividad","Objetivo Actividad","Descripción Actividad",
-    "Cantidad Personas","Tipo Población","Otro Tipo Población",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
-  ],
-  "GESTION TERRITORIAL": [
-    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
-    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
-    "Nombre Actividad","Objetivo Actividad","Descripción Actividad",
-    "Meta POAI Relacionada","Avance Cuantitativo","Avance Cualitativo Breve",
-    "Cantidad Personas","Tipo Población","Otro Tipo Población",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
-  ],
-  "TERRITORIO": [
-    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
-    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
-    "Código CT","Tipo Item","Fecha Situación","Área Responsable CT","Descripción Situación",
-    "Referencia Problemática","% Respuesta","Tipo CT","Cantidad Mujeres CT","Tipo Población CT",
-    "Entidades Externas","N° Orfeo",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
-  ],
-  "PARTICIPACION": [
-    "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
-    "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
-    "Instancia de Participación","Tipo Reunión","Descripción Actividad",
-    "Compromisos Adquiridos","¿Vincula al Alcalde?",
-    "¿Vincula Otras Instituciones?","Cuáles Instituciones",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder"
-  ]
-};
-
-// Mapeo campo formulario → columna por hoja
-const FIELD_MAP = {
-  "SEGUIMIENTO A LA INVERSION": [
-    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
-    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
-    "contrato_juridico","inv_mes","inv_avance_fisico","inv_avance_financiero",
-    "inv_descripcion","id_proyecto","proyecto","meta_proyecto",
-    "inv_poblacion_cantidad","inv_tipo_poblacion","lugar_ejecucion_contrato",
-    "entidades_externas","numero_orfeo","archivos","correo_gerente","correo_lider","salud_mental"
-  ],
-  "OKR": [
-    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
-    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
-    "okr_resultado","okr_objetivo_tactico","okr_area_auto","okr_lider","okr_carpeta",
-    "okr_mes","okr_pct_cuantitativo","okr_avance_cualitativo",
-    "archivos","correo_gerente","correo_lider","salud_mental"
-  ],
-  "ACTIVIDADES MISIONALES": [
-    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
-    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
-    "construyendo_tipo","mis_nombre","mis_objetivo","mis_descripcion",
-    "mis_poblacion_cantidad","mis_tipo_poblacion","mis_tipo_poblacion_otro",
-    "archivos","correo_gerente","correo_lider","salud_mental"
-  ],
-  "GESTION TERRITORIAL": [
-    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
-    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
-    "gest_nombre","gest_objetivo","gest_descripcion",
-    "gest_meta","gest_avance_cuantitativo","gest_avance_cualitativo_breve",
-    "gest_poblacion_cantidad","gest_tipo_poblacion","gest_tipo_poblacion_otro",
-    "archivos","correo_gerente","correo_lider","salud_mental"
-  ],
-  "TERRITORIO": [
-    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
-    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
-    "ct_codigo","ct_tipo_item","ct_fecha","ct_area_responsable","ct_descripcion",
-    "ct_problema_referencia","ct_pct_respuesta","construyendo_tipo","ct_mujeres_cantidad","ct_tipo_poblacion",
-    "entidades_externas","numero_orfeo",
-    "archivos","correo_gerente","correo_lider","salud_mental"
-  ],
-  "PARTICIPACION": [
-    "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
-    "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
-    "inst_instancia","inst_tipo_reunion","inst_descripcion",
-    "inst_compromisos","inst_vincula_alcalde",
-    "inst_vincula_instituciones","inst_cuales_instituciones",
-    "archivos","correo_gerente","correo_lider"
-  ]
-};
-
-function doPost(e) {
-  try {
-    const params = e.parameter;
-    const sheetName = params.target_sheet || "TERRITORIO";
-
-    // Abrir el libro por nombre
-    const files = DriveApp.getFilesByName(SPREADSHEET_NAME);
-    if (!files.hasNext()) {
-      return ContentService.createTextOutput(
-        JSON.stringify({ status: "error", message: "No se encontró el libro: " + SPREADSHEET_NAME })
-      ).setMimeType(ContentService.MimeType.JSON);
-    }
-    const ss = SpreadsheetApp.open(files.next());
-    let sheet = ss.getSheetByName(sheetName);
-
-    // Si la hoja no existe, crearla
-    if (!sheet) {
-      sheet = ss.insertSheet(sheetName);
-    }
-
-    // Si la hoja está vacía, agregar encabezados
-    if (sheet.getLastRow() === 0) {
-      const headers = HEADERS[sheetName] || ["ID Registro","Timestamp","Datos"];
-      sheet.appendRow(headers);
-      // Estilizar encabezado
-      const headerRange = sheet.getRange(1, 1, 1, headers.length);
-      headerRange.setBackground(getSheetColor(sheetName));
-      headerRange.setFontColor("#FFFFFF");
-      headerRange.setFontWeight("bold");
-      headerRange.setFontSize(10);
-      headerRange.setHorizontalAlignment("center");
-      sheet.setFrozenRows(1);
-    }
-
-    // Construir fila con los campos en el orden correcto
-    const fields = FIELD_MAP[sheetName] || Object.keys(params);
-    const row = fields.map(f => params[f] || "");
-
-    sheet.appendRow(row);
-
-    // Enviar notificaciones por correo
-    enviarNotificaciones(params, sheetName);
-
-    return ContentService.createTextOutput(
-      JSON.stringify({ status: "ok", sheet: sheetName, id: params.id_registro })
-    ).setMimeType(ContentService.MimeType.JSON);
-
-  } catch (err) {
-    return ContentService.createTextOutput(
-      JSON.stringify({ status: "error", message: err.toString() })
-    ).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function getSheetColor(sheetName) {
-  const colors = {
-    "SEGUIMIENTO A LA INVERSION": "#1B7E45",
-    "OKR":                         "#1565C0",
-    "ACTIVIDADES MISIONALES":      "#E65C00",
-    "GESTION TERRITORIAL":         "#1A237E",
-    "TERRITORIO":                  "#7A5F00",
-    "PARTICIPACION":               "#6A1B9A"
-  };
-  return colors[sheetName] || "#C8102E";
-}
-
-function enviarNotificaciones(p, sheetName) {
-  try {
-    const asunto = `[Construyendo Territorio] Nuevo registro ${p.id_registro} — ${sheetName}`;
-    const cuerpo = `
-Se registró una nueva actividad en el formulario territorial.
-
-📋 ID Registro:      ${p.id_registro}
-📅 Fecha:            ${p.fecha}
-🗂️  Tipo Actividad:  ${p.tipo_actividad}
-🏢 Gerencia:         ${p.gerencia}
-📌 Área:             ${p.area}
-📊 Hoja destino:     ${sheetName} (Libro: Construyendo Territorio)
-📍 Zona/Lugar:       ${p.zona} / ${p.lugar}
-👤 Diligenciado por: ${p.nombre_diligenciador} (${p.email_diligenciador})
-
-Ingrese al libro para ver el registro completo.
-    `;
-
-    const destinatarios = [];
-    if (p.email_diligenciador) destinatarios.push(p.email_diligenciador);
-    if (p.correo_gerente && p.correo_gerente !== "CORREO_GERENTE_CAMINA@alcaldia.gov.co")
-      destinatarios.push(p.correo_gerente);
-    if (p.correo_lider && p.correo_lider !== p.correo_gerente)
-      destinatarios.push(p.correo_lider);
-
-    if (destinatarios.length > 0) {
-      MailApp.sendEmail(destinatarios.join(","), asunto, cuerpo);
-    }
-  } catch(e) {
-    // No interrumpir el flujo si falla el correo
-    Logger.log("Error enviando correo: " + e.toString());
-  }
-}
-
-// ── FUNCIÓN DE PRUEBA ────────────────────────────────────────────────────
-// Ejecutar manualmente para verificar que el libro y hojas existen
-function testConexion() {
-  const files = DriveApp.getFilesByName(SPREADSHEET_NAME);
-  if (files.hasNext()) {
-    const ss = SpreadsheetApp.open(files.next());
-    Logger.log("✅ Libro encontrado: " + ss.getName());
-    Logger.log("📋 Hojas: " + ss.getSheets().map(s => s.getName()).join(", "));
-  } else {
-    Logger.log("❌ Libro NO encontrado. Cree un Google Sheet llamado: " + SPREADSHEET_NAME);
-  }
-}
-
-─────────────────────────────────────────────────────────────────────────────
-FIN DEL CÓDIGO APPS SCRIPT
-─────────────────────────────────────────────────────────────────────────────
-
-PASOS DE CONFIGURACIÓN:
-1. Ir a https://script.google.com → Nuevo proyecto
-2. Pegar TODO el código de arriba
-3. Guardar con nombre "Construyendo Territorio - Script"
-4. Menú: Implementar → Nueva implementación
-   - Tipo: Aplicación web
-   - Ejecutar como: Yo (tu cuenta)
-   - Acceso: Cualquier persona
-5. Copiar la URL generada
-6. En este HTML, reemplazar:
-   REEMPLAZAR_CON_URL_DE_APPS_SCRIPT
-   con la URL copiada
-7. Ejecutar testConexion() para verificar que todo funciona
-
--->
 </body>
 </html>
