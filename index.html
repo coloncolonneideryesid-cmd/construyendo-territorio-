@@ -203,7 +203,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
 ::-webkit-scrollbar-thumb { background: var(--gris-3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--rojo); }
 </style>
-</style>
 </head>
 <body>
 
@@ -3261,19 +3260,15 @@ async function enviarFormulario() {
   // ────────────────────────────────────────────────────────────────
 
   try {
-    if (CONFIG.GOOGLE_APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxQvhOrKkebCpxzNIcKHrykO-8DQg5FGrnKG4h91u9a-Y_Me6vrBbN9b0WJn7hf/exec") {
-      console.table({ ...datos, target_sheet: hojaDestino });
-      await new Promise(res => setTimeout(res, 1500));
-      mostrarExito(regId, hojaDestino);
-    } else {
-      setLoadingStep('Subiendo archivos a Drive y guardando registro...', 80);
-      const fd = new FormData();
-      Object.keys(datos).forEach(k => fd.append(k, datos[k]));
-      await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
-      setLoadingStep('¡Registro guardado exitosamente!', 100);
-      await new Promise(res => setTimeout(res, 500));
-      mostrarExito(regId, hojaDestino);
-    }
+    setLoadingStep('Subiendo archivos a Drive y guardando registro...', 80);
+    const fd = new FormData();
+    Object.keys(datos).forEach(k => {
+      if (datos[k] !== undefined && datos[k] !== null) fd.append(k, datos[k]);
+    });
+    await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    setLoadingStep('¡Registro guardado exitosamente!', 100);
+    await new Promise(res => setTimeout(res, 500));
+    mostrarExito(regId, hojaDestino);
   } catch(e) {
     document.getElementById('loading').classList.remove('show');
     document.getElementById('btn-submit').disabled = false;
@@ -3395,6 +3390,62 @@ function limpiarFormulario() {
 
 
 
+
+/* ── GPS ─────────────────────────────────────────────────────────────── */
+function capturarGPS() {
+  const btn    = document.getElementById('btn-gps');
+  const status = document.getElementById('gps-status');
+  const coordEl= document.getElementById('coordenadas');
+
+  if (!navigator.geolocation) {
+    status.className = 'gps-status error';
+    status.innerHTML = '❌ Tu navegador no soporta geolocalización. Ingresa las coordenadas manualmente.';
+    return;
+  }
+
+  btn.disabled = true;
+  status.className = 'gps-status loading';
+  status.innerHTML = '<span class="spinner"></span> Capturando ubicación GPS...';
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lng = pos.coords.longitude.toFixed(6);
+      const acc = Math.round(pos.coords.accuracy);
+      coordEl.value = lat + ', ' + lng;
+      updateMapsLink();
+      status.className = 'gps-status success';
+      status.innerHTML = '✅ Ubicación capturada · Precisión: ±' + acc + ' m';
+      btn.disabled = false;
+      actualizarProgreso();
+    },
+    function(err) {
+      btn.disabled = false;
+      status.className = 'gps-status error';
+      const msgs = {
+        1: '❌ Permiso denegado. Ingresa las coordenadas manualmente.',
+        2: '❌ No se pudo obtener la posición. Verifica tu GPS o conexión.',
+        3: '⏱️ Tiempo agotado. Intenta de nuevo o ingresa manualmente.'
+      };
+      status.innerHTML = msgs[err.code] || '❌ Error al capturar ubicación.';
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+function updateMapsLink() {
+  const val     = (document.getElementById('coordenadas').value || '').trim();
+  const linkDiv = document.getElementById('gps-link');
+  const hidden  = document.getElementById('enlace_maps');
+  if (!val || !val.includes(',')) { if (linkDiv) linkDiv.innerHTML = ''; return; }
+  const parts = val.split(',');
+  const lat   = parseFloat(parts[0]);
+  const lng   = parseFloat(parts[1]);
+  if (isNaN(lat) || isNaN(lng)) { if (linkDiv) linkDiv.innerHTML = ''; return; }
+  const url = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+  if (hidden)  hidden.value = url;
+  if (linkDiv) linkDiv.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener">🗺️ Ver en Google Maps →</a>';
+}
 
 let toastTimer;
 </script>
