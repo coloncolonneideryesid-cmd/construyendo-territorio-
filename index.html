@@ -721,6 +721,35 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <div class="char-count" id="char-count-inv">0 / mínimo 800 caracteres</div>
       </div>
 
+      <!-- ══ AVANCE METAS 1er TRIMESTRE 2026 — SEGUIMIENTO A LA INVERSIÓN ══ -->
+      <div class="field span-2" style="grid-column:span 2; margin-top:.8rem;">
+        <div style="background:linear-gradient(90deg,#e6f4ec,#fff);border-radius:8px;padding:.7rem 1rem;margin-bottom:.8rem;font-size:.78rem;font-weight:700;color:#1B7E45;letter-spacing:.05em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;border:1px solid #c8e6c9;" onclick="toggleMetasQ1()">
+          <span>📊 AVANCE METAS 1er TRIMESTRE SC 2026 — Referencia de Seguimiento a la Inversión</span>
+          <span id="metas-q1-toggle-icon" style="font-size:1rem;transition:transform .3s;">&#9660;</span>
+        </div>
+        <div id="metas-q1-panel" style="display:none;">
+          <div style="overflow-x:auto;border-radius:8px;border:1px solid #c8e6c9;box-shadow:0 1px 4px rgba(27,126,69,.1);">
+            <table id="tabla-metas-q1" style="width:100%;border-collapse:collapse;font-size:.75rem;font-family:'DM Sans',sans-serif;">
+              <thead>
+                <tr style="background:#1B7E45;color:#fff;text-align:left;">
+                  <th style="padding:.5rem .6rem;white-space:nowrap;">ID Meta</th>
+                  <th style="padding:.5rem .6rem;min-width:260px;">Meta Proyecto 2025-2028</th>
+                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Prog.<br>Q1</th>
+                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Contrat.<br>Q1</th>
+                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Entregada<br>Q1</th>
+                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">% Avance</th>
+                  <th style="padding:.5rem .6rem;white-space:nowrap;">Condición</th>
+                  <th style="padding:.5rem .6rem;min-width:180px;">Observación</th>
+                </tr>
+              </thead>
+              <tbody id="metas-q1-tbody">
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:.5rem;font-size:.7rem;color:#1B7E45;opacity:.8;">📋 Fuente: Avance Metas 1er Trimestre SC 2026 · Seguimiento a la Inversión — use como referencia al reportar avances</div>
+        </div>
+      </div>
+
       <!-- ID Proyecto POAI -->
       <div class="field">
         <label for="id_proyecto">ID Proyecto <span class="req">*</span> <span class="lbl-badge poai">POAI 2026</span></label>
@@ -1388,34 +1417,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         </div>
       </div>
 
-      <!-- ══ AVANCE METAS 1er TRIMESTRE 2026 ══ -->
-      <div class="field span-2" style="grid-column:span 2; margin-top:.5rem;">
-        <div style="background:linear-gradient(90deg,#F3E5F5,#fff);border-radius:8px;padding:.6rem 1rem;margin-bottom:.8rem;font-size:.78rem;font-weight:700;color:#6A1B9A;letter-spacing:.05em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;" onclick="toggleMetasQ1()">
-          <span>📊 AVANCE METAS 1er TRIMESTRE SC 2026 — Seguimiento a la Inversión</span>
-          <span id="metas-q1-toggle-icon" style="font-size:1rem;transition:transform .3s;">&#9660;</span>
-        </div>
-        <div id="metas-q1-panel" style="display:none;">
-          <div style="overflow-x:auto;border-radius:8px;border:1px solid #e1bee7;box-shadow:0 1px 4px rgba(106,27,154,.1);">
-            <table id="tabla-metas-q1" style="width:100%;border-collapse:collapse;font-size:.75rem;font-family:'DM Sans',sans-serif;">
-              <thead>
-                <tr style="background:#6A1B9A;color:#fff;text-align:left;">
-                  <th style="padding:.5rem .6rem;white-space:nowrap;">ID Meta</th>
-                  <th style="padding:.5rem .6rem;min-width:260px;">Meta Proyecto 2025-2028</th>
-                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Prog.<br>Q1</th>
-                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Contrat.<br>Q1</th>
-                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">Entregada<br>Q1</th>
-                  <th style="padding:.5rem .6rem;text-align:center;white-space:nowrap;">% Avance</th>
-                  <th style="padding:.5rem .6rem;white-space:nowrap;">Condición</th>
-                  <th style="padding:.5rem .6rem;min-width:180px;">Observación</th>
-                </tr>
-              </thead>
-              <tbody id="metas-q1-tbody">
-              </tbody>
-            </table>
-          </div>
-          <div style="margin-top:.5rem;font-size:.7rem;color:#6A1B9A;opacity:.75;">Fuente: 2. AVANCE METAS 1 TRIM SC 2026 · Solo metas del componente Presupuestos Participativos</div>
-        </div>
-      </div>
+
 
       <!-- ── BLOQUE C: SEGUIMIENTO MENSUAL ── -->
       <div class="field span-2" style="grid-column:span 2; margin-top:.5rem;">
@@ -1649,6 +1651,23 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <label for="email_diligenciador">Correo Electrónico <span class="req">*</span></label>
         <input type="email" id="email_diligenciador" name="email_diligenciador" required placeholder="correo@alcaldialocalsc.gov.co">
         <div class="hint">📧 Recibirá copia del registro.</div>
+      </div>
+
+
+      <div class="field span-2">
+        <label for="salud_mental" style="display:flex;align-items:center;gap:.4rem;">
+          🧠 ¿La actividad vincula acciones de <strong>Salud Mental</strong>? <span class="req">*</span>
+        </label>
+        <div class="radio-group" style="margin-top:.3rem;">
+          <label class="radio-opt" id="radio-sm-si">
+            <input type="radio" name="salud_mental" value="SI" onclick="selectRadioSM('SI')"> SÍ
+          </label>
+          <label class="radio-opt" id="radio-sm-no">
+            <input type="radio" name="salud_mental" value="NO" onclick="selectRadioSM('NO')"> NO
+          </label>
+        </div>
+        <input type="hidden" id="salud_mental" name="salud_mental">
+        <div class="hint">Indica si esta actividad incluye alguna acción relacionada con salud mental de la población</div>
       </div>
 
       <div class="field span-2">
@@ -2366,7 +2385,7 @@ function renderMetasQ1() {
     const bg = i % 2 === 0 ? '#fff' : '#faf5ff';
     const tr = document.createElement('tr');
     tr.style.background = bg;
-    tr.innerHTML = '<td style="padding:.4rem .6rem;font-weight:700;color:#6A1B9A;white-space:nowrap;">' + m.id + '</td>' +
+    tr.innerHTML = '<td style="padding:.4rem .6rem;font-weight:700;color:#1B7E45;white-space:nowrap;">' + m.id + '</td>' +
       '<td style="padding:.4rem .6rem;line-height:1.35;">' + m.meta + '</td>' +
       '<td style="padding:.4rem .6rem;text-align:center;font-weight:600;">' + m.prog + '</td>' +
       '<td style="padding:.4rem .6rem;text-align:center;">' + m.cont + '</td>' +
@@ -3013,7 +3032,7 @@ function actualizarProgreso() {
     ? true
     : ['zona','lugar'].every(id => document.getElementById(id)?.value);
   const s4 = true;
-  const s5 = ['nombre_diligenciador','email_diligenciador'].every(id => document.getElementById(id)?.value);
+  const s5 = ['nombre_diligenciador','email_diligenciador','salud_mental'].every(id => document.getElementById(id)?.value);
 
   const steps = [s1, s2, s3, s4, s5];
   const done = steps.filter(Boolean).length;
@@ -3033,7 +3052,7 @@ document.addEventListener('input', actualizarProgreso);
 /* VALIDACIÓN */
 function validarFormulario() {
   const tipo = document.getElementById('tipo_actividad').value;
-  let req = ['fecha','gerencia','area','tipo_actividad','nombre_diligenciador','email_diligenciador'];
+  let req = ['fecha','gerencia','area','tipo_actividad','nombre_diligenciador','email_diligenciador','salud_mental'];
   if (tipo === 'OKR') {
     req.push('okr_resultado','okr_pct_cuantitativo','okr_mes','okr_avance_cualitativo','zona','lugar');
   } else if (tipo.startsWith('CONTRATO')) {
@@ -3082,7 +3101,7 @@ async function enviarFormulario() {
   const datos = {};
   // Campos siempre presentes
   ['fecha','jornada','gerencia','area','tipo_actividad',
-   'nombre_diligenciador','email_diligenciador'].forEach(id => {
+   'nombre_diligenciador','email_diligenciador','salud_mental'].forEach(id => {
     const el = document.getElementById(id);
     if (el) datos[id] = el.value.trim();
   });
@@ -3300,6 +3319,14 @@ function nuevoRegistro() {
 }
 
 
+
+function selectRadioSM(val) {
+  document.getElementById('salud_mental').value = val;
+  document.getElementById('radio-sm-si').classList.toggle('selected', val === 'SI');
+  document.getElementById('radio-sm-no').classList.toggle('selected', val === 'NO');
+  actualizarProgreso();
+}
+
 function limpiarFormulario() {
   document.querySelectorAll('input:not([type=file]), select, textarea').forEach(el => {
     if (!el.readOnly) el.value = '';
@@ -3342,6 +3369,10 @@ function limpiarFormulario() {
   });
   const ccokr = document.getElementById('char-count-okr');
   if (ccokr) ccokr.textContent = '0 / 800 caracteres';
+  // Reset salud mental
+  document.getElementById('salud_mental').value = '';
+  ['radio-sm-si','radio-sm-no'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('selected'); });
+  document.querySelectorAll('input[name="salud_mental"]').forEach(r => r.checked = false);
   // Reset error box
   document.getElementById('error-box').classList.remove('show');
   document.getElementById('btn-submit').disabled = false;
@@ -3400,21 +3431,21 @@ const HEADERS = {
     "Contrato Jurídico","Mes Reporte","Avance Físico (%)","Avance Financiero (%)",
     "Descripción Avance","ID Proyecto POAI","Proyecto","Meta Proyecto",
     "Cantidad Personas","Tipo Población","Lugar Ejecución Contrato",
-    "Entidades Externas","N° Orfeo","Archivos Adjuntos","Correo Gerente","Correo Líder"
+    "Entidades Externas","N° Orfeo","Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
   ],
   "OKR": [
     "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
     "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
     "Resultado Clave (KR)","Objetivo Táctico","Área OKR","Líder OKR","Carpeta OKR",
     "Mes Reporte","% Avance Cuantitativo","Avance Cualitativo",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+    "Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
   ],
   "ACTIVIDADES MISIONALES": [
     "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
     "Nombre Responsable","Correo Responsable","Zona","Lugar","Coordenadas","Enlace Maps",
     "Tipo Misional","Nombre Actividad","Objetivo Actividad","Descripción Actividad",
     "Cantidad Personas","Tipo Población","Otro Tipo Población",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+    "Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
   ],
   "GESTION TERRITORIAL": [
     "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
@@ -3422,7 +3453,7 @@ const HEADERS = {
     "Nombre Actividad","Objetivo Actividad","Descripción Actividad",
     "Meta POAI Relacionada","Avance Cuantitativo","Avance Cualitativo Breve",
     "Cantidad Personas","Tipo Población","Otro Tipo Población",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+    "Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
   ],
   "TERRITORIO": [
     "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
@@ -3430,7 +3461,7 @@ const HEADERS = {
     "Código CT","Tipo Item","Fecha Situación","Área Responsable CT","Descripción Situación",
     "Referencia Problemática","% Respuesta","Tipo CT","Cantidad Mujeres CT","Tipo Población CT",
     "Entidades Externas","N° Orfeo",
-    "Archivos Adjuntos","Correo Gerente","Correo Líder"
+    "Archivos Adjuntos","Correo Gerente","Correo Líder","¿Vincula Salud Mental?"
   ],
   "PARTICIPACION": [
     "ID Registro","Timestamp","Fecha","Tipo Actividad","Gerencia","Área",
@@ -3450,21 +3481,21 @@ const FIELD_MAP = {
     "contrato_juridico","inv_mes","inv_avance_fisico","inv_avance_financiero",
     "inv_descripcion","id_proyecto","proyecto","meta_proyecto",
     "inv_poblacion_cantidad","inv_tipo_poblacion","lugar_ejecucion_contrato",
-    "entidades_externas","numero_orfeo","archivos","correo_gerente","correo_lider"
+    "entidades_externas","numero_orfeo","archivos","correo_gerente","correo_lider","salud_mental"
   ],
   "OKR": [
     "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
     "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
     "okr_resultado","okr_objetivo_tactico","okr_area_auto","okr_lider","okr_carpeta",
     "okr_mes","okr_pct_cuantitativo","okr_avance_cualitativo",
-    "archivos","correo_gerente","correo_lider"
+    "archivos","correo_gerente","correo_lider","salud_mental"
   ],
   "ACTIVIDADES MISIONALES": [
     "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
     "nombre_diligenciador","email_diligenciador","zona","lugar","coordenadas","enlace_maps",
     "construyendo_tipo","mis_nombre","mis_objetivo","mis_descripcion",
     "mis_poblacion_cantidad","mis_tipo_poblacion","mis_tipo_poblacion_otro",
-    "archivos","correo_gerente","correo_lider"
+    "archivos","correo_gerente","correo_lider","salud_mental"
   ],
   "GESTION TERRITORIAL": [
     "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
@@ -3472,7 +3503,7 @@ const FIELD_MAP = {
     "gest_nombre","gest_objetivo","gest_descripcion",
     "gest_meta","gest_avance_cuantitativo","gest_avance_cualitativo_breve",
     "gest_poblacion_cantidad","gest_tipo_poblacion","gest_tipo_poblacion_otro",
-    "archivos","correo_gerente","correo_lider"
+    "archivos","correo_gerente","correo_lider","salud_mental"
   ],
   "TERRITORIO": [
     "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
@@ -3480,7 +3511,7 @@ const FIELD_MAP = {
     "ct_codigo","ct_tipo_item","ct_fecha","ct_area_responsable","ct_descripcion",
     "ct_problema_referencia","ct_pct_respuesta","construyendo_tipo","ct_mujeres_cantidad","ct_tipo_poblacion",
     "entidades_externas","numero_orfeo",
-    "archivos","correo_gerente","correo_lider"
+    "archivos","correo_gerente","correo_lider","salud_mental"
   ],
   "PARTICIPACION": [
     "id_registro","timestamp","fecha","tipo_actividad","gerencia","area",
