@@ -410,9 +410,9 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
             <option value="OKR-DD-2">DD-2 · Realizar curso de conducción dirigido a 200 mujeres como estrategia de autonomía y movilidad</option>
           </optgroup>
           <optgroup label="── MENOS POBREZA ──">
-            <option value="OKR-MP-1">MP-1 · Desarrollar 56 talleres "Mayor Bienestar" para personas mayores (marzo–septiembre 2026)</option>
+            <option value="OKR-MP-1">MP-1 · Desarrollar 48 talleres "Mayor Bienestar" para personas mayores (marzo–septiembre 2026)</option>
             <option value="OKR-MP-2">MP-2 · Realizar 1 cineforo mensual dirigido a personas mayores (marzo–septiembre 2026)</option>
-            <option value="OKR-MP-3">MP-3 · Identificar 1.133 historias sociales del archivo de la Alcaldía Local</option>
+            <option value="OKR-MP-3">MP-3 · Desarrollar 14 actividades recreativas, culturales, educativas y de reconocimiento de saberes mensuales (abril–septiembre 2026)</option>
           </optgroup>
           <optgroup label="── BIEN-ESTAR ──">
             <option value="OKR-BE-1">BE-1 · Realizar el otorgamiento de ayudas técnicas a la comunidad para mejorar su calidad de vida</option>
@@ -799,11 +799,11 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
       </div>
 
       <div class="field span-2" id="campo-meta-wrap" style="display:none;">
-        <label for="meta_proyecto">Meta Proyecto 2025-2028 <span class="req">*</span> <span class="lbl-badge poai">POAI</span></label>
-        <select id="meta_proyecto" name="meta_proyecto" required>
+        <label for="meta_proyecto">Meta(s) Proyecto 2025-2028 <span class="req">*</span> <span class="lbl-badge poai">POAI</span></label>
+        <select id="meta_proyecto" name="meta_proyecto" required multiple size="4" style="height:auto;">
           <option value="">— Seleccione el proyecto primero —</option>
         </select>
-        <div class="hint">📋 Seleccione la meta específica que aplica para este contrato</div>
+        <div class="hint">📋 Puede seleccionar varias metas (Ctrl+clic) — un contrato puede cumplir múltiples metas</div>
       </div>
 
       <!-- Población -->
@@ -1833,10 +1833,10 @@ const CORREOS_POR_AREA = {
   "CYPA":                     { gerente: "CORREO_GERENTE_MAS_TER@alcaldia.gov.co", lider: "CORREO_LIDER_CYPA@alcaldia.gov.co" },
   "RIESGOS (PyAR)":           { gerente: "CORREO_GERENTE_MAS_TER@alcaldia.gov.co", lider: "CORREO_LIDER_PYAR@alcaldia.gov.co" },
   // ── TERRITORIO SOCIAL ─────────────────────────────────
-  "MENOS POBREZA":            { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_MP@alcaldia.gov.co" },
-  "PARTICIPACION INCIDENTE":  { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_PARTICIPACION@alcaldia.gov.co" },
-  "BIEN-ESTAR":               { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_BIENESTAR@alcaldia.gov.co" },
-  "DERECHOS DIFERENCIALES":   { gerente: "CORREO_GERENTE_TER_SOC@alcaldia.gov.co", lider: "CORREO_LIDER_DD@alcaldia.gov.co" },
+  "MENOS POBREZA":            { gerente: "juan.moreno@gobiernobogota.gov.co", lider: "carlos.pedreros@gobiernobogota.gov.co" },
+  "PARTICIPACION INCIDENTE":  { gerente: "juan.moreno@gobiernobogota.gov.co", lider: "ana.canoa@gobiernobogota.gov.co" },
+  "BIEN-ESTAR":               { gerente: "juan.moreno@gobiernobogota.gov.co", lider: "andresf.granados@gobiernobogota.gov.co" },
+  "DERECHOS DIFERENCIALES":   { gerente: "juan.moreno@gobiernobogota.gov.co", lider: "karina.leon@gobiernobogota.gov.co" },
   // ── IVC ───────────────────────────────────────────────
   "IVC":                      { gerente: "CORREO_GERENTE_IVC@alcaldia.gov.co", lider: "CORREO_LIDER_IVC@alcaldia.gov.co" },
   // ── INFRAESTRUCTURA ───────────────────────────────────
@@ -1965,17 +1965,17 @@ const OKR_DATA = {
   // ── MENOS POBREZA ──
   "OKR-MP-1": {
     objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los grupos poblacionales mediante procesos de formación y el acompañamiento a organizaciones sociales, comunales e instancias de participación.",
-    resultado: "Desarrollar 56 talleres mensuales durante los meses de marzo 2026 a septiembre del 2026. Fortalecer el bienestar psicosocial y la salud mental de las personas mayores de la localidad mediante talleres 'Mayor Bienestar'.",
+    resultado: "Desarrollar 48 talleres mensuales durante los meses de marzo 2026 a septiembre del 2026. Fortalecer el bienestar psicosocial y la salud mental de las personas mayores de la localidad mediante talleres 'Mayor Bienestar', promoviendo el manejo emocional, la prevención de riesgos psicosociales y el fortalecimiento de redes de apoyo comunitario.",
     area: "MENOS POBREZA", lider: "CARLOS PEDREROS", carpeta: "3. MENOS POBREZA"
   },
   "OKR-MP-2": {
     objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los grupos poblacionales mediante procesos de formación y el acompañamiento a organizaciones sociales, comunales e instancias de participación.",
-    resultado: "Realizar 1 cineforo mensual dirigido a personas mayores entre los meses de marzo y septiembre del 2026, como estrategia de fortalecimiento del bienestar emocional y la participación comunitaria.",
+    resultado: "Realizar 1 cineforo mensual dirigido a personas mayores entre los meses de marzo y septiembre del 2026, como estrategia de fortalecimiento del bienestar emocional, la participación comunitaria y el reconocimiento de saberes en el territorio.",
     area: "MENOS POBREZA", lider: "CARLOS PEDREROS", carpeta: "3. MENOS POBREZA"
   },
   "OKR-MP-3": {
     objetivo: "Fortalecer la participación ciudadana y la democracia deliberativa de todos los grupos poblacionales mediante procesos de formación y el acompañamiento a organizaciones sociales, comunales e instancias de participación.",
-    resultado: "Identificar 1.133 historias sociales que se encuentran en el archivo de la Alcaldía Local de San Cristóbal.",
+    resultado: "Fortalecer el bienestar integral y la participación activa de las personas mayores de la localidad de San Cristóbal, mediante la implementación de 14 actividades recreativas, culturales, educativas y de reconocimiento de saberes mensuales durante los meses de abril a septiembre de 2026, que promuevan hábitos de vida saludable, el desarrollo de capacidades y su integración comunitaria.",
     area: "MENOS POBREZA", lider: "CARLOS PEDREROS", carpeta: "3. MENOS POBREZA"
   },
   // ── BIEN-ESTAR ──
@@ -3220,10 +3220,13 @@ async function enviarFormulario() {
   } else if (tipo.startsWith('CONTRATO')) {
     ['contrato_juridico','inv_mes','inv_avance_fisico','inv_avance_financiero',
      'inv_estado_contrato','inv_descripcion','id_proyecto','proyecto',
-     'meta_proyecto','inv_poblacion_cantidad',
+     'inv_poblacion_cantidad',
      'inv_magnitud_programada','inv_magnitud_ejecutada'].forEach(id => {
       const el = document.getElementById(id); if (el) datos[id] = el.value.trim();
     });
+    // Multi-select metas POAI
+    const metaSel = document.getElementById('meta_proyecto');
+    if (metaSel) datos['meta_proyecto'] = Array.from(metaSel.selectedOptions).map(o=>o.value).join(' | ');
     // Multi-select tipo población inversión
     const tpInv = document.getElementById('inv_tipo_poblacion');
     if (tpInv) datos['inv_tipo_poblacion'] = Array.from(tpInv.selectedOptions).map(o=>o.value).join(', ');
