@@ -3395,17 +3395,27 @@ async function enviarFormulario() {
       mostrarExito(regId, hojaDestino);
     } else {
       setLoadingStep('Subiendo archivos a Drive y guardando registro...', 80);
-      const fd = new FormData();
-      Object.keys(datos).forEach(k => { if (datos[k] !== undefined && datos[k] !== null) fd.append(k, datos[k]); });
 
-      // Timeout de 25s — con no-cors no podemos leer la respuesta de todas formas
+      // ── URLSearchParams garantiza que Apps Script reciba e.parameter correctamente
+      const params = new URLSearchParams();
+      Object.keys(datos).forEach(k => {
+        if (datos[k] !== undefined && datos[k] !== null) {
+          params.append(k, String(datos[k]));
+        }
+      });
+
       const ctrl = new AbortController();
-      const tId  = setTimeout(() => ctrl.abort(), 25000);
+      const tId  = setTimeout(() => ctrl.abort(), 30000);
       try {
-        await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, { method:'POST', body:fd, mode:'no-cors', signal:ctrl.signal });
+        await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, {
+          method:  'POST',
+          body:    params,
+          mode:    'no-cors',
+          signal:  ctrl.signal,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
       } catch(fe) {
         if (fe.name !== 'AbortError') throw fe;
-        // AbortError tras 25s: probablemente llegó pero Apps Script tardó
       }
       clearTimeout(tId);
       setLoadingStep('¡Registro guardado exitosamente!', 100);
