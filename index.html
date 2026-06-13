@@ -387,10 +387,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
           <optgroup label="── CYPA ──">
             <option value="OKR-CYPA-1">CYPA-1 · Vincular 100 personas en acciones educativas en temas de protección y bienestar animal</option>
           </optgroup>
-          <optgroup label="── RIESGOS / PyAR ──">
-            <option value="OKR-PYAR-1">PyAR-1 · Implementar escuelas de gestión del Riesgo en 8 barrios de la localidad</option>
-            <option value="OKR-PYAR-2">PyAR-2 · Realizar 30 acciones de seguimiento y monitoreo en puntos críticos (diagnósticos IDIGER)</option>
-          </optgroup>
+          <!-- RIESGOS / PyAR retirado del formulario v3.2 — Gestión del Riesgo continúa con matriz + SharePoint (instrucción Erwin Castillo) -->
           <optgroup label="── ESPACIO PÚBLICO - IVC ──">
             <option value="OKR-EP-1">EP-1 · Implementar la intervención integral de 1.200 m² de espacio público — sector 20 de Julio</option>
           </optgroup>
@@ -1607,6 +1604,14 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
         <div class="gps-link" id="gps-link"></div>
         <input type="hidden" id="enlace_maps" name="enlace_maps">
       </div>
+
+      <!-- DIRECCIÓN / REFERENCIA MANUAL (zonas sin señal) -->
+      <div class="field span-2">
+        <label for="direccion_manual">Dirección o Referencia del Lugar (registro manual)</label>
+        <input type="text" id="direccion_manual" name="direccion_manual"
+          placeholder="Ej: Calle 31 Sur # 12-45, frente al salón comunal — o punto de referencia">
+        <div class="hint">📝 Use este campo cuando no haya señal/conectividad para georreferenciar automáticamente. Escriba la dirección o un punto de referencia claro.</div>
+      </div>
     </div>
   </div>
 
@@ -1626,9 +1631,9 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
       <div class="field">
         <label>Acta de Actividad con Evidencia</label>
         <div class="file-zone">
-          <input type="file" id="acta_actividad" name="acta_actividad" accept=".pdf,.jpg,.jpeg,.png" onchange="previewFile(this,'prev-acta')">
+          <input type="file" id="acta_actividad" name="acta_actividad" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="previewMultipleFiles(this,'prev-acta','documento(s)')">
           <div class="file-zone-icon">📄</div>
-          <div class="file-zone-text"><strong>Clic para seleccionar</strong><br>PDF, JPG, PNG · máx. 10 MB</div>
+          <div class="file-zone-text"><strong>Clic para seleccionar</strong><br>PDF, JPG, PNG · puede adjuntar varios · máx. 10 MB c/u</div>
         </div>
         <div id="prev-acta" class="file-previews"></div>
       </div>
@@ -1830,7 +1835,7 @@ const CORREOS_POR_AREA = {
   "PRODUCTIVIDAD":            { gerente: "miguel.piragua@gobiernobogota.gov.co", nombre_gerente: "Miguel Piragauta",        lider: "CORREO_LIDER_PRODUCTIVIDAD@alcaldia.gov.co", nombre_lider: "Líder Productividad" },
   // ── MAS TERRITORIO ────────────────────────────────────
   "AMBIENTE CONFIABLE":       { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "María Bohórquez",       lider: "CORREO_LIDER_AMBIENTE@alcaldia.gov.co",      nombre_lider: "Líder Ambiente Confiable" },
-  "CYPA":                     { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "María Bohórquez",       lider: "CORREO_LIDER_CYPA@alcaldia.gov.co",          nombre_lider: "Líder CYPA" },
+  "CYPA":                     { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "María Bohórquez",       lider: "nataly.suarez@gobiernobogota.gov.co",        nombre_lider: "Nataly Suárez" },
   "RIESGOS (PyAR)":           { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "María Bohórquez",       lider: "CORREO_LIDER_PYAR@alcaldia.gov.co",          nombre_lider: "Líder Riesgos PyAR" },
   // ── TERRITORIO SOCIAL ─────────────────────────────────
   "MENOS POBREZA":            { gerente: "juan.moreno@gobiernobogota.gov.co",  nombre_gerente: "Juan Carlos Moreno Jiménez", lider: "carlos.pedreros@gobiernobogota.gov.co",  nombre_lider: "Carlos Eduardo Pedreros García" },
@@ -2385,7 +2390,17 @@ function onBarrioChange() {
     wrap.style.display = 'none'; custom.required = false; custom.value = '';
     // Auto-fill código STI-SC
     const selectedOpt = lugarSelect.options[lugarSelect.selectedIndex];
-    codigoEl.value = selectedOpt && selectedOpt.dataset.codigo ? selectedOpt.dataset.codigo : '';
+    let codigo = selectedOpt && selectedOpt.dataset.codigo ? selectedOpt.dataset.codigo : '';
+    // Respaldo: si el dataset no trae código, buscarlo por nombre en la BDD (v3.2)
+    if (!codigo && val) {
+      const upz = document.getElementById('upz').value;
+      const zona = document.getElementById('zona').value;
+      if (BDD_TERRITORIAL[upz] && BDD_TERRITORIAL[upz][zona]) {
+        const hit = BDD_TERRITORIAL[upz][zona].find(it => it.barrio === val);
+        if (hit) codigo = hit.codigo;
+      }
+    }
+    codigoEl.value = codigo;
   }
   actualizarProgreso();
 }
@@ -2570,13 +2585,14 @@ function previewFile(input, containerId) {
   }
 }
 
-function previewMultipleFiles(input, containerId) {
+function previewMultipleFiles(input, containerId, noun) {
+  noun = noun || 'foto(s)';
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   if (!input.files.length) return;
   const label = document.createElement('div');
   label.className = 'file-selected-name';
-  label.textContent = `✅ ${input.files.length} foto(s) seleccionada(s)`;
+  label.textContent = `✅ ${input.files.length} ${noun} seleccionado(s)`;
   container.appendChild(label);
   const thumbsWrap = document.createElement('div');
   thumbsWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem;';
@@ -2593,6 +2609,12 @@ function previewMultipleFiles(input, containerId) {
       img.onload = () => URL.revokeObjectURL(url);
       img.onerror = () => { d.textContent = '📷'; d.style.cssText += 'display:flex;align-items:center;justify-content:center;font-size:1.4rem;'; };
       d.appendChild(img);
+      thumbsWrap.appendChild(d);
+    } else {
+      const d = document.createElement('div');
+      d.className = 'file-thumb';
+      d.style.cssText += 'display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.1rem;padding:.2rem;text-align:center;';
+      d.innerHTML = `📄<span style="font-size:.55rem;word-break:break-all;line-height:1.1;margin-top:.2rem;">${file.name}</span>`;
       thumbsWrap.appendChild(d);
     }
   });
@@ -3305,7 +3327,7 @@ async function enviarFormulario() {
   if (datos.lugar === 'OTRO' && datos.lugar_custom) datos.lugar = datos.lugar_custom;
 
   // Campos georreferenciación territorial
-  ['upz','codigo_sti_sc'].forEach(id => {
+  ['upz','codigo_sti_sc','direccion_manual'].forEach(id => {
     const el = document.getElementById(id); if (el) datos[id] = el.value.trim();
   });
 
@@ -3323,16 +3345,27 @@ async function enviarFormulario() {
     });
   }
 
-  // Acta de Actividad
+  // Acta de Actividad (permite varios archivos · GR/Gestores v3.2)
   const actaInput = document.getElementById('acta_actividad');
-  if (actaInput && actaInput.files[0]) {
-    const f = actaInput.files[0];
-    if (f.size > 10 * 1024 * 1024) { alertaSizeError(f.name, '10 MB'); return; }
-    setLoadingStep('Leyendo Acta de Actividad...', 20, f.name);
-    datos.archivo_acta_b64    = await b64(f);
-    datos.archivo_acta_nombre = f.name;
-    datos.archivo_acta_tipo   = f.type || 'application/octet-stream';
-    archivosNombres.push(f.name);
+  if (actaInput && actaInput.files.length) {
+    const actas = Array.from(actaInput.files).slice(0, 5);
+    for (let i = 0; i < actas.length; i++) {
+      const f = actas[i];
+      if (f.size > 10 * 1024 * 1024) { alertaSizeError(f.name, '10 MB'); return; }
+      setLoadingStep('Leyendo Acta/soporte ' + (i+1) + ' de ' + actas.length + '...', 20 + i * 3, f.name);
+      const b = await b64(f);
+      if (i === 0) {
+        datos.archivo_acta_b64    = b;            // compatibilidad con backend actual
+        datos.archivo_acta_nombre = f.name;
+        datos.archivo_acta_tipo   = f.type || 'application/octet-stream';
+      } else {
+        datos['archivo_acta_' + (i+1) + '_b64']    = b;
+        datos['archivo_acta_' + (i+1) + '_nombre'] = f.name;
+        datos['archivo_acta_' + (i+1) + '_tipo']   = f.type || 'application/octet-stream';
+      }
+      archivosNombres.push(f.name);
+    }
+    datos.archivo_acta_total = String(actas.length);
   }
 
   // Registro de Firmas
@@ -3546,9 +3579,25 @@ function limpiarFormulario() {
   document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
 })();
 
-
-
-
+/* ══ v3.2 · CYPA#7 — Usabilidad de selects múltiples "Tipo de Población" ══
+   Problema reportado: no se podía seleccionar correctamente (en táctil y en
+   escritorio al hacer clic se deseleccionaban las demás opciones).
+   Solución: (1) quitar la opción vacía "Seleccionar..." que estorbaba dentro
+   del multiple, y (2) permitir alternar cada opción con un simple clic/tap
+   sin necesidad de mantener Ctrl/Cmd. */
+(function enhanceMultiSelects() {
+  document.querySelectorAll('select[multiple]').forEach(sel => {
+    Array.from(sel.options).forEach(o => { if (o.value === '') o.remove(); });
+    sel.addEventListener('mousedown', function (e) {
+      if (e.target && e.target.tagName === 'OPTION') {
+        e.preventDefault();
+        e.target.selected = !e.target.selected;
+        sel.focus();
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  });
+})();
 
 let toastTimer;
 </script>
