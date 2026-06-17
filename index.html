@@ -1052,7 +1052,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
           <option>SEGURIDAD</option><option>JUSTICIA SOCIAL</option><option>TERRITORIO CONFIABLE</option>
           <option>TEJIDO SOCIAL</option><option>GESTORES DE CONVIVENCIA</option>
           <option>CULTURA</option><option>DEPORTES</option><option>EDUCACION</option><option>PRODUCTIVIDAD</option>
-          <option>AMBIENTE CONFIABLE</option><option>CYPA</option><option>RIESGOS (PyAR)</option>
+          <option>AMBIENTE CONFIABLE</option><option>SEPARACION EN LA FUENTE</option><option>CYPA</option><option>RIESGOS (PyAR)</option>
           <option>MENOS POBREZA</option><option>PARTICIPACION INCIDENTE</option>
           <option>BIEN-ESTAR</option><option>DERECHOS DIFERENCIALES</option>
           <option>IVC</option><option>MEJORES VIAS</option><option>PARQUES ACTIVOS</option>
@@ -1815,7 +1815,7 @@ const LABELS_PROG = [
 const AREAS_POR_GERENCIA = {
   "CAMINA SEGURA":     ["SEGURIDAD","JUSTICIA SOCIAL","TERRITORIO CONFIABLE","TEJIDO SOCIAL","GESTORES DE CONVIVENCIA"],
   "MAS OPORTUNIDADES": ["CULTURA","DEPORTES","EDUCACION","PRODUCTIVIDAD"],
-  "MAS TERRITORIO":    ["AMBIENTE CONFIABLE","CYPA","RIESGOS (PyAR)"],
+  "MAS TERRITORIO":    ["AMBIENTE CONFIABLE","SEPARACION EN LA FUENTE","CYPA","RIESGOS (PyAR)"],
   "TERRITORIO SOCIAL": ["MENOS POBREZA","PARTICIPACION INCIDENTE","BIEN-ESTAR","DERECHOS DIFERENCIALES"],
   "IVC":               ["IVC"],
   "INFRAESTRUCTURA":   ["MEJORES VIAS","PARQUES ACTIVOS","OBRAS DE MITIGACION","OBRAS DE VIDA","MOVILIDAD"],
@@ -1835,9 +1835,10 @@ const CORREOS_POR_AREA = {
   "EDUCACION":                { gerente: "miguel.piragua@gobiernobogota.gov.co", nombre_gerente: "Miguel Piragauta",        lider: "CORREO_LIDER_EDUCACION@alcaldia.gov.co",     nombre_lider: "Líder Educación" },
   "PRODUCTIVIDAD":            { gerente: "miguel.piragua@gobiernobogota.gov.co", nombre_gerente: "Miguel Piragauta",        lider: "CORREO_LIDER_PRODUCTIVIDAD@alcaldia.gov.co", nombre_lider: "Líder Productividad" },
   // ── MAS TERRITORIO ────────────────────────────────────
-  "AMBIENTE CONFIABLE":       { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "María Bohórquez",       lider: "CORREO_LIDER_AMBIENTE@alcaldia.gov.co",      nombre_lider: "Líder Ambiente Confiable" },
-  "CYPA":                     { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "María Bohórquez",       lider: "nataly.suarez@gobiernobogota.gov.co",        nombre_lider: "Nataly Suárez" },
-  "RIESGOS (PyAR)":           { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "María Bohórquez",       lider: "CORREO_LIDER_PYAR@alcaldia.gov.co",          nombre_lider: "Líder Riesgos PyAR" },
+  "AMBIENTE CONFIABLE":       { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "Maria Yuliana Bohorquez Zapata", lider: "diegom.rojas@gobiernobogota.gov.co",      nombre_lider: "Diego Mauricio Rojas Cachope" },
+  "SEPARACION EN LA FUENTE":  { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "Maria Yuliana Bohorquez Zapata", lider: "sergio.castillo@gobiernobogota.gov.co",   nombre_lider: "Sergio Alejandro Castillo Cabeza" },
+  "CYPA":                     { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "Maria Yuliana Bohorquez Zapata", lider: "nataly.suarez@gobiernobogota.gov.co",     nombre_lider: "Nataly Suárez Barrantes" },
+  "RIESGOS (PyAR)":           { gerente: "mariay.bohorquez@gobiernobogota.gov.co", nombre_gerente: "Maria Yuliana Bohorquez Zapata", lider: "Raul.Torres@gobiernobogota.gov.co",       nombre_lider: "Raúl Ernesto Torres Osma" },
   // ── TERRITORIO SOCIAL ─────────────────────────────────
   "MENOS POBREZA":            { gerente: "juan.moreno@gobiernobogota.gov.co",  nombre_gerente: "Juan Carlos Moreno Jiménez", lider: "carlos.pedreros@gobiernobogota.gov.co",  nombre_lider: "Carlos Eduardo Pedreros García" },
   "PARTICIPACION INCIDENTE":  { gerente: "juan.moreno@gobiernobogota.gov.co",  nombre_gerente: "Juan Carlos Moreno Jiménez", lider: "ana.canoa@gobiernobogota.gov.co",         nombre_lider: "Ana María Cano Ardila" },
